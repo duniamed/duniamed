@@ -10,6 +10,11 @@ export const signupSchema = z.object({
   role: z.enum(['patient', 'specialist', 'clinic_admin'], {
     required_error: 'Please select a role',
   }),
+  // Specialist subtype
+  specialistType: z.enum(['physician', 'psychologist', 'nurse', 'physiotherapist', 'dentist']).optional(),
+  specialty: z.string().optional(),
+  
+  // Basic info
   firstName: z.string()
     .trim()
     .min(1, { message: 'First name is required' })
@@ -27,9 +32,32 @@ export const signupSchema = z.object({
     .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
     .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
   confirmPassword: z.string().min(1, { message: 'Please confirm your password' }),
+  
+  // Jurisdiction
+  jurisdiction: z.enum(['EU_UK', 'US', 'CA', 'BR', 'IN', 'AU'], {
+    required_error: 'Please select your jurisdiction',
+  }),
+  
+  // License information (for specialists)
+  licenseNumber: z.string().optional(),
+  licenseState: z.string().optional(),
+  registrationNumber: z.string().optional(),
+  
+  // Clinic information
+  clinicName: z.string().optional(),
+  clinicType: z.string().optional(),
+  facilityId: z.string().optional(),
+  responsibleDirector: z.string().optional(),
+  
+  // Consents
   agreeToTerms: z.boolean().refine((val) => val === true, {
     message: 'You must agree to the terms and conditions',
   }),
+  dataProcessingConsent: z.boolean().refine((val) => val === true, {
+    message: 'You must consent to data processing',
+  }),
+  gdprArticle9Basis: z.string().optional(),
+  hipaaAcknowledgment: z.boolean().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ['confirmPassword'],
