@@ -7,7 +7,14 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { InfoIcon, X } from 'lucide-react';
-import { CLINIC_TYPES, MEDICAL_SPECIALTIES } from '@/lib/constants/specialties';
+import { MEDICAL_SPECIALTIES } from '@/lib/constants/specialties';
+
+// Valid clinic types for the database enum
+const CLINIC_TYPES = [
+  { value: 'physical', label: 'Physical Clinic' },
+  { value: 'virtual', label: 'Virtual/Telemedicine Clinic' },
+  { value: 'hybrid', label: 'Hybrid (Physical + Virtual)' }
+];
 import { useState } from 'react';
 
 interface ClinicSignupFormProps {
@@ -20,9 +27,8 @@ export function ClinicSignupForm({ form }: ClinicSignupFormProps) {
   const selectedSpecialties = form.watch('clinicSpecialties') || [];
   const [specialtySearch, setSpecialtySearch] = useState('');
 
-  const isGeneralOrMultiSpecialty = clinicType?.includes('General') || 
-                                     clinicType?.includes('Multi-Specialty') ||
-                                     clinicType?.includes('Multi-specialty');
+  // Always show specialties selection for clinics
+  const showSpecialties = true;
 
   const getJurisdictionInfo = () => {
     switch (jurisdiction) {
@@ -82,15 +88,15 @@ export function ClinicSignupForm({ form }: ClinicSignupFormProps) {
           </SelectTrigger>
           <SelectContent className="max-h-64">
             {CLINIC_TYPES.map(type => (
-              <SelectItem key={type} value={type}>
-                {type}
+              <SelectItem key={type.value} value={type.value}>
+                {type.label}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
-      {isGeneralOrMultiSpecialty && (
+      {showSpecialties && (
         <div className="space-y-2">
           <Label>Specialties Offered (Select all that apply)</Label>
           <Input
