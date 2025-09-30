@@ -1,11 +1,22 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, profile, signOut } = useAuth();
 
   const navigation = [
     { name: "How It Works", href: "/how-it-works" },
@@ -44,12 +55,50 @@ export default function Header() {
           </div>
 
           <div className="hidden md:flex md:items-center md:gap-4">
-            <Button variant="ghost" asChild>
-              <Link to="/auth">Sign In</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/auth?mode=signup">Get Started</Link>
-            </Button>
+            {user && profile ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center gap-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback>
+                        {profile.first_name[0]}{profile.last_name[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="hidden lg:inline">{profile.first_name}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      Profile Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link to="/auth">Sign In</Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/auth?mode=signup">Get Started</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           <button
@@ -80,12 +129,42 @@ export default function Header() {
               </Link>
             ))}
             <div className="flex flex-col gap-2 pt-4 border-t">
-              <Button variant="outline" asChild className="w-full">
-                <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
-              </Button>
-              <Button asChild className="w-full">
-                <Link to="/auth?mode=signup" onClick={() => setMobileMenuOpen(false)}>Get Started</Link>
-              </Button>
+              {user && profile ? (
+                <>
+                  <Button variant="outline" asChild className="w-full">
+                    <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                      <User className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </Link>
+                  </Button>
+                  <Button variant="outline" asChild className="w-full">
+                    <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      signOut();
+                    }}
+                    className="w-full"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" asChild className="w-full">
+                    <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
+                  </Button>
+                  <Button asChild className="w-full">
+                    <Link to="/auth?mode=signup" onClick={() => setMobileMenuOpen(false)}>Get Started</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         )}

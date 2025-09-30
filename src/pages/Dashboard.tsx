@@ -1,0 +1,110 @@
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { useAuth } from '@/contexts/AuthContext';
+import Header from '@/components/layout/Header';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Calendar, Search, FileText, MessageSquare } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+export default function Dashboard() {
+  return (
+    <ProtectedRoute allowedRoles={['patient']}>
+      <DashboardContent />
+    </ProtectedRoute>
+  );
+}
+
+function DashboardContent() {
+  const { profile } = useAuth();
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 container py-8 px-4">
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold">Welcome back, {profile?.first_name}!</h1>
+            <p className="text-muted-foreground">Manage your healthcare appointments and records</p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Search className="h-5 w-5" />
+                  Find Specialists
+                </CardTitle>
+                <CardDescription>Search for healthcare providers</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link to="/search">
+                  <Button className="w-full">Search Now</Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5" />
+                  My Appointments
+                </CardTitle>
+                <CardDescription>View upcoming appointments</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link to="/appointments">
+                  <Button variant="outline" className="w-full">View All</Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Medical Records
+                </CardTitle>
+                <CardDescription>Access your health records</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button variant="outline" className="w-full" disabled>
+                  Coming Soon
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5" />
+                  Messages
+                </CardTitle>
+                <CardDescription>Chat with your providers</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button variant="outline" className="w-full" disabled>
+                  Coming Soon
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Upcoming Appointments</CardTitle>
+              <CardDescription>You have no upcoming appointments</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-8">
+                <p className="text-muted-foreground mb-4">Start by finding a healthcare specialist</p>
+                <Link to="/search">
+                  <Button>Find a Specialist</Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    </div>
+  );
+}
