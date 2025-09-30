@@ -13,7 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { AlertCircle, ChevronLeft, ChevronRight, Users, User, Building2, InfoIcon } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { SpecialistSignupForm } from '@/components/auth/SpecialistSignupForm';
@@ -26,7 +26,7 @@ export default function Auth() {
   const { user, profile, loading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [signupStep, setSignupStep] = useState(1);
+  const [signupStep, setSignupStep] = useState(0); // Start at 0 for role selection
   
   const mode = searchParams.get('mode') || 'login';
   const prefilledRole = searchParams.get('role') as 'patient' | 'specialist' | 'clinic_admin' | null;
@@ -95,9 +95,9 @@ export default function Auth() {
   const validateStep = async () => {
     let fieldsToValidate: (keyof SignupFormData)[] = [];
     
-    if (signupStep === 1) {
-      fieldsToValidate = ['role', 'firstName', 'lastName', 'email', 'password', 'confirmPassword'];
-    } else if (signupStep === 2) {
+    if (signupStep === 2) {
+      fieldsToValidate = ['firstName', 'lastName', 'email', 'password', 'confirmPassword'];
+    } else if (signupStep === 3) {
       fieldsToValidate = ['jurisdiction'];
     }
 
@@ -106,6 +106,13 @@ export default function Auth() {
   };
 
   const handleNextStep = async () => {
+    // For step 0 (role selection) and step 1 (info prep), just advance
+    if (signupStep === 0 || signupStep === 1) {
+      setSignupStep(signupStep + 1);
+      setError(null);
+      return;
+    }
+    
     const isValid = await validateStep();
     if (isValid) {
       setSignupStep(signupStep + 1);
@@ -116,6 +123,11 @@ export default function Auth() {
   const handlePrevStep = () => {
     setSignupStep(signupStep - 1);
     setError(null);
+  };
+
+  const handleRoleSelect = (role: 'patient' | 'specialist' | 'clinic_admin') => {
+    signupForm.setValue('role', role);
+    setSignupStep(1); // Move to info preparation step
   };
 
   const handleSignup = async (data: SignupFormData) => {
@@ -155,7 +167,7 @@ export default function Auth() {
     } else {
       // Redirect to login page
       setSearchParams({ mode: 'login' });
-      setSignupStep(1);
+      setSignupStep(0);
       setError('Account created! Please check your email to confirm your account, then login.');
       setIsLoading(false);
     }
@@ -170,14 +182,43 @@ export default function Auth() {
   }
 
   const getStepTitle = () => {
-    if (signupStep === 1) return 'Basic Information';
-    if (signupStep === 2) return 'Jurisdiction & Compliance';
-    if (signupStep === 3) {
+    if (signupStep === 0) return 'Choose Your Role';
+    if (signupStep === 1) return 'What You\'ll Need';
+    if (signupStep === 2) return 'Basic Information';
+    if (signupStep === 3) return 'Jurisdiction & Compliance';
+    if (signupStep === 4) {
       if (selectedRole === 'specialist') return 'Professional Credentials';
       if (selectedRole === 'clinic_admin') return 'Clinic Information';
       return 'Data Processing Consent';
     }
     return 'Review & Confirm';
+  };
+
+  const getRequiredDocuments = () => {
+    if (selectedRole === 'patient') {
+      return [
+        'Valid email address',
+        'Basic personal information',
+        'Consent to data processing',
+      ];
+    } else if (selectedRole === 'specialist') {
+      return [
+        'Medical license number',
+        'Professional credentials',
+        'Medical specialty information',
+        'Years of experience',
+        'License jurisdiction details',
+      ];
+    } else if (selectedRole === 'clinic_admin') {
+      return [
+        'Clinic/facility name and type',
+        'Facility registration number',
+        'Responsible director information',
+        'Operating jurisdiction',
+        'Specialties offered',
+      ];
+    }
+    return [];
   };
 
   return (
@@ -194,7 +235,7 @@ export default function Auth() {
           <CardContent>
             <Tabs value={mode} onValueChange={(value) => {
               setSearchParams({ mode: value });
-              setSignupStep(1);
+              setSignupStep(0); // Reset to role selection
             }}>
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login">Login</TabsTrigger>
@@ -252,18 +293,20 @@ export default function Auth() {
               </TabsContent>
 
               <TabsContent value="signup">
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">Step {signupStep} of 4</span>
-                    <span className="text-sm text-muted-foreground">{getStepTitle()}</span>
+                {signupStep > 0 && (
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">Step {signupStep} of 5</span>
+                      <span className="text-sm text-muted-foreground">{getStepTitle()}</span>
+                    </div>
+                    <div className="w-full bg-secondary h-2 rounded-full">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${(signupStep / 5) * 100}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="w-full bg-secondary h-2 rounded-full">
-                    <div 
-                      className="bg-primary h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${(signupStep / 4) * 100}%` }}
-                    />
-                  </div>
-                </div>
+                )}
 
                 <form onSubmit={signupForm.handleSubmit(handleSignup)} className="space-y-6">
                   {error && (
@@ -273,29 +316,133 @@ export default function Auth() {
                     </Alert>
                   )}
 
-                  {/* Step 1: Basic Information */}
-                  {signupStep === 1 && (
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="role">I am a...</Label>
-                        <Select
-                          value={signupForm.watch('role') || 'patient'}
-                          onValueChange={(value) => signupForm.setValue('role', value as any)}
+                  {/* Step 0: Role Selection */}
+                  {signupStep === 0 && (
+                    <div className="space-y-6">
+                      <div className="text-center space-y-2">
+                        <h3 className="text-2xl font-bold">Choose Your Role</h3>
+                        <p className="text-muted-foreground">Select the option that best describes you</p>
+                      </div>
+                      
+                      <div className="grid gap-4">
+                        <Card 
+                          className="cursor-pointer hover:border-primary transition-all hover:shadow-md"
+                          onClick={() => handleRoleSelect('patient')}
                         >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="patient">Patient</SelectItem>
-                            <SelectItem value="specialist">Healthcare Specialist</SelectItem>
-                            <SelectItem value="clinic_admin">Clinic / Healthcare Facility</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        {signupForm.formState.errors.role && (
-                          <p className="text-sm text-destructive">{signupForm.formState.errors.role.message}</p>
-                        )}
+                          <CardContent className="pt-6">
+                            <div className="flex items-start gap-4">
+                              <div className="p-3 rounded-lg bg-primary/10">
+                                <Users className="h-6 w-6 text-primary" />
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="font-semibold text-lg mb-1">Patient</h4>
+                                <p className="text-sm text-muted-foreground">
+                                  Book appointments, consult with specialists, and manage your health records
+                                </p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card 
+                          className="cursor-pointer hover:border-primary transition-all hover:shadow-md"
+                          onClick={() => handleRoleSelect('specialist')}
+                        >
+                          <CardContent className="pt-6">
+                            <div className="flex items-start gap-4">
+                              <div className="p-3 rounded-lg bg-primary/10">
+                                <User className="h-6 w-6 text-primary" />
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="font-semibold text-lg mb-1">Healthcare Specialist</h4>
+                                <p className="text-sm text-muted-foreground">
+                                  Provide consultations, manage your practice, and connect with patients
+                                </p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card 
+                          className="cursor-pointer hover:border-primary transition-all hover:shadow-md"
+                          onClick={() => handleRoleSelect('clinic_admin')}
+                        >
+                          <CardContent className="pt-6">
+                            <div className="flex items-start gap-4">
+                              <div className="p-3 rounded-lg bg-primary/10">
+                                <Building2 className="h-6 w-6 text-primary" />
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="font-semibold text-lg mb-1">Clinic / Healthcare Facility</h4>
+                                <p className="text-sm text-muted-foreground">
+                                  Manage your clinic, staff, and provide comprehensive healthcare services
+                                </p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Step 1: Information Preparation */}
+                  {signupStep === 1 && (
+                    <div className="space-y-6">
+                      <div className="text-center space-y-2">
+                        <h3 className="text-2xl font-bold">What You'll Need</h3>
+                        <p className="text-muted-foreground">
+                          Please have the following information ready
+                        </p>
                       </div>
 
+                      <Card>
+                        <CardContent className="pt-6">
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-2 mb-4">
+                              <div className="p-2 rounded-lg bg-primary/10">
+                                {selectedRole === 'patient' && <Users className="h-5 w-5 text-primary" />}
+                                {selectedRole === 'specialist' && <User className="h-5 w-5 text-primary" />}
+                                {selectedRole === 'clinic_admin' && <Building2 className="h-5 w-5 text-primary" />}
+                              </div>
+                              <h4 className="font-semibold text-lg">
+                                {selectedRole === 'patient' && 'Patient Registration'}
+                                {selectedRole === 'specialist' && 'Healthcare Specialist Registration'}
+                                {selectedRole === 'clinic_admin' && 'Clinic Registration'}
+                              </h4>
+                            </div>
+
+                            <div className="space-y-2">
+                              {getRequiredDocuments().map((doc, index) => (
+                                <div key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                                  <div className="mt-0.5">
+                                    <div className="h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center">
+                                      <div className="h-2 w-2 rounded-full bg-primary" />
+                                    </div>
+                                  </div>
+                                  <span className="text-sm">{doc}</span>
+                                </div>
+                              ))}
+                            </div>
+
+                            <Alert>
+                              <InfoIcon className="h-4 w-4" />
+                              <AlertDescription className="text-sm">
+                                Don't worry if you don't have everything right now. You can complete your profile later.
+                              </AlertDescription>
+                            </Alert>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Button onClick={handleNextStep} className="w-full" size="lg">
+                        I'm Ready - Let's Begin
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Step 2: Basic Information */}
+                  {signupStep === 2 && (
+                    <div className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="firstName">First Name</Label>
@@ -359,8 +506,8 @@ export default function Auth() {
                     </div>
                   )}
 
-                  {/* Step 2: Jurisdiction */}
-                  {signupStep === 2 && (
+                  {/* Step 3: Jurisdiction */}
+                  {signupStep === 3 && (
                     <div className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="jurisdiction">Primary Jurisdiction</Label>
@@ -404,8 +551,8 @@ export default function Auth() {
                     </div>
                   )}
 
-                  {/* Step 3: Role-Specific Forms */}
-                  {signupStep === 3 && (
+                  {/* Step 4: Role-Specific Forms */}
+                  {signupStep === 4 && (
                     <>
                       {selectedRole === 'specialist' && <SpecialistSignupForm form={signupForm} />}
                       {selectedRole === 'patient' && <PatientSignupForm form={signupForm} />}
@@ -413,8 +560,8 @@ export default function Auth() {
                     </>
                   )}
 
-                  {/* Step 4: Consents */}
-                  {signupStep === 4 && (
+                  {/* Step 5: Consents */}
+                  {signupStep === 5 && (
                     <div className="space-y-4">
                       <div className="flex items-start space-x-2">
                         <Checkbox
@@ -469,7 +616,7 @@ export default function Auth() {
                       </Button>
                     )}
                     
-                    {signupStep < 4 ? (
+                    {signupStep < 5 ? (
                       <Button
                         type="button"
                         onClick={handleNextStep}
