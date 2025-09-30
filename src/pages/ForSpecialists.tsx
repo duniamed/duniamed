@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Globe, DollarSign, Calendar, Users, FileText, BarChart3, Shield, Bot, Video, Zap } from "lucide-react";
 import Header from "@/components/layout/Header";
@@ -81,53 +82,80 @@ export default function ForSpecialists() {
       <Header />
       
       <main className="flex-1 pt-24">
-        {/* Hero */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 gradient-hero">
-          <div className="mx-auto max-w-7xl">
-            <div className="text-center max-w-3xl mx-auto">
-              <h1 className="mb-6">Expand Your <span className="text-primary">Practice</span> Globally</h1>
-              <p className="text-xl text-muted-foreground mb-8">
-                Join 10,000+ verified specialists providing care worldwide. 
-                Increase your income, reach more patients, and practice on your terms.
+        {/* Hero with Loss Aversion */}
+        <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
+          </div>
+          
+          <div className="relative mx-auto max-w-7xl">
+            <div className="text-center max-w-3xl mx-auto space-y-6">
+              {/* Social Proof */}
+              <Badge className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20">
+                <Users className="h-3.5 w-3.5" />
+                10,000+ specialists earning globally
+              </Badge>
+              
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                Stop limiting your practice
+                <span className="block text-primary mt-2">Expand globally today</span>
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+                Every day you wait is lost income. While you're limited to local patients, competitors are earning $50K+ extra annually from global telemedicine. 
+                <span className="font-semibold text-foreground"> Don't miss out.</span>
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" asChild>
-                  <Link to="/auth?mode=signup&role=specialist">Apply Now</Link>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                <Button size="lg" className="h-14 text-base shadow-lg shadow-primary/25" asChild>
+                  <Link to="/auth?mode=signup&role=specialist">Apply Now - Free Setup</Link>
                 </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link to="/how-it-works">Learn More</Link>
+                <Button size="lg" variant="outline" className="h-14 text-base border-2" asChild>
+                  <Link to="#earnings">Calculate Earnings</Link>
                 </Button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Earnings Calculator */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
+        {/* Earnings Calculator with Anchoring */}
+        <section id="earnings" className="py-20 md:py-28 px-4 sm:px-6 lg:px-8 bg-muted/30">
           <div className="mx-auto max-w-6xl">
-            <div className="text-center mb-12">
-              <h2 className="mb-4">Your Earning Potential</h2>
-              <p className="text-xl text-muted-foreground">
-                Based on average $120 per consultation (you set your own fees)
+            <div className="text-center mb-12 space-y-4">
+              <h2 className="text-3xl md:text-4xl font-bold">Don't leave money on the table</h2>
+              <p className="text-lg md:text-xl text-muted-foreground">
+                See what you're missing by not joining (based on $120/consultation - you set your own fees)
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {earnings.map((tier) => (
-                <Card key={tier.consultations} className="p-6 hover:shadow-xl transition-shadow">
-                  <div className="text-center">
-                    <div className="text-4xl font-bold text-primary mb-2">
-                      {tier.consultations}
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-6">consultations/month</p>
+              {earnings.map((tier, index) => (
+                <Card 
+                  key={tier.consultations} 
+                  className={`p-8 hover:shadow-2xl transition-all ${
+                    index === 2 ? 'border-2 border-primary shadow-xl scale-105' : ''
+                  }`}
+                >
+                  {index === 2 && (
+                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary">
+                      Most Popular
+                    </Badge>
+                  )}
+                  <div className="text-center space-y-4">
                     <div className="space-y-2">
-                      <div>
-                        <div className="text-2xl font-bold">{tier.monthly}</div>
-                        <p className="text-sm text-muted-foreground">per month</p>
+                      <div className="text-5xl font-bold text-primary">
+                        {tier.consultations}
                       </div>
-                      <div className="pt-2 border-t">
-                        <div className="text-lg font-semibold text-primary">{tier.annual}</div>
-                        <p className="text-xs text-muted-foreground">per year</p>
+                      <p className="text-sm text-muted-foreground">consultations/month</p>
+                      <p className="text-xs text-muted-foreground">({Math.round(tier.consultations/20)} per day)</p>
+                    </div>
+                    <div className="space-y-3 pt-4 border-t">
+                      <div>
+                        <div className="text-3xl font-bold text-primary">{tier.monthly}</div>
+                        <p className="text-sm text-muted-foreground">extra per month</p>
+                      </div>
+                      <div className="bg-primary/10 rounded-lg p-3">
+                        <div className="text-2xl font-bold">{tier.annual}</div>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wide">Lost yearly income</p>
                       </div>
                     </div>
                   </div>
@@ -135,9 +163,15 @@ export default function ForSpecialists() {
               ))}
             </div>
 
-            <p className="text-center text-sm text-muted-foreground mt-8">
-              Platform fee: 15% | Weekly automatic payouts | No subscription fees
-            </p>
+            <div className="mt-12 text-center space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Platform fee: 15% | Weekly payouts | No subscription | You keep 85% of earnings
+              </p>
+              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-6 max-w-2xl mx-auto">
+                <p className="font-semibold text-destructive mb-2">Cost of waiting:</p>
+                <p className="text-muted-foreground">Every month you delay = $2,400-$7,200 in lost income. That's a vacation, car payment, or college fund.</p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -195,16 +229,28 @@ export default function ForSpecialists() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="mb-6">Ready to Grow Your Practice?</h2>
-            <p className="text-xl text-muted-foreground mb-8">
-              Join thousands of specialists already on DUNIAMED
-            </p>
-            <Button size="lg" asChild>
-              <Link to="/auth?mode=signup&role=specialist">Apply as Specialist</Link>
-            </Button>
+        {/* CTA with Loss Aversion */}
+        <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl">
+            <Card className="p-8 md:p-12 border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+              <div className="text-center space-y-6">
+                <Badge className="urgency-badge">
+                  <Calendar className="h-3.5 w-3.5" />
+                  100+ specialists joined this week
+                </Badge>
+                <h2 className="text-3xl md:text-4xl font-bold">Stop losing patients to competitors</h2>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  While you wait, thousands of patients are finding specialists on our platform. 
+                  <span className="font-semibold text-foreground"> Don't let them choose someone else.</span>
+                </p>
+                <Button size="lg" className="h-14 px-10 text-base shadow-lg shadow-primary/25" asChild>
+                  <Link to="/auth?mode=signup&role=specialist">Join Now - Free Setup</Link>
+                </Button>
+                <p className="text-sm text-muted-foreground">
+                  ✓ No setup fees ✓ 48-hour verification ✓ Start earning immediately
+                </p>
+              </div>
+            </Card>
           </div>
         </section>
       </main>
