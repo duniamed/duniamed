@@ -17,10 +17,10 @@ serve(async (req: Request): Promise<Response> => {
   }
 
   try {
-    const STRIPE_SECRET_KEY = Deno.env.get('STRIPE_SECRET_KEY');
+    const STRIPE_SECRET_KEY = Deno.env.get('STRIPE_SECRET_KEY_LOV');
     
     if (!STRIPE_SECRET_KEY) {
-      throw new Error('STRIPE_SECRET_KEY not configured. Please add it in Supabase Dashboard');
+      throw new Error('STRIPE_SECRET_KEY_LOV not configured. Please add it in Supabase Dashboard');
     }
 
     const { amount, currency, appointmentId }: PaymentRequest = await req.json();
