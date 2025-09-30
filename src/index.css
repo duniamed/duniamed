@@ -165,17 +165,30 @@
     box-shadow: var(--shadow-xl);
   }
   
-  /* Modern Card Styles - Mobile Optimized */
+  /* Modern Card Styles - App-like Mobile */
   .card-modern {
-    @apply rounded-2xl md:rounded-3xl border border-border/50 shadow-lg bg-card p-4 sm:p-6 md:p-8 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1;
+    @apply rounded-xl md:rounded-2xl border border-border/50 shadow-md bg-card p-4 md:p-6 transition-all duration-200 active:scale-[0.98] md:hover:shadow-xl md:hover:-translate-y-1;
   }
   
   .card-soft {
-    @apply rounded-2xl md:rounded-3xl bg-card/80 dark:bg-card/60 p-4 sm:p-6 md:p-8 border border-border/30 backdrop-blur-xl shadow-lg;
+    @apply rounded-xl md:rounded-2xl bg-card/90 dark:bg-card/70 p-4 md:p-6 border border-border/30 backdrop-blur-xl shadow-md;
   }
   
   .card-glass {
-    @apply rounded-2xl md:rounded-3xl bg-white/80 dark:bg-card/80 p-4 sm:p-6 md:p-8 border border-border/30 backdrop-blur-2xl shadow-2xl;
+    @apply rounded-xl md:rounded-2xl bg-white/90 dark:bg-card/90 p-4 md:p-6 border border-border/20 backdrop-blur-2xl shadow-lg;
+  }
+  
+  /* App-like utilities */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .app-container {
+    @apply px-4 py-4 md:px-6 md:py-6 max-w-screen-xl mx-auto;
   }
   
   /* Persuasive Design Elements - Mobile Optimized */
