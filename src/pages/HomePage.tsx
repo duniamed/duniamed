@@ -59,104 +59,64 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background via-background to-muted/20">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-background">
       <Header />
       
       <main className="flex-1 pt-16">
-        {/* Hero Section - Loss Aversion & Urgency */}
-        <section className="relative pt-20 pb-24 md:pt-28 md:pb-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
-          {/* Background Elements */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
-          <div className="absolute top-20 right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 left-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
-          
-          <div className="relative mx-auto max-w-7xl">
+        {/* Hero Section - Modern & Clean */}
+        <section className="section-padding">
+          <div className="container-modern">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <div className="text-left space-y-8">
-                {/* Badges */}
-                <div className="flex flex-wrap gap-3">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 backdrop-blur-sm">
-                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-sm font-medium text-green-600 dark:text-green-400">
-                      Doctors available now
-                    </span>
-                  </div>
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
-                    <Users className="h-3.5 w-3.5 text-primary" />
-                    <span className="text-sm font-medium text-primary">
-                      12,847 helped this week
-                    </span>
-                  </div>
-                </div>
+              <div className="space-y-10">
+                {/* Badge */}
+                <Badge className="inline-flex items-center gap-2.5 px-6 py-3 bg-green-50 dark:bg-green-500/10 border-0 text-green-700 dark:text-green-400 rounded-full font-semibold">
+                  <div className="h-2.5 w-2.5 rounded-full bg-green-500 animate-pulse" />
+                  500K+ patients this year
+                </Badge>
                 
-                {/* Headline */}
-                <div className="space-y-4">
-                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight">
-                    Don't let health issues wait
-                    <span className="block text-primary mt-2">See a doctor in minutes</span>
+                <div className="space-y-6">
+                  <h1 className="font-display leading-tight">
+                    See a Doctor in
+                    <span className="block bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mt-2">
+                      Under 5 Minutes
+                    </span>
                   </h1>
-                  <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
-                    Delaying care can turn minor issues into serious problems. Get immediate access to board-certified doctors 24/7.
+                  <p className="text-2xl text-muted-foreground leading-relaxed font-light max-w-xl">
+                    No waiting rooms. No commute. Just instant access to verified specialists from $0-79.
                   </p>
                 </div>
                 
-                {/* Warning Box */}
-                <div className="bg-gradient-to-r from-destructive/10 via-destructive/5 to-transparent border-l-4 border-destructive rounded-lg p-5">
-                  <div className="flex gap-4">
-                    <AlertCircle className="h-6 w-6 text-destructive flex-shrink-0 mt-0.5" />
-                    <div className="space-y-1">
-                      <p className="font-semibold text-foreground">Why risk waiting?</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        Most conditions worsen without timely treatment. Average ER wait: 2-4 hours. 
-                        <span className="font-medium text-foreground"> Here? Under 5 minutes.</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* CTAs */}
-                <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                  <Button size="lg" className="text-base h-14 px-8 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all" asChild>
-                    <Link to="/instant-consultation">
-                      Get Care Now - From $0
-                    </Link>
+                <div className="flex flex-col sm:flex-row gap-5">
+                  <Button size="lg" className="h-16 px-10 text-lg rounded-full bg-primary hover:bg-primary/90 font-semibold shadow-xl" asChild>
+                    <Link to="/instant-consultation">Get Care Now</Link>
                   </Button>
-                  <Button size="lg" variant="outline" className="text-base h-14 px-8 border-2" asChild>
-                    <Link to="#how-it-works">
-                      See how it works
-                      <ArrowDown className="ml-2 h-4 w-4" />
-                    </Link>
+                  <Button size="lg" variant="outline" className="h-16 px-10 text-lg rounded-full border-2 font-semibold" asChild>
+                    <Link to="/search">Find Specialist</Link>
                   </Button>
                 </div>
                 
-                {/* Trust Badges */}
-                <div className="flex flex-wrap gap-6 pt-2">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center">
-                      <CheckCircle2 className="h-3 w-3 text-primary" />
-                    </div>
-                    <span>Most insurance = $0</span>
+                {/* Trust Indicators */}
+                <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-5 w-5 text-primary" />
+                    <span>HIPAA Compliant</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Shield className="h-3 w-3 text-primary" />
-                    </div>
-                    <span>HIPAA compliant</span>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+                    <span>Verified Doctors</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Award className="h-3 w-3 text-primary" />
-                    </div>
-                    <span>Board-certified only</span>
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-blue-600" />
+                    <span>24/7 Available</span>
                   </div>
                 </div>
               </div>
               
               {/* Hero Visual */}
-              <div className="relative lg:block hidden">
-                <div className="relative aspect-square rounded-3xl bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 backdrop-blur-sm border border-primary/10 p-12 flex items-center justify-center">
+              <div className="relative">
+                <div className="aspect-square rounded-3xl bg-gradient-to-br from-[hsl(var(--soft-blue))] to-white dark:to-background p-16 flex items-center justify-center border border-border/50 shadow-2xl">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl animate-pulse" />
+                    <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl" />
                     <Video className="relative w-40 h-40 text-primary" strokeWidth={1.5} />
                   </div>
                 </div>

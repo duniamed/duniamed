@@ -91,92 +91,109 @@ export default function ForPatients() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-background">
       <Header />
       
       <main className="flex-1 pt-16">
-        {/* Hero with Loss Aversion */}
-        <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
-          </div>
-          
-          <div className="relative mx-auto max-w-7xl">
-            <div className="text-center max-w-3xl mx-auto mb-12 space-y-6">
-              {/* Urgency Badge */}
-              <div className="flex justify-center gap-3 mb-6">
-                <Badge className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400">
-                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                  10,000+ patients helped today
-                </Badge>
+        {/* Hero - Clean and Modern */}
+        <section className="section-padding bg-white dark:bg-background">
+          <div className="container-modern">
+            <div className="text-center max-w-4xl mx-auto space-y-10">
+              {/* Trust Badge */}
+              <Badge className="inline-flex items-center gap-2.5 px-6 py-3 bg-green-50 dark:bg-green-500/10 border-0 text-green-700 dark:text-green-400 rounded-full text-sm font-semibold">
+                <div className="h-2.5 w-2.5 rounded-full bg-green-500 animate-pulse" />
+                10,000+ patients helped today
+              </Badge>
+              
+              <div className="space-y-6">
+                <h1 className="font-display">
+                  Healthcare That
+                  <span className="block bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mt-2">
+                    Doesn't Make You Wait
+                  </span>
+                </h1>
+                <p className="text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-light">
+                  See top specialists in minutes, not months. From $0-79 vs $800-2000 ER costs.
+                </p>
               </div>
               
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                Don't risk your health - 
-                <span className="block text-primary mt-2">Get care that actually works</span>
-              </h1>
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                Stop waiting weeks for appointments. Stop worrying about rising medical costs. 
-                <span className="font-semibold text-foreground"> Access world-class specialists immediately - before your condition worsens.</span>
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                <Button size="lg" className="h-14 text-base shadow-lg shadow-primary/25" asChild>
-                  <Link to="/auth?mode=signup&role=patient">Start Free - Don't Wait</Link>
+              <div className="flex flex-col sm:flex-row gap-5 justify-center">
+                <Button size="lg" className="h-16 px-10 text-lg rounded-full bg-primary hover:bg-primary/90 font-semibold shadow-xl" asChild>
+                  <Link to="/auth?mode=signup&role=patient">Get Started Free</Link>
                 </Button>
-                <Button size="lg" variant="outline" className="h-14 text-base border-2" asChild>
+                <Button size="lg" variant="outline" className="h-16 px-10 text-lg rounded-full border-2 font-semibold" asChild>
                   <Link to="/search">Browse Specialists</Link>
                 </Button>
               </div>
               
-              <p className="text-sm text-muted-foreground">
-                ✓ No subscription fees ✓ Most insurance accepted ✓ First consultation risk-free
-              </p>
+              <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
+                <span className="flex items-center gap-2">
+                  <div className="h-5 w-5 rounded-full bg-green-100 dark:bg-green-500/20 flex items-center justify-center">
+                    <div className="text-green-600 text-xs">✓</div>
+                  </div>
+                  No subscription
+                </span>
+                <span className="flex items-center gap-2">
+                  <div className="h-5 w-5 rounded-full bg-green-100 dark:bg-green-500/20 flex items-center justify-center">
+                    <div className="text-green-600 text-xs">✓</div>
+                  </div>
+                  Insurance accepted
+                </span>
+                <span className="flex items-center gap-2">
+                  <div className="h-5 w-5 rounded-full bg-green-100 dark:bg-green-500/20 flex items-center justify-center">
+                    <div className="text-green-600 text-xs">✓</div>
+                  </div>
+                  Risk-free trial
+                </span>
+              </div>
             </div>
 
             {/* Social Proof Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto mt-20">
               {[
-                { number: "500K+", label: "Patients treated" },
-                { number: "4.9★", label: "Avg rating" },
-                { number: "&lt;5min", label: "Avg wait time" },
-                { number: "$0-79", label: "Typical cost" }
+                { number: "500K+", label: "Patients treated", color: "text-primary" },
+                { number: "4.9★", label: "Average rating", color: "text-yellow-500" },
+                { number: "<5min", label: "Average wait", color: "text-green-600" },
+                { number: "$0-79", label: "Typical cost", color: "text-blue-600" }
               ].map((stat) => (
-                <Card key={stat.label} className="p-6 text-center border-2">
-                  <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stat.number}</div>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                </Card>
+                <div key={stat.label} className="text-center">
+                  <div className={`text-5xl md:text-6xl font-bold ${stat.color} mb-3`}>{stat.number}</div>
+                  <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Features Grid */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <div className="text-center mb-16">
-              <h2 className="mb-4">Everything You Need</h2>
-              <p className="text-xl text-muted-foreground">
-                Comprehensive features for complete healthcare management
+        {/* Features Grid - Modern & Clean */}
+        <section className="section-padding bg-[hsl(var(--soft-blue))]">
+          <div className="container-modern">
+            <div className="text-center mb-20">
+              <h2 className="mb-6 font-display">Everything You Need in One Place</h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-light">
+                Comprehensive healthcare platform built for modern patients
               </p>
             </div>
-
+            
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {features.map((feature) => (
-                <Card key={feature.title} className="p-6 hover:shadow-xl transition-shadow">
-                  <feature.icon className="h-10 w-10 text-primary mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground mb-4">{feature.description}</p>
-                  <ul className="space-y-2">
+                <div key={feature.title} className="card-modern group">
+                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <feature.icon className="h-7 w-7 text-primary" strokeWidth={2} />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 font-display">{feature.title}</h3>
+                  <p className="text-muted-foreground mb-6 leading-relaxed">{feature.description}</p>
+                  <ul className="space-y-2.5">
                     {feature.details.map((detail) => (
-                      <li key={detail} className="text-sm text-muted-foreground flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                        {detail}
+                      <li key={detail} className="flex items-center gap-2.5 text-sm">
+                        <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                        </div>
+                        <span className="text-foreground">{detail}</span>
                       </li>
                     ))}
                   </ul>
-                </Card>
+                </div>
               ))}
             </div>
           </div>
