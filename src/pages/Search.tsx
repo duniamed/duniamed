@@ -26,7 +26,10 @@ interface Specialist {
   consultation_fee_max: number;
   currency: string;
   is_accepting_patients: boolean;
+  is_online: boolean;
   verification_status: string;
+  video_consultation_enabled: boolean;
+  in_person_enabled: boolean;
   profiles: {
     first_name: string;
     last_name: string;
@@ -74,7 +77,7 @@ function SearchContent() {
           city
         )
       `)
-      .eq('verification_status', 'verified')
+      .in('verification_status', ['verified', 'pending']) // Show pending for testing
       .eq('is_accepting_patients', true);
 
     if (searchQuery) {
@@ -272,16 +275,23 @@ function SearchContent() {
                             <div className="h-2 w-2 rounded-full bg-white animate-pulse" />
                           </div>
                         )}
-                      </div>
-                      <div className="flex-1">
-                        <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                          Dr. {specialist.profiles?.first_name} {specialist.profiles?.last_name}
-                        </CardTitle>
-                        <CardDescription className="flex items-center gap-1 text-xs">
-                          <MapPin className="h-3 w-3" />
-                          {specialist.profiles?.city}, {specialist.profiles?.country}
-                        </CardDescription>
-                      </div>
+                       </div>
+                       <div className="flex-1">
+                         <div className="flex items-center gap-2 flex-wrap mb-1">
+                           <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                             Dr. {specialist.profiles?.first_name} {specialist.profiles?.last_name}
+                           </CardTitle>
+                           {specialist.is_online && (
+                             <Badge variant="default" className="bg-green-500 hover:bg-green-600 text-white text-xs">
+                               Online Now
+                             </Badge>
+                           )}
+                         </div>
+                         <CardDescription className="flex items-center gap-1 text-xs">
+                           <MapPin className="h-3 w-3" />
+                           {specialist.profiles?.city}, {specialist.profiles?.country}
+                         </CardDescription>
+                       </div>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">

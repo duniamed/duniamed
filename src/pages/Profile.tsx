@@ -190,9 +190,11 @@ function ProfileContent() {
                   )}
                   
                   {profile?.role === 'patient' && (
-                    <p className="text-sm text-muted-foreground">
-                      Use the forms below to update your patient information
-                    </p>
+                    <Button asChild className="flex-1">
+                      <a href="/profile/edit">
+                        Edit Patient Profile
+                      </a>
+                    </Button>
                   )}
                 </div>
               </div>

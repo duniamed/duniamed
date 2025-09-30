@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_assistant_sessions: {
+        Row: {
+          ai_interactions: Json | null
+          completed_at: string | null
+          context: Json | null
+          created_at: string | null
+          id: string
+          outcome: Json | null
+          session_type: string
+          user_id: string
+        }
+        Insert: {
+          ai_interactions?: Json | null
+          completed_at?: string | null
+          context?: Json | null
+          created_at?: string | null
+          id?: string
+          outcome?: Json | null
+          session_type: string
+          user_id: string
+        }
+        Update: {
+          ai_interactions?: Json | null
+          completed_at?: string | null
+          context?: Json | null
+          created_at?: string | null
+          id?: string
+          outcome?: Json | null
+          session_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       appointments: {
         Row: {
           cancellation_reason: string | null
@@ -264,8 +297,13 @@ export type Database = {
       }
       clinics: {
         Row: {
+          accessibility_features: string[] | null
           address_line1: string | null
           address_line2: string | null
+          after_hours_available: boolean | null
+          booking_policies: Json | null
+          cancellation_policy: string | null
+          certifications: string[] | null
           city: string | null
           clinic_type: Database["public"]["Enums"]["clinic_type"]
           country: string | null
@@ -273,16 +311,22 @@ export type Database = {
           created_by: string
           description: string | null
           email: string | null
+          emergency_services: boolean | null
+          equipment_available: string[] | null
           id: string
+          insurance_accepted: string[] | null
           is_active: boolean | null
+          languages_supported: string[] | null
           latitude: number | null
           license_number: string | null
           logo_url: string | null
           longitude: number | null
           name: string
           operating_hours: Json | null
+          parking_info: string | null
           phone: string | null
           postal_code: string | null
+          services_offered: string[] | null
           specialties: string[] | null
           state: string | null
           stripe_customer_id: string | null
@@ -293,8 +337,13 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          accessibility_features?: string[] | null
           address_line1?: string | null
           address_line2?: string | null
+          after_hours_available?: boolean | null
+          booking_policies?: Json | null
+          cancellation_policy?: string | null
+          certifications?: string[] | null
           city?: string | null
           clinic_type: Database["public"]["Enums"]["clinic_type"]
           country?: string | null
@@ -302,16 +351,22 @@ export type Database = {
           created_by: string
           description?: string | null
           email?: string | null
+          emergency_services?: boolean | null
+          equipment_available?: string[] | null
           id?: string
+          insurance_accepted?: string[] | null
           is_active?: boolean | null
+          languages_supported?: string[] | null
           latitude?: number | null
           license_number?: string | null
           logo_url?: string | null
           longitude?: number | null
           name: string
           operating_hours?: Json | null
+          parking_info?: string | null
           phone?: string | null
           postal_code?: string | null
+          services_offered?: string[] | null
           specialties?: string[] | null
           state?: string | null
           stripe_customer_id?: string | null
@@ -322,8 +377,13 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          accessibility_features?: string[] | null
           address_line1?: string | null
           address_line2?: string | null
+          after_hours_available?: boolean | null
+          booking_policies?: Json | null
+          cancellation_policy?: string | null
+          certifications?: string[] | null
           city?: string | null
           clinic_type?: Database["public"]["Enums"]["clinic_type"]
           country?: string | null
@@ -331,16 +391,22 @@ export type Database = {
           created_by?: string
           description?: string | null
           email?: string | null
+          emergency_services?: boolean | null
+          equipment_available?: string[] | null
           id?: string
+          insurance_accepted?: string[] | null
           is_active?: boolean | null
+          languages_supported?: string[] | null
           latitude?: number | null
           license_number?: string | null
           logo_url?: string | null
           longitude?: number | null
           name?: string
           operating_hours?: Json | null
+          parking_info?: string | null
           phone?: string | null
           postal_code?: string | null
+          services_offered?: string[] | null
           specialties?: string[] | null
           state?: string | null
           stripe_customer_id?: string | null
@@ -828,19 +894,32 @@ export type Database = {
         Row: {
           address_line1: string | null
           address_line2: string | null
+          allergies: string[] | null
           avatar_url: string | null
+          blood_type: string | null
+          chronic_conditions: string[] | null
           city: string | null
+          communication_preferences: Json | null
           country: string | null
           created_at: string | null
+          current_medications: string[] | null
           date_of_birth: string | null
           email: string
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          emergency_contact_relationship: string | null
           first_name: string
           gender: string | null
           id: string
+          insurance_group: string | null
+          insurance_id: string | null
+          insurance_provider: string | null
           language_preference: string | null
           last_name: string
           phone: string | null
           postal_code: string | null
+          preferred_language: string | null
+          preferred_pharmacy: string | null
           role: Database["public"]["Enums"]["user_role"]
           state: string | null
           timezone: string | null
@@ -851,19 +930,32 @@ export type Database = {
         Insert: {
           address_line1?: string | null
           address_line2?: string | null
+          allergies?: string[] | null
           avatar_url?: string | null
+          blood_type?: string | null
+          chronic_conditions?: string[] | null
           city?: string | null
+          communication_preferences?: Json | null
           country?: string | null
           created_at?: string | null
+          current_medications?: string[] | null
           date_of_birth?: string | null
           email: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          emergency_contact_relationship?: string | null
           first_name: string
           gender?: string | null
           id: string
+          insurance_group?: string | null
+          insurance_id?: string | null
+          insurance_provider?: string | null
           language_preference?: string | null
           last_name: string
           phone?: string | null
           postal_code?: string | null
+          preferred_language?: string | null
+          preferred_pharmacy?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           state?: string | null
           timezone?: string | null
@@ -874,19 +966,32 @@ export type Database = {
         Update: {
           address_line1?: string | null
           address_line2?: string | null
+          allergies?: string[] | null
           avatar_url?: string | null
+          blood_type?: string | null
+          chronic_conditions?: string[] | null
           city?: string | null
+          communication_preferences?: Json | null
           country?: string | null
           created_at?: string | null
+          current_medications?: string[] | null
           date_of_birth?: string | null
           email?: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          emergency_contact_relationship?: string | null
           first_name?: string
           gender?: string | null
           id?: string
+          insurance_group?: string | null
+          insurance_id?: string | null
+          insurance_provider?: string | null
           language_preference?: string | null
           last_name?: string
           phone?: string | null
           postal_code?: string | null
+          preferred_language?: string | null
+          preferred_pharmacy?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           state?: string | null
           timezone?: string | null
@@ -1036,6 +1141,61 @@ export type Database = {
           },
         ]
       }
+      specialist_clinics: {
+        Row: {
+          clinic_id: string
+          id: string
+          is_active: boolean | null
+          joined_at: string | null
+          permissions: Json | null
+          revenue_share_percentage: number | null
+          role: string
+          specialist_id: string
+        }
+        Insert: {
+          clinic_id: string
+          id?: string
+          is_active?: boolean | null
+          joined_at?: string | null
+          permissions?: Json | null
+          revenue_share_percentage?: number | null
+          role?: string
+          specialist_id: string
+        }
+        Update: {
+          clinic_id?: string
+          id?: string
+          is_active?: boolean | null
+          joined_at?: string | null
+          permissions?: Json | null
+          revenue_share_percentage?: number | null
+          role?: string
+          specialist_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "specialist_clinics_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "specialist_clinics_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "specialist_clinics_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       specialist_time_off: {
         Row: {
           created_at: string | null
@@ -1073,15 +1233,23 @@ export type Database = {
       }
       specialists: {
         Row: {
+          accepts_new_patients_date: string | null
           average_rating: number | null
+          awards: string[] | null
           bio: string | null
+          board_certifications: string[] | null
+          clinical_focus: string[] | null
           consultation_fee_max: number | null
           consultation_fee_min: number | null
           created_at: string | null
           currency: string | null
+          education: Json | null
+          emergency_availability: boolean | null
           graduation_year: number | null
+          hospital_affiliations: string[] | null
           id: string
           in_person_enabled: boolean | null
+          insurance_accepted: string[] | null
           is_accepting_patients: boolean | null
           is_online: boolean | null
           languages: string[] | null
@@ -1090,9 +1258,15 @@ export type Database = {
           license_number: string
           license_state: string | null
           medical_school: string | null
+          personal_statement: string | null
+          practice_hours: Json | null
+          professional_memberships: string[] | null
+          publications: string[] | null
+          research_interests: string[] | null
           specialty: string[]
           stripe_account_id: string | null
           sub_specialty: string[] | null
+          telemedicine_platforms: string[] | null
           total_consultations: number | null
           total_reviews: number | null
           updated_at: string | null
@@ -1103,18 +1277,27 @@ export type Database = {
           verified_at: string | null
           verified_by: string | null
           video_consultation_enabled: boolean | null
+          virtual_clinic_id: string | null
           years_experience: number | null
         }
         Insert: {
+          accepts_new_patients_date?: string | null
           average_rating?: number | null
+          awards?: string[] | null
           bio?: string | null
+          board_certifications?: string[] | null
+          clinical_focus?: string[] | null
           consultation_fee_max?: number | null
           consultation_fee_min?: number | null
           created_at?: string | null
           currency?: string | null
+          education?: Json | null
+          emergency_availability?: boolean | null
           graduation_year?: number | null
+          hospital_affiliations?: string[] | null
           id?: string
           in_person_enabled?: boolean | null
+          insurance_accepted?: string[] | null
           is_accepting_patients?: boolean | null
           is_online?: boolean | null
           languages?: string[] | null
@@ -1123,9 +1306,15 @@ export type Database = {
           license_number: string
           license_state?: string | null
           medical_school?: string | null
+          personal_statement?: string | null
+          practice_hours?: Json | null
+          professional_memberships?: string[] | null
+          publications?: string[] | null
+          research_interests?: string[] | null
           specialty: string[]
           stripe_account_id?: string | null
           sub_specialty?: string[] | null
+          telemedicine_platforms?: string[] | null
           total_consultations?: number | null
           total_reviews?: number | null
           updated_at?: string | null
@@ -1136,18 +1325,27 @@ export type Database = {
           verified_at?: string | null
           verified_by?: string | null
           video_consultation_enabled?: boolean | null
+          virtual_clinic_id?: string | null
           years_experience?: number | null
         }
         Update: {
+          accepts_new_patients_date?: string | null
           average_rating?: number | null
+          awards?: string[] | null
           bio?: string | null
+          board_certifications?: string[] | null
+          clinical_focus?: string[] | null
           consultation_fee_max?: number | null
           consultation_fee_min?: number | null
           created_at?: string | null
           currency?: string | null
+          education?: Json | null
+          emergency_availability?: boolean | null
           graduation_year?: number | null
+          hospital_affiliations?: string[] | null
           id?: string
           in_person_enabled?: boolean | null
+          insurance_accepted?: string[] | null
           is_accepting_patients?: boolean | null
           is_online?: boolean | null
           languages?: string[] | null
@@ -1156,9 +1354,15 @@ export type Database = {
           license_number?: string
           license_state?: string | null
           medical_school?: string | null
+          personal_statement?: string | null
+          practice_hours?: Json | null
+          professional_memberships?: string[] | null
+          publications?: string[] | null
+          research_interests?: string[] | null
           specialty?: string[]
           stripe_account_id?: string | null
           sub_specialty?: string[] | null
+          telemedicine_platforms?: string[] | null
           total_consultations?: number | null
           total_reviews?: number | null
           updated_at?: string | null
@@ -1169,6 +1373,7 @@ export type Database = {
           verified_at?: string | null
           verified_by?: string | null
           video_consultation_enabled?: boolean | null
+          virtual_clinic_id?: string | null
           years_experience?: number | null
         }
         Relationships: [
@@ -1186,7 +1391,54 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "specialists_virtual_clinic_id_fkey"
+            columns: ["virtual_clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "specialists_virtual_clinic_id_fkey"
+            columns: ["virtual_clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      symptom_checker_sessions: {
+        Row: {
+          ai_assessment: Json | null
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          recommended_specialty: string | null
+          symptoms: Json
+          urgency_level: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_assessment?: Json | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          recommended_specialty?: string | null
+          symptoms: Json
+          urgency_level?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_assessment?: Json | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          recommended_specialty?: string | null
+          symptoms?: Json
+          urgency_level?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       user_sessions: {
         Row: {
