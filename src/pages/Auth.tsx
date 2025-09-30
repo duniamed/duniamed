@@ -51,10 +51,13 @@ export default function Auth() {
       confirmPassword: '',
       agreeToTerms: false,
       dataProcessingConsent: false,
-      jurisdiction: undefined,
+      jurisdiction: '' as any,
       hipaaAcknowledgment: false,
       specialties: [],
       clinicSpecialties: [],
+      specialistType: '',
+      clinicType: '',
+      gdprArticle9Basis: '',
     },
   });
 
@@ -273,7 +276,7 @@ export default function Auth() {
                       <div className="space-y-2">
                         <Label htmlFor="role">I am a...</Label>
                         <Select
-                          value={signupForm.watch('role')}
+                          value={signupForm.watch('role') || 'patient'}
                           onValueChange={(value) => signupForm.setValue('role', value as any)}
                         >
                           <SelectTrigger>
@@ -359,7 +362,7 @@ export default function Auth() {
                       <div className="space-y-2">
                         <Label htmlFor="jurisdiction">Primary Jurisdiction</Label>
                         <Select
-                          value={signupForm.watch('jurisdiction')}
+                          value={signupForm.watch('jurisdiction') || ''}
                           onValueChange={(value) => signupForm.setValue('jurisdiction', value as any)}
                         >
                           <SelectTrigger>
