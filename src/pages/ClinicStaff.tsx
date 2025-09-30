@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,7 +27,7 @@ interface StaffMember {
 
 export default function ClinicStaff() {
   return (
-    <ProtectedRoute allowedRoles={['clinic_admin']}>
+    <ProtectedRoute>
       <ClinicStaffContent />
     </ProtectedRoute>
   );
@@ -158,25 +158,18 @@ function ClinicStaffContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold">Staff Management</h1>
-            <p className="text-muted-foreground">Manage your clinic's staff members</p>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <UserPlus className="h-5 w-5" />
-                Invite Staff Member
-              </CardTitle>
-              <CardDescription>Add new team members to your clinic</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
+    <DashboardLayout title="Staff Management" description="Manage your clinic's staff members">
+      <div className="space-y-6 max-w-4xl">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <UserPlus className="h-5 w-5" />
+              Invite Staff Member
+            </CardTitle>
+            <CardDescription>Add new team members to your clinic</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-3">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
                   <div className="relative">
@@ -265,7 +258,6 @@ function ClinicStaffContent() {
             </CardContent>
           </Card>
         </div>
-      </main>
-    </div>
-  );
-}
+      </DashboardLayout>
+    );
+  }

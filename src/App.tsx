@@ -28,13 +28,11 @@ import BookAppointment from "./pages/BookAppointment";
 import Appointments from "./pages/Appointments";
 import AppointmentDetails from "./pages/AppointmentDetails";
 import SpecialistDashboard from "./pages/SpecialistDashboard";
-import SpecialistAvailability from "./pages/SpecialistAvailability";
 import MedicalRecords from "./pages/MedicalRecords";
 import Messages from "./pages/Messages";
 import VideoConsultation from "./pages/VideoConsultation";
 import InstantConsultation from "./pages/InstantConsultation";
 import ClinicDashboard from "./pages/ClinicDashboard";
-import ClinicStaff from "./pages/ClinicStaff";
 import ClinicSettings from "./pages/ClinicSettings";
 import SearchClinics from "./pages/SearchClinics";
 import Prescriptions from "./pages/Prescriptions";
@@ -56,6 +54,9 @@ import SpecialistProfileEdit from "./pages/SpecialistProfileEdit";
 import ClinicProfileEdit from "./pages/ClinicProfileEdit";
 import CreateVirtualClinic from "./pages/CreateVirtualClinic";
 import PatientProfileEdit from "./pages/PatientProfileEdit";
+import AISymptomChecker from "./pages/AISymptomChecker";
+import SpecialistAvailability from "./pages/SpecialistAvailability";
+import ClinicStaff from "./pages/ClinicStaff";
 
 const queryClient = new QueryClient();
 
@@ -106,6 +107,7 @@ const App = () => (
             <Route path="/patient/family-members" element={<FamilyMembers />} />
             <Route path="/patient/favorites" element={<Favorites />} />
             <Route path="/patient/notifications" element={<Notifications />} />
+            <Route path="/patient/symptom-checker" element={<AISymptomChecker />} />
             
             {/* SPECIALIST PORTAL */}
             <Route path="/specialist/dashboard" element={<SpecialistDashboard />} />

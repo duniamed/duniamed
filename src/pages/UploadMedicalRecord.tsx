@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,7 +14,7 @@ import { Upload, FileText } from 'lucide-react';
 
 export default function UploadMedicalRecord() {
   return (
-    <ProtectedRoute allowedRoles={['patient']}>
+    <ProtectedRoute>
       <UploadContent />
     </ProtectedRoute>
   );
@@ -130,23 +130,21 @@ function UploadContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16 max-w-2xl">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Upload className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <CardTitle>Upload Medical Record</CardTitle>
-                <CardDescription>Upload lab results, prescriptions, or other medical documents</CardDescription>
-              </div>
+    <DashboardLayout title="Upload Medical Record" description="Upload lab results, prescriptions, or other medical documents">
+      <Card className="max-w-2xl">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Upload className="h-6 w-6 text-primary" />
             </div>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <CardTitle>Upload Medical Record</CardTitle>
+              <CardDescription>Upload lab results, prescriptions, or other medical documents</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="file-upload">File *</Label>
                 <div className="flex items-center gap-4">
@@ -223,7 +221,6 @@ function UploadContent() {
             </form>
           </CardContent>
         </Card>
-      </main>
-    </div>
-  );
-}
+      </DashboardLayout>
+    );
+  }

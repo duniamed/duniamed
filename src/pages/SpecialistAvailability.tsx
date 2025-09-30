@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -22,7 +22,7 @@ const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 
 
 export default function SpecialistAvailability() {
   return (
-    <ProtectedRoute allowedRoles={['specialist']}>
+    <ProtectedRoute>
       <AvailabilityContent />
     </ProtectedRoute>
   );
@@ -146,18 +146,16 @@ function AvailabilityContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
-        <Card>
-          <CardHeader>
-            <CardTitle>Manage Availability</CardTitle>
-            <CardDescription>
-              Set your weekly availability for patient consultations
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
+    <DashboardLayout title="Manage Availability" description="Set your weekly availability for patient consultations">
+      <Card className="max-w-4xl">
+        <CardHeader>
+          <CardTitle>Weekly Schedule</CardTitle>
+          <CardDescription>
+            Set your weekly availability for patient consultations
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
               {DAYS.map((day, index) => {
                 const slot = availability.find(s => s.day_of_week === index);
                 const isActive = slot?.is_active || false;
@@ -200,7 +198,6 @@ function AvailabilityContent() {
             </div>
           </CardContent>
         </Card>
-      </main>
-    </div>
-  );
-}
+      </DashboardLayout>
+    );
+  }

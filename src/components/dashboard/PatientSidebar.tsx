@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Calendar, FileText, CreditCard, MessageSquare, Users, Heart, Bell, Settings, User, Upload, Activity, ShieldCheck } from 'lucide-react';
+import { Home, Calendar, FileText, CreditCard, MessageSquare, Users, Heart, Bell, Settings, User, Upload, Search, Pill, Stethoscope } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -14,11 +14,12 @@ import {
 
 const patientMenuItems = [
   { title: 'Dashboard', url: '/patient/dashboard', icon: Home },
-  { title: 'Find a Doctor', url: '/search/specialists', icon: Activity },
+  { title: 'Symptom Checker', url: '/patient/symptom-checker', icon: Stethoscope },
+  { title: 'Find Specialists', url: '/search/specialists', icon: Search },
   { title: 'Appointments', url: '/patient/appointments', icon: Calendar },
+  { title: 'Prescriptions', url: '/patient/prescriptions', icon: Pill },
   { title: 'Medical Records', url: '/patient/medical-records', icon: FileText },
   { title: 'Upload Records', url: '/patient/medical-records/upload', icon: Upload },
-  { title: 'Prescriptions', url: '/patient/prescriptions', icon: ShieldCheck },
   { title: 'Messages', url: '/patient/messages', icon: MessageSquare },
   { title: 'Payments', url: '/patient/payments', icon: CreditCard },
   { title: 'Family Members', url: '/patient/family-members', icon: Users },
