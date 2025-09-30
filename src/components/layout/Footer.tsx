@@ -10,15 +10,15 @@ export default function Footer() {
     ],
     Company: [
       { name: "About Us", href: "/about" },
-      { name: "Careers", href: "/careers" },
+      { name: "Careers", href: "/about/careers" },
       { name: "Blog", href: "/blog" },
       { name: "Contact", href: "/contact" },
     ],
     Legal: [
-      { name: "Privacy Policy", href: "/privacy" },
-      { name: "Terms of Service", href: "/terms" },
-      { name: "HIPAA Compliance", href: "/hipaa" },
-      { name: "Cookie Policy", href: "/cookies" },
+      { name: "Privacy Policy", href: "/legal/privacy" },
+      { name: "Terms of Service", href: "/legal/terms" },
+      { name: "HIPAA Compliance", href: "/legal/hipaa" },
+      { name: "Cookie Policy", href: "/legal/cookies" },
     ],
   };
 

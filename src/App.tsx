@@ -4,7 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
-import Home from "./pages/Home";
+import { Navigate } from "react-router-dom";
+import Home from "./pages/HomePage";
 import HowItWorks from "./pages/HowItWorks";
 import ForPatients from "./pages/ForPatients";
 import ForSpecialists from "./pages/ForSpecialists";
@@ -60,51 +61,108 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-            <Route path="/" element={<Home />} />
+            {/* ROOT REDIRECT */}
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            
+            {/* PUBLIC PAGES */}
+            <Route path="/home" element={<Home />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/for-patients" element={<ForPatients />} />
             <Route path="/for-specialists" element={<ForSpecialists />} />
             <Route path="/for-clinics" element={<ForClinics />} />
             <Route path="/about" element={<About />} />
-            <Route path="/careers" element={<Careers />} />
+            <Route path="/about/careers" element={<Careers />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/hipaa" element={<HIPAACompliance />} />
-            <Route path="/cookies" element={<CookiePolicy />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/specialist/:id" element={<SpecialistProfile />} />
-            <Route path="/book/:id" element={<BookAppointment />} />
-            <Route path="/appointments" element={<Appointments />} />
-            <Route path="/appointments/:id" element={<AppointmentDetails />} />
-            <Route path="/specialist/dashboard" element={<SpecialistDashboard />} />
-            <Route path="/specialist/availability" element={<SpecialistAvailability />} />
-            <Route path="/prescriptions" element={<Prescriptions />} />
-            <Route path="/prescriptions/create/:appointmentId" element={<CreatePrescription />} />
-            <Route path="/reviews/create/:appointmentId" element={<CreateReview />} />
-            <Route path="/soap-notes/create/:appointmentId" element={<CreateSOAPNote />} />
-            <Route path="/payments" element={<Payments />} />
-            <Route path="/family-members" element={<FamilyMembers />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/specialist/time-off" element={<SpecialistTimeOff />} />
-            <Route path="/medical-records" element={<MedicalRecords />} />
-            <Route path="/medical-records/upload" element={<UploadMedicalRecord />} />
-            <Route path="/favorites" element={<Favorites />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/admin" element={<AdminPanel />} />
-            <Route path="/audit-logs" element={<AuditLogs />} />
-            <Route path="/sessions" element={<SessionManagement />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/consultation/:appointmentId" element={<VideoConsultation />} />
-            <Route path="/clinic/dashboard" element={<ClinicDashboard />} />
-            <Route path="/clinic/staff" element={<ClinicStaff />} />
-            <Route path="/clinic/settings" element={<ClinicSettings />} />
+            
+            {/* SEARCH */}
+            <Route path="/search" element={<Navigate to="/search/specialists" replace />} />
+            <Route path="/search/specialists" element={<Search />} />
             <Route path="/search/clinics" element={<SearchClinics />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/specialists/:id" element={<SpecialistProfile />} />
+            <Route path="/book/:id" element={<BookAppointment />} />
+            
+            {/* AUTH */}
+            <Route path="/auth" element={<Auth />} />
+            
+            {/* PATIENT PORTAL */}
+            <Route path="/patient/dashboard" element={<Dashboard />} />
+            <Route path="/patient/profile" element={<Profile />} />
+            <Route path="/patient/appointments" element={<Appointments />} />
+            <Route path="/patient/appointments/:id" element={<AppointmentDetails />} />
+            <Route path="/patient/prescriptions" element={<Prescriptions />} />
+            <Route path="/patient/medical-records" element={<MedicalRecords />} />
+            <Route path="/patient/medical-records/upload" element={<UploadMedicalRecord />} />
+            <Route path="/patient/messages" element={<Messages />} />
+            <Route path="/patient/payments" element={<Payments />} />
+            <Route path="/patient/family-members" element={<FamilyMembers />} />
+            <Route path="/patient/favorites" element={<Favorites />} />
+            <Route path="/patient/notifications" element={<Notifications />} />
+            
+            {/* SPECIALIST PORTAL */}
+            <Route path="/specialist/dashboard" element={<SpecialistDashboard />} />
+            <Route path="/specialist/profile" element={<Profile />} />
+            <Route path="/specialist/availability" element={<SpecialistAvailability />} />
+            <Route path="/specialist/time-off" element={<SpecialistTimeOff />} />
+            <Route path="/specialist/appointments" element={<Appointments />} />
+            <Route path="/specialist/appointments/:id" element={<AppointmentDetails />} />
+            <Route path="/specialist/prescriptions/create/:appointmentId" element={<CreatePrescription />} />
+            <Route path="/specialist/soap-notes/create/:appointmentId" element={<CreateSOAPNote />} />
+            <Route path="/specialist/reviews/create/:appointmentId" element={<CreateReview />} />
+            <Route path="/specialist/messages" element={<Messages />} />
+            <Route path="/specialist/payments" element={<Payments />} />
+            <Route path="/specialist/notifications" element={<Notifications />} />
+            <Route path="/specialist/analytics" element={<Analytics />} />
+            
+            {/* CLINIC PORTAL */}
+            <Route path="/clinic/dashboard" element={<ClinicDashboard />} />
+            <Route path="/clinic/settings" element={<ClinicSettings />} />
+            <Route path="/clinic/staff" element={<ClinicStaff />} />
+            <Route path="/clinic/appointments" element={<Appointments />} />
+            <Route path="/clinic/appointments/:id" element={<AppointmentDetails />} />
+            <Route path="/clinic/messages" element={<Messages />} />
+            <Route path="/clinic/notifications" element={<Notifications />} />
+            <Route path="/clinic/analytics" element={<Analytics />} />
+            
+            {/* SHARED FEATURES */}
+            <Route path="/consultation/:appointmentId" element={<VideoConsultation />} />
+            
+            {/* ADMIN */}
+            <Route path="/admin/dashboard" element={<AdminPanel />} />
+            <Route path="/admin/audit-logs" element={<AuditLogs />} />
+            <Route path="/admin/sessions" element={<SessionManagement />} />
+            
+            {/* LEGAL */}
+            <Route path="/legal/privacy" element={<PrivacyPolicy />} />
+            <Route path="/legal/terms" element={<Terms />} />
+            <Route path="/legal/hipaa" element={<HIPAACompliance />} />
+            <Route path="/legal/cookies" element={<CookiePolicy />} />
+            
+            {/* LEGACY REDIRECTS */}
+            <Route path="/dashboard" element={<Navigate to="/patient/dashboard" replace />} />
+            <Route path="/profile" element={<Navigate to="/patient/profile" replace />} />
+            <Route path="/appointments" element={<Navigate to="/patient/appointments" replace />} />
+            <Route path="/appointments/:id" element={<Navigate to="/patient/appointments/:id" replace />} />
+            <Route path="/prescriptions" element={<Navigate to="/patient/prescriptions" replace />} />
+            <Route path="/medical-records" element={<Navigate to="/patient/medical-records" replace />} />
+            <Route path="/medical-records/upload" element={<Navigate to="/patient/medical-records/upload" replace />} />
+            <Route path="/messages" element={<Navigate to="/patient/messages" replace />} />
+            <Route path="/payments" element={<Navigate to="/patient/payments" replace />} />
+            <Route path="/family-members" element={<Navigate to="/patient/family-members" replace />} />
+            <Route path="/favorites" element={<Navigate to="/patient/favorites" replace />} />
+            <Route path="/notifications" element={<Navigate to="/patient/notifications" replace />} />
+            <Route path="/analytics" element={<Navigate to="/specialist/analytics" replace />} />
+            <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="/audit-logs" element={<Navigate to="/admin/audit-logs" replace />} />
+            <Route path="/sessions" element={<Navigate to="/admin/sessions" replace />} />
+            <Route path="/privacy" element={<Navigate to="/legal/privacy" replace />} />
+            <Route path="/terms" element={<Navigate to="/legal/terms" replace />} />
+            <Route path="/hipaa" element={<Navigate to="/legal/hipaa" replace />} />
+            <Route path="/cookies" element={<Navigate to="/legal/cookies" replace />} />
+            <Route path="/careers" element={<Navigate to="/about/careers" replace />} />
+            <Route path="/specialist/:id" element={<Navigate to="/specialists/:id" replace />} />
+            
+            {/* 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

@@ -32,7 +32,7 @@ export default function Header() {
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/home" className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold">
                 D
               </div>
@@ -71,13 +71,31 @@ export default function Header() {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link to="/dashboard" className="cursor-pointer">
+                    <Link 
+                      to={
+                        profile.role === 'specialist' 
+                          ? '/specialist/dashboard' 
+                          : profile.role === 'clinic_admin' 
+                          ? '/clinic/dashboard' 
+                          : '/patient/dashboard'
+                      } 
+                      className="cursor-pointer"
+                    >
                       <User className="mr-2 h-4 w-4" />
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/profile" className="cursor-pointer">
+                    <Link 
+                      to={
+                        profile.role === 'specialist' 
+                          ? '/specialist/profile' 
+                          : profile.role === 'clinic_admin' 
+                          ? '/clinic/settings' 
+                          : '/patient/profile'
+                      } 
+                      className="cursor-pointer"
+                    >
                       <User className="mr-2 h-4 w-4" />
                       Profile Settings
                     </Link>
@@ -132,13 +150,31 @@ export default function Header() {
               {user && profile ? (
                 <>
                   <Button variant="outline" asChild className="w-full">
-                    <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                    <Link 
+                      to={
+                        profile.role === 'specialist' 
+                          ? '/specialist/dashboard' 
+                          : profile.role === 'clinic_admin' 
+                          ? '/clinic/dashboard' 
+                          : '/patient/dashboard'
+                      } 
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
                       <User className="mr-2 h-4 w-4" />
                       Dashboard
                     </Link>
                   </Button>
                   <Button variant="outline" asChild className="w-full">
-                    <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
+                    <Link 
+                      to={
+                        profile.role === 'specialist' 
+                          ? '/specialist/profile' 
+                          : profile.role === 'clinic_admin' 
+                          ? '/clinic/settings' 
+                          : '/patient/profile'
+                      } 
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
                       <User className="mr-2 h-4 w-4" />
                       Profile
                     </Link>
