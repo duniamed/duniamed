@@ -32,41 +32,101 @@ function NotificationsContent() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
-    // For now, we'll show mock notifications since there's no notifications table yet
-    // In production, you would fetch from a real notifications table
-    const mockNotifications: Notification[] = [
-      {
-        id: '1',
-        type: 'appointment',
-        title: 'Upcoming Appointment',
-        message: 'You have an appointment with Dr. Smith tomorrow at 2:00 PM',
-        created_at: new Date().toISOString(),
-        read: false,
-        link: '/appointments',
-      },
-      {
-        id: '2',
-        type: 'message',
-        title: 'New Message',
-        message: 'Dr. Johnson sent you a message',
-        created_at: new Date(Date.now() - 3600000).toISOString(),
-        read: false,
-        link: '/messages',
-      },
-      {
-        id: '3',
-        type: 'prescription',
-        title: 'Prescription Ready',
-        message: 'Your prescription is ready for pickup',
-        created_at: new Date(Date.now() - 86400000).toISOString(),
-        read: true,
-        link: '/prescriptions',
-      },
-    ];
-    
-    setNotifications(mockNotifications);
-    setLoading(false);
+    fetchRealNotifications();
+    setupRealtimeSubscriptions();
   }, [user]);
+
+  const fetchRealNotifications = async () => {
+    if (!user) return;
+
+    const notifs: Notification[] = [];
+
+    // Fetch recent appointments for notifications
+    const { data: appointments } = await supabase
+      .from('appointments')
+      .select('id, scheduled_at, status, specialists(profiles:user_id(first_name, last_name))')
+      .or(`patient_id.eq.${user.id},specialist_id.in.(select id from specialists where user_id='${user.id}')`)
+      .gte('scheduled_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+      .order('scheduled_at', { ascending: false })
+      .limit(10);
+
+    if (appointments) {
+      appointments.forEach((apt: any) => {
+        notifs.push({
+          id: `apt-${apt.id}`,
+          type: 'appointment',
+          title: apt.status === 'confirmed' ? 'Appointment Confirmed' : 'Appointment Update',
+          message: `Your appointment ${apt.status === 'confirmed' ? 'with' : 'status:'} Dr. ${apt.specialists?.profiles?.first_name} ${apt.specialists?.profiles?.last_name} - ${apt.status}`,
+          created_at: apt.scheduled_at,
+          read: false,
+          link: `/appointments/${apt.id}`,
+        });
+      });
+    }
+
+    // Fetch unread messages
+    const { data: messages } = await supabase
+      .from('messages')
+      .select('id, content, created_at, sender_id, sender:sender_id(first_name, last_name)')
+      .eq('recipient_id', user.id)
+      .is('read_at', null)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    if (messages) {
+      messages.forEach((msg: any) => {
+        notifs.push({
+          id: `msg-${msg.id}`,
+          type: 'message',
+          title: 'New Message',
+          message: msg.content.substring(0, 100),
+          created_at: msg.created_at,
+          read: false,
+          link: '/messages',
+        });
+      });
+    }
+
+    setNotifications(notifs.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
+    setLoading(false);
+  };
+
+  const setupRealtimeSubscriptions = () => {
+    if (!user) return;
+
+    const appointmentsChannel = supabase
+      .channel('notifs-appointments')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'appointments',
+          filter: `patient_id=eq.${user.id}`,
+        },
+        () => fetchRealNotifications()
+      )
+      .subscribe();
+
+    const messagesChannel = supabase
+      .channel('notifs-messages')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `recipient_id=eq.${user.id}`,
+        },
+        () => fetchRealNotifications()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(appointmentsChannel);
+      supabase.removeChannel(messagesChannel);
+    };
+  };
 
   const getNotificationIcon = (type: string) => {
     switch (type) {

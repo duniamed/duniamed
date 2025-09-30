@@ -51,8 +51,29 @@ function MessagesContent() {
   useEffect(() => {
     if (selectedConversation) {
       fetchMessages(selectedConversation);
+      
+      // Subscribe to new messages
+      const channel = supabase
+        .channel('messages')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'messages',
+            filter: `or(and(sender_id.eq.${user?.id},recipient_id.eq.${selectedConversation}),and(sender_id.eq.${selectedConversation},recipient_id.eq.${user?.id}))`,
+          },
+          (payload) => {
+            setMessages((current) => [...current, payload.new as Message]);
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
-  }, [selectedConversation]);
+  }, [selectedConversation, user]);
 
   const fetchConversations = async () => {
     if (!user) return;

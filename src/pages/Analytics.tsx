@@ -118,9 +118,23 @@ function AnalyticsContent() {
         value,
       }));
 
+      // Calculate revenue from payments
+      const paymentsQuery = supabase
+        .from('payments')
+        .select('amount, status');
+      
+      if (specialistId) {
+        paymentsQuery.eq('payee_id', specialistId);
+      }
+
+      const { data: paymentsData } = await paymentsQuery;
+      const totalRevenue = paymentsData
+        ?.filter(p => p.status === 'completed')
+        .reduce((sum, p) => sum + Number(p.amount), 0) || 0;
+
       setStats({
         totalAppointments: totalAppointments || 0,
-        totalRevenue: 0, // Would calculate from payments
+        totalRevenue,
         totalPatients: uniquePatients,
         avgRating,
       });
