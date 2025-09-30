@@ -15,7 +15,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['DM Sans', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -49,7 +49,7 @@ export default {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },
-        "soft-blue": "hsl(var(--soft-blue))",
+        "soft-purple": "hsl(var(--soft-purple))",
         "soft-gray": "hsl(var(--soft-gray))",
         card: {
           DEFAULT: "hsl(var(--card))",

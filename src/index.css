@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    /* Medical/Healthcare theme colors */
+    /* Modern Purple theme - Hostinger inspired */
     --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    --foreground: 240 10% 4%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 240 10% 4%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 240 10% 4%;
     
-    /* Primary: Medical blue */
-    --primary: 217 91% 60%;
+    /* Primary: Purple */
+    --primary: 262 83% 58%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 217 91% 75%;
+    --primary-glow: 262 83% 70%;
     
-    /* Secondary: Trust green */
-    --secondary: 152 69% 31%;
+    /* Secondary: Teal accent */
+    --secondary: 174 62% 47%;
     --secondary-foreground: 0 0% 100%;
     
-    /* Accent: Professional teal */
-    --accent: 192 91% 36%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent: Light purple */
+    --accent: 262 90% 96%;
+    --accent-foreground: 262 83% 58%;
     
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
@@ -37,71 +37,71 @@
     /* Modern accent colors */
     --accent-yellow: 54 100% 62%;
     --accent-yellow-foreground: 0 0% 0%;
-    --soft-blue: 214 100% 97%;
+    --soft-purple: 262 90% 96%;
     --soft-gray: 220 14% 96%;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 75%));
-    --gradient-hero: linear-gradient(180deg, hsl(217 91% 97%), hsl(0 0% 100%));
-    --gradient-soft-blue: linear-gradient(180deg, hsl(214 100% 97%), hsl(0 0% 100%));
+    --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 83% 70%));
+    --gradient-hero: linear-gradient(180deg, hsl(262 90% 96%), hsl(0 0% 100%));
+    --gradient-soft-purple: linear-gradient(180deg, hsl(262 90% 96%), hsl(0 0% 100%));
     
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-    --shadow-primary: 0 10px 30px -10px hsl(217 91% 60% / 0.3);
+    --shadow-primary: 0 10px 30px -10px hsl(262 83% 58% / 0.3);
     
-    --sidebar-background: 217 91% 97%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 217 91% 60%;
+    --sidebar-background: 262 90% 97%;
+    --sidebar-foreground: 240 10% 4%;
+    --sidebar-primary: 262 83% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-accent: 262 90% 96%;
+    --sidebar-accent-foreground: 240 10% 4%;
+    --sidebar-border: 262 30% 91%;
+    --sidebar-ring: 262 83% 58%;
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    --card: 222 40% 15%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 40% 15%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
+    --background: 240 10% 4%;
+    --foreground: 0 0% 98%;
+    --card: 240 8% 8%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 8% 8%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 262 83% 58%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 217 91% 75%;
-    --secondary: 152 69% 45%;
+    --primary-glow: 262 83% 70%;
+    --secondary: 174 62% 47%;
     --secondary-foreground: 0 0% 100%;
-    --accent: 192 91% 48%;
-    --accent-foreground: 0 0% 100%;
-    --muted: 217 33% 20%;
-    --muted-foreground: 215 20% 65%;
+    --accent: 262 40% 15%;
+    --accent-foreground: 262 83% 70%;
+    --muted: 240 10% 15%;
+    --muted-foreground: 240 5% 65%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 217 33% 20%;
-    --input: 217 33% 20%;
-    --ring: 217 91% 60%;
+    --border: 240 10% 15%;
+    --input: 240 10% 15%;
+    --ring: 262 83% 58%;
     
     /* Modern accent colors for dark mode */
     --accent-yellow: 54 100% 62%;
     --accent-yellow-foreground: 0 0% 0%;
-    --soft-blue: 217 32% 17%;
-    --soft-gray: 217 24% 12%;
+    --soft-purple: 262 40% 15%;
+    --soft-gray: 240 10% 10%;
     
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 75%));
-    --gradient-hero: linear-gradient(180deg, hsl(222 47% 15%), hsl(222 47% 11%));
-    --gradient-soft-blue: linear-gradient(180deg, hsl(217 32% 17%), hsl(222 47% 11%));
+    --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 83% 70%));
+    --gradient-hero: linear-gradient(180deg, hsl(240 8% 10%), hsl(240 10% 4%));
+    --gradient-soft-purple: linear-gradient(180deg, hsl(262 40% 15%), hsl(240 10% 4%));
     
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 217 91% 60%;
+    --sidebar-background: 240 10% 4%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 262 83% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217 33% 20%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 20%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-accent: 240 10% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 240 10% 15%;
+    --sidebar-ring: 262 83% 58%;
   }
 }
 
@@ -152,8 +152,8 @@
     background: var(--gradient-hero);
   }
   
-  .gradient-soft-blue {
-    background: var(--gradient-soft-blue);
+  .gradient-soft-purple {
+    background: var(--gradient-soft-purple);
   }
   
   .shadow-primary {

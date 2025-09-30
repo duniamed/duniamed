@@ -114,7 +114,7 @@ export default function Home() {
               
               {/* Hero Visual */}
               <div className="relative">
-                <div className="aspect-square rounded-3xl bg-gradient-to-br from-[hsl(var(--soft-blue))] to-white dark:to-background p-16 flex items-center justify-center border border-border/50 shadow-2xl">
+                <div className="aspect-square rounded-3xl bg-gradient-to-br from-soft-purple to-white dark:to-background p-16 flex items-center justify-center border border-border/50 shadow-2xl">
                   <div className="relative">
                     <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl" />
                     <Video className="relative w-40 h-40 text-primary" strokeWidth={1.5} />
