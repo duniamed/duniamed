@@ -47,6 +47,53 @@ export type Database = {
         }
         Relationships: []
       }
+      appointment_waitlist: {
+        Row: {
+          created_at: string | null
+          id: string
+          notes: string | null
+          notified_at: string | null
+          patient_id: string
+          preferred_date: string | null
+          preferred_time_slot: string | null
+          specialist_id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          notified_at?: string | null
+          patient_id: string
+          preferred_date?: string | null
+          preferred_time_slot?: string | null
+          specialist_id: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          notified_at?: string | null
+          patient_id?: string
+          preferred_date?: string | null
+          preferred_time_slot?: string | null
+          specialist_id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointment_waitlist_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       appointments: {
         Row: {
           cancellation_reason: string | null
@@ -64,6 +111,8 @@ export type Database = {
           notes: string | null
           patient_id: string
           payment_id: string | null
+          reminder_sent: boolean | null
+          reminder_sent_at: string | null
           scheduled_at: string
           specialist_id: string
           status: Database["public"]["Enums"]["appointment_status"] | null
@@ -89,6 +138,8 @@ export type Database = {
           notes?: string | null
           patient_id: string
           payment_id?: string | null
+          reminder_sent?: boolean | null
+          reminder_sent_at?: string | null
           scheduled_at: string
           specialist_id: string
           status?: Database["public"]["Enums"]["appointment_status"] | null
@@ -114,6 +165,8 @@ export type Database = {
           notes?: string | null
           patient_id?: string
           payment_id?: string | null
+          reminder_sent?: boolean | null
+          reminder_sent_at?: string | null
           scheduled_at?: string
           specialist_id?: string
           status?: Database["public"]["Enums"]["appointment_status"] | null
@@ -243,6 +296,60 @@ export type Database = {
           },
         ]
       }
+      clinic_invitations: {
+        Row: {
+          accepted_at: string | null
+          clinic_id: string
+          created_at: string | null
+          email: string
+          expires_at: string | null
+          id: string
+          invited_by: string
+          role: string
+          status: string | null
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          clinic_id: string
+          created_at?: string | null
+          email: string
+          expires_at?: string | null
+          id?: string
+          invited_by: string
+          role?: string
+          status?: string | null
+          token?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          clinic_id?: string
+          created_at?: string | null
+          email?: string
+          expires_at?: string | null
+          id?: string
+          invited_by?: string
+          role?: string
+          status?: string | null
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinic_invitations_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinic_invitations_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clinic_staff: {
         Row: {
           clinic_id: string
@@ -302,11 +409,14 @@ export type Database = {
           address_line2: string | null
           after_hours_available: boolean | null
           booking_policies: Json | null
+          brand_color: string | null
+          brand_secondary_color: string | null
           cancellation_policy: string | null
           certifications: string[] | null
           city: string | null
           clinic_type: Database["public"]["Enums"]["clinic_type"]
           country: string | null
+          cover_image_url: string | null
           created_at: string | null
           created_by: string
           description: string | null
@@ -321,6 +431,7 @@ export type Database = {
           license_number: string | null
           logo_url: string | null
           longitude: number | null
+          mission_statement: string | null
           name: string
           operating_hours: Json | null
           parking_info: string | null
@@ -332,8 +443,10 @@ export type Database = {
           stripe_customer_id: string | null
           subscription_expires_at: string | null
           subscription_tier: string | null
+          tagline: string | null
           tax_id: string | null
           updated_at: string | null
+          video_url: string | null
           website: string | null
         }
         Insert: {
@@ -342,11 +455,14 @@ export type Database = {
           address_line2?: string | null
           after_hours_available?: boolean | null
           booking_policies?: Json | null
+          brand_color?: string | null
+          brand_secondary_color?: string | null
           cancellation_policy?: string | null
           certifications?: string[] | null
           city?: string | null
           clinic_type: Database["public"]["Enums"]["clinic_type"]
           country?: string | null
+          cover_image_url?: string | null
           created_at?: string | null
           created_by: string
           description?: string | null
@@ -361,6 +477,7 @@ export type Database = {
           license_number?: string | null
           logo_url?: string | null
           longitude?: number | null
+          mission_statement?: string | null
           name: string
           operating_hours?: Json | null
           parking_info?: string | null
@@ -372,8 +489,10 @@ export type Database = {
           stripe_customer_id?: string | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
+          tagline?: string | null
           tax_id?: string | null
           updated_at?: string | null
+          video_url?: string | null
           website?: string | null
         }
         Update: {
@@ -382,11 +501,14 @@ export type Database = {
           address_line2?: string | null
           after_hours_available?: boolean | null
           booking_policies?: Json | null
+          brand_color?: string | null
+          brand_secondary_color?: string | null
           cancellation_policy?: string | null
           certifications?: string[] | null
           city?: string | null
           clinic_type?: Database["public"]["Enums"]["clinic_type"]
           country?: string | null
+          cover_image_url?: string | null
           created_at?: string | null
           created_by?: string
           description?: string | null
@@ -401,6 +523,7 @@ export type Database = {
           license_number?: string | null
           logo_url?: string | null
           longitude?: number | null
+          mission_statement?: string | null
           name?: string
           operating_hours?: Json | null
           parking_info?: string | null
@@ -412,8 +535,10 @@ export type Database = {
           stripe_customer_id?: string | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
+          tagline?: string | null
           tax_id?: string | null
           updated_at?: string | null
+          video_url?: string | null
           website?: string | null
         }
         Relationships: [
@@ -920,6 +1045,7 @@ export type Database = {
           postal_code: string | null
           preferred_language: string | null
           preferred_pharmacy: string | null
+          reminder_preferences: Json | null
           role: Database["public"]["Enums"]["user_role"]
           state: string | null
           timezone: string | null
@@ -956,6 +1082,7 @@ export type Database = {
           postal_code?: string | null
           preferred_language?: string | null
           preferred_pharmacy?: string | null
+          reminder_preferences?: Json | null
           role?: Database["public"]["Enums"]["user_role"]
           state?: string | null
           timezone?: string | null
@@ -992,6 +1119,7 @@ export type Database = {
           postal_code?: string | null
           preferred_language?: string | null
           preferred_pharmacy?: string | null
+          reminder_preferences?: Json | null
           role?: Database["public"]["Enums"]["user_role"]
           state?: string | null
           timezone?: string | null
@@ -1477,6 +1605,125 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      virtual_clinic_queue: {
+        Row: {
+          assigned_at: string | null
+          assigned_specialist_id: string | null
+          clinic_id: string
+          completed_at: string | null
+          estimated_wait_minutes: number | null
+          id: string
+          joined_at: string | null
+          patient_id: string
+          queue_position: number | null
+          status: string | null
+          symptoms: Json | null
+          urgency_level: string | null
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_specialist_id?: string | null
+          clinic_id: string
+          completed_at?: string | null
+          estimated_wait_minutes?: number | null
+          id?: string
+          joined_at?: string | null
+          patient_id: string
+          queue_position?: number | null
+          status?: string | null
+          symptoms?: Json | null
+          urgency_level?: string | null
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_specialist_id?: string | null
+          clinic_id?: string
+          completed_at?: string | null
+          estimated_wait_minutes?: number | null
+          id?: string
+          joined_at?: string | null
+          patient_id?: string
+          queue_position?: number | null
+          status?: string | null
+          symptoms?: Json | null
+          urgency_level?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "virtual_clinic_queue_assigned_specialist_id_fkey"
+            columns: ["assigned_specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "virtual_clinic_queue_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "virtual_clinic_queue_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      virtual_clinic_revenue_splits: {
+        Row: {
+          clinic_id: string
+          created_at: string | null
+          id: string
+          platform_fee_percentage: number | null
+          specialist_id: string
+          split_percentage: number
+          updated_at: string | null
+        }
+        Insert: {
+          clinic_id: string
+          created_at?: string | null
+          id?: string
+          platform_fee_percentage?: number | null
+          specialist_id: string
+          split_percentage: number
+          updated_at?: string | null
+        }
+        Update: {
+          clinic_id?: string
+          created_at?: string | null
+          id?: string
+          platform_fee_percentage?: number | null
+          specialist_id?: string
+          split_percentage?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "virtual_clinic_revenue_splits_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "virtual_clinic_revenue_splits_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "virtual_clinic_revenue_splits_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
             referencedColumns: ["id"]
           },
         ]

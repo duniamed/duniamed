@@ -57,6 +57,9 @@ import PatientProfileEdit from "./pages/PatientProfileEdit";
 import AISymptomChecker from "./pages/AISymptomChecker";
 import SpecialistAvailability from "./pages/SpecialistAvailability";
 import ClinicStaff from "./pages/ClinicStaff";
+import WaitlistManagement from "./pages/WaitlistManagement";
+import VirtualClinicQueue from "./pages/VirtualClinicQueue";
+import ClinicBranding from "./pages/ClinicBranding";
 
 const queryClient = new QueryClient();
 
@@ -124,6 +127,9 @@ const App = () => (
             <Route path="/specialist/messages" element={<Messages />} />
             <Route path="/specialist/payments" element={<Payments />} />
             <Route path="/specialist/notifications" element={<Notifications />} />
+            <Route path="/specialist/availability" element={<SpecialistAvailability />} />
+            <Route path="/specialist/waitlist" element={<WaitlistManagement />} />
+            <Route path="/specialist/virtual-clinic-queue" element={<VirtualClinicQueue />} />
             <Route path="/specialist/analytics" element={<Analytics />} />
             
             {/* CLINIC PORTAL */}
@@ -131,6 +137,9 @@ const App = () => (
             <Route path="/clinic/settings" element={<ClinicSettings />} />
             <Route path="/clinic/profile/edit" element={<ClinicProfileEdit />} />
             <Route path="/clinic/staff" element={<ClinicStaff />} />
+            <Route path="/clinic/branding" element={<ClinicBranding />} />
+            <Route path="/clinic/waitlist" element={<WaitlistManagement />} />
+            <Route path="/clinic/virtual-clinic-queue" element={<VirtualClinicQueue />} />
             <Route path="/clinic/appointments" element={<Appointments />} />
             <Route path="/clinic/appointments/:id" element={<AppointmentDetails />} />
             <Route path="/clinic/messages" element={<Messages />} />

@@ -1,19 +1,25 @@
 project_id = "knybxihimqrqwzkdeaio"
 
-[functions.send-email]
-verify_jwt = true
-
-[functions.send-sms]
-verify_jwt = true
-
-[functions.create-video-room]
-verify_jwt = true
-
-[functions.create-payment]
-verify_jwt = true
-
 [functions.ai-symptom-checker]
-verify_jwt = true
+verify_jwt = false
 
 [functions.ai-soap-note]
-verify_jwt = true
+verify_jwt = false
+
+[functions.ai-translate]
+verify_jwt = false
+
+[functions.send-appointment-reminder]
+verify_jwt = false
+
+[functions.create-payment]
+verify_jwt = false
+
+[functions.create-video-room]
+verify_jwt = false
+
+[functions.send-email]
+verify_jwt = false
+
+[functions.send-sms]
+verify_jwt = false

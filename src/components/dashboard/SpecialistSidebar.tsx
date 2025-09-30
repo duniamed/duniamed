@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Calendar, FileText, CreditCard, MessageSquare, Bell, Settings, User, Activity, Clock, BarChart3, Stethoscope, Users, Building2 } from 'lucide-react';
+import { Home, Calendar, FileText, CreditCard, MessageSquare, Bell, Settings, User, Activity, Clock, BarChart3, Stethoscope, Users, Building2, ListChecks, UsersRound } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -16,6 +16,8 @@ const specialistMenuItems = [
   { title: 'Dashboard', url: '/specialist/dashboard', icon: Home },
   { title: 'Appointments', url: '/specialist/appointments', icon: Calendar },
   { title: 'Availability', url: '/specialist/availability', icon: Clock },
+  { title: 'Waitlist', url: '/specialist/waitlist', icon: ListChecks },
+  { title: 'Clinic Queue', url: '/specialist/virtual-clinic-queue', icon: UsersRound },
   { title: 'Time Off', url: '/specialist/time-off', icon: Activity },
   { title: 'Virtual Clinic', url: '/specialist/create-virtual-clinic', icon: Building2 },
   { title: 'Patients', url: '/specialist/patients', icon: Users },
