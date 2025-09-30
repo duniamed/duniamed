@@ -5,13 +5,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import Header from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Clock, AlertCircle, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Specialist {
@@ -168,11 +169,46 @@ function BookAppointmentContent() {
       <Header />
       <main className="flex-1 container py-8 px-4 mt-16">
         <div className="max-w-3xl mx-auto space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold">Book Appointment</h1>
-            <p className="text-muted-foreground">
-              with Dr. {specialist.profiles?.first_name} {specialist.profiles?.last_name}
-            </p>
+          {/* Header with Urgency */}
+          <div className="space-y-4">
+            <div className="flex flex-wrap gap-3">
+              <Badge className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400">
+                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                Available now
+              </Badge>
+              <Badge className="urgency-badge border-0">
+                <Clock className="h-3.5 w-3.5" />
+                Only 3 slots left today
+              </Badge>
+              <Badge variant="secondary" className="flex items-center gap-1.5">
+                <Users className="h-3.5 w-3.5" />
+                12 people viewing
+              </Badge>
+            </div>
+            
+            <div>
+              <h1 className="text-3xl font-bold">Don't delay your health - Book now</h1>
+              <p className="text-lg text-muted-foreground">
+                with Dr. {specialist.profiles?.first_name} {specialist.profiles?.last_name}
+              </p>
+            </div>
+            
+            {/* Loss Aversion Warning */}
+            <Card className="bg-yellow-500/5 border-yellow-500/20">
+              <CardContent className="pt-6 pb-6">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="font-semibold text-yellow-700 dark:text-yellow-500">
+                      Slots filling fast
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      This specialist's calendar fills up quickly. Book now to avoid waiting weeks for your next available appointment.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Progress Steps */}
@@ -181,16 +217,16 @@ function BookAppointmentContent() {
               <div key={s} className="flex items-center gap-2">
                 <div
                   className={cn(
-                    'h-8 w-8 rounded-full flex items-center justify-center font-semibold',
-                    step >= s ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                    'h-10 w-10 rounded-full flex items-center justify-center font-semibold transition-all',
+                    step >= s ? 'bg-primary text-primary-foreground scale-110' : 'bg-muted text-muted-foreground'
                   )}
                 >
-                  {step > s ? <Check className="h-4 w-4" /> : s}
+                  {step > s ? <Check className="h-5 w-5" /> : s}
                 </div>
                 {s < 3 && (
                   <div
                     className={cn(
-                      'h-0.5 w-12',
+                      'h-0.5 w-12 transition-all',
                       step > s ? 'bg-primary' : 'bg-muted'
                     )}
                   />
