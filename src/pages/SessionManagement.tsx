@@ -20,7 +20,11 @@ interface Session {
 }
 
 export default function SessionManagement() {
-  return <SessionManagementContent />;
+  return (
+    <ProtectedRoute>
+      <SessionManagementContent />
+    </ProtectedRoute>
+  );
 }
 
 function SessionManagementContent() {

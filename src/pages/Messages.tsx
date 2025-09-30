@@ -29,7 +29,11 @@ interface Conversation {
 }
 
 export default function Messages() {
-  return <MessagesContent />;
+  return (
+    <ProtectedRoute>
+      <MessagesContent />
+    </ProtectedRoute>
+  );
 }
 
 function MessagesContent() {

@@ -19,7 +19,11 @@ interface Notification {
 }
 
 export default function Notifications() {
-  return <NotificationsContent />;
+  return (
+    <ProtectedRoute>
+      <NotificationsContent />
+    </ProtectedRoute>
+  );
 }
 
 function NotificationsContent() {

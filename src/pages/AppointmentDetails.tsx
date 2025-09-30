@@ -34,7 +34,11 @@ interface Appointment {
 }
 
 export default function AppointmentDetails() {
-  return <AppointmentDetailsContent />;
+  return (
+    <ProtectedRoute>
+      <AppointmentDetailsContent />
+    </ProtectedRoute>
+  );
 }
 
 function AppointmentDetailsContent() {

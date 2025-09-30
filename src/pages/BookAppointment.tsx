@@ -26,7 +26,11 @@ interface Specialist {
 }
 
 export default function BookAppointment() {
-  return <BookAppointmentContent />;
+  return (
+    <ProtectedRoute allowedRoles={['patient']}>
+      <BookAppointmentContent />
+    </ProtectedRoute>
+  );
 }
 
 function BookAppointmentContent() {

@@ -8,7 +8,11 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Calendar, Users, DollarSign, TrendingUp } from 'lucide-react';
 
 export default function Analytics() {
-  return <AnalyticsContent />;
+  return (
+    <ProtectedRoute>
+      <AnalyticsContent />
+    </ProtectedRoute>
+  );
 }
 
 function AnalyticsContent() {

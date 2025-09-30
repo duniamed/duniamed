@@ -7,7 +7,11 @@ import { Calendar, Search, FileText, MessageSquare, CreditCard, Pill, Users, Bel
 import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
-  return <DashboardContent />;
+  return (
+    <ProtectedRoute allowedRoles={['patient']}>
+      <DashboardContent />
+    </ProtectedRoute>
+  );
 }
 
 function DashboardContent() {

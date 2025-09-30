@@ -19,7 +19,11 @@ interface AuditLog {
 }
 
 export default function AuditLogs() {
-  return <AuditLogsContent />;
+  return (
+    <ProtectedRoute>
+      <AuditLogsContent />
+    </ProtectedRoute>
+  );
 }
 
 function AuditLogsContent() {

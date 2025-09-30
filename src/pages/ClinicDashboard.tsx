@@ -9,7 +9,11 @@ import { Building2, Users, Calendar, DollarSign } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function ClinicDashboard() {
-  return <ClinicDashboardContent />;
+  return (
+    <ProtectedRoute allowedRoles={['clinic_admin']}>
+      <ClinicDashboardContent />
+    </ProtectedRoute>
+  );
 }
 
 function ClinicDashboardContent() {

@@ -23,7 +23,11 @@ interface FamilyMember {
 }
 
 export default function FamilyMembers() {
-  return <FamilyMembersContent />;
+  return (
+    <ProtectedRoute allowedRoles={['patient']}>
+      <FamilyMembersContent />
+    </ProtectedRoute>
+  );
 }
 
 function FamilyMembersContent() {

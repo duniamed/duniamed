@@ -11,7 +11,11 @@ import { Users, Shield, Calendar, AlertTriangle, CheckCircle, XCircle } from 'lu
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export default function AdminPanel() {
-  return <AdminPanelContent />;
+  return (
+    <ProtectedRoute>
+      <AdminPanelContent />
+    </ProtectedRoute>
+  );
 }
 
 function AdminPanelContent() {

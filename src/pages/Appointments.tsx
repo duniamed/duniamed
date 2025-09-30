@@ -29,7 +29,11 @@ interface Appointment {
 }
 
 export default function Appointments() {
-  return <AppointmentsContent />;
+  return (
+    <ProtectedRoute allowedRoles={['patient']}>
+      <AppointmentsContent />
+    </ProtectedRoute>
+  );
 }
 
 function AppointmentsContent() {
