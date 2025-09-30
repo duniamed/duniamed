@@ -54,6 +54,7 @@ import NotFound from "./pages/NotFound";
 import SpecialistProfileEdit from "./pages/SpecialistProfileEdit";
 import ClinicProfileEdit from "./pages/ClinicProfileEdit";
 import CreateVirtualClinic from "./pages/CreateVirtualClinic";
+import PatientProfileEdit from "./pages/PatientProfileEdit";
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,7 @@ const App = () => (
             {/* PATIENT PORTAL */}
             <Route path="/patient/dashboard" element={<Dashboard />} />
             <Route path="/patient/profile" element={<Profile />} />
+            <Route path="/profile/edit" element={<PatientProfileEdit />} />
             <Route path="/patient/appointments" element={<Appointments />} />
             <Route path="/patient/appointments/:id" element={<AppointmentDetails />} />
             <Route path="/patient/prescriptions" element={<Prescriptions />} />
