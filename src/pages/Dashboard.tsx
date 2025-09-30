@@ -37,9 +37,12 @@ function DashboardContent() {
                 </CardTitle>
                 <CardDescription>Search for healthcare providers</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-2">
                 <Link to="/search">
-                  <Button className="w-full">Search Now</Button>
+                  <Button className="w-full">Search Specialists</Button>
+                </Link>
+                <Link to="/search/clinics">
+                  <Button variant="outline" className="w-full">Search Clinics</Button>
                 </Link>
               </CardContent>
             </Card>

@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Search as SearchIcon, MapPin, Star, Calendar, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { MEDICAL_SPECIALTIES } from '@/lib/constants/specialties';
 
 interface Specialist {
   id: string;
@@ -50,16 +51,7 @@ function SearchContent() {
   const [minFee, setMinFee] = useState(searchParams.get('minFee') || '');
   const [maxFee, setMaxFee] = useState(searchParams.get('maxFee') || '');
 
-  const specialties = [
-    'General Practice',
-    'Cardiology',
-    'Dermatology',
-    'Pediatrics',
-    'Psychiatry',
-    'Orthopedics',
-    'Neurology',
-    'Oncology',
-  ];
+  const specialties = MEDICAL_SPECIALTIES;
 
   const languages = ['English', 'Spanish', 'Portuguese', 'French', 'German'];
 

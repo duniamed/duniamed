@@ -31,6 +31,9 @@ import MedicalRecords from "./pages/MedicalRecords";
 import Messages from "./pages/Messages";
 import VideoConsultation from "./pages/VideoConsultation";
 import ClinicDashboard from "./pages/ClinicDashboard";
+import ClinicStaff from "./pages/ClinicStaff";
+import ClinicSettings from "./pages/ClinicSettings";
+import SearchClinics from "./pages/SearchClinics";
 import Prescriptions from "./pages/Prescriptions";
 import CreatePrescription from "./pages/CreatePrescription";
 import CreateReview from "./pages/CreateReview";
@@ -98,6 +101,9 @@ const App = () => (
             <Route path="/messages" element={<Messages />} />
             <Route path="/consultation/:appointmentId" element={<VideoConsultation />} />
             <Route path="/clinic/dashboard" element={<ClinicDashboard />} />
+            <Route path="/clinic/staff" element={<ClinicStaff />} />
+            <Route path="/clinic/settings" element={<ClinicSettings />} />
+            <Route path="/search/clinics" element={<SearchClinics />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
