@@ -8,24 +8,24 @@ export default function ForClinics() {
   return (
     <Layout>
         {/* Hero Section - VOA Health inspired */}
-        <section className="py-20 md:py-32 px-4 sm:px-6 lg:px-8 bg-soft-purple">
-          <div className="mx-auto max-w-6xl text-center space-y-8">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+        <section className="section-padding bg-gradient-to-br from-soft-purple via-background to-accent/5">
+          <div className="container-modern text-center space-y-10">
+            <h1 className="font-display">
               Serviços digitais para saúde{" "}
-              <span className="text-primary">conectados de ponta a ponta</span>
+              <span className="gradient-text">conectados de ponta a ponta</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-foreground/80 max-w-4xl mx-auto font-light">
+            <p className="text-2xl text-muted-foreground max-w-4xl mx-auto font-light leading-relaxed">
               Integramos operadoras, clínicas e pacientes em uma plataforma inteligente e segura. Escolha seu perfil e descubra a solução ideal para seu negócio.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" className="h-14 px-8 text-base rounded-full" asChild>
+            <div className="flex flex-col sm:flex-row gap-5 justify-center pt-6">
+              <Button size="lg" className="h-16 px-12 text-lg rounded-full shadow-xl font-bold" asChild>
                 <Link to="/auth?mode=signup&role=clinic_admin">Comece grátis</Link>
               </Button>
             </div>
             
-            <div className="flex items-center justify-center gap-6 text-sm text-foreground/70">
+            <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
               <span className="flex items-center gap-2">
                 ✓ Utilize agora em suas consultas
               </span>
@@ -40,14 +40,14 @@ export default function ForClinics() {
         </section>
 
         {/* Three Column Section - Fluxmed inspired */}
-        <section className="py-20 md:py-32 px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-7xl">
+        <section className="section-padding">
+          <div className="container-modern">
             <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
               {/* Clinic Card */}
-              <div className="text-center space-y-6">
+              <div className="card-soft text-center group hover:shadow-xl transition-all">
                 <div className="flex justify-center">
-                  <div className="h-20 w-20 rounded-2xl bg-secondary/10 flex items-center justify-center">
-                    <Building2 className="h-10 w-10 text-secondary" />
+                  <div className="h-20 w-20 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Building2 className="h-10 w-10 text-primary" />
                   </div>
                 </div>
                 <h3 className="text-2xl font-bold">Sou uma clínica ou consultório</h3>
@@ -60,10 +60,10 @@ export default function ForClinics() {
               </div>
 
               {/* Operator Card */}
-              <div className="text-center space-y-6">
+              <div className="card-soft text-center group hover:shadow-xl transition-all">
                 <div className="flex justify-center">
-                  <div className="h-20 w-20 rounded-2xl bg-secondary/10 flex items-center justify-center">
-                    <Users className="h-10 w-10 text-secondary" />
+                  <div className="h-20 w-20 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Users className="h-10 w-10 text-primary" />
                   </div>
                 </div>
                 <h3 className="text-2xl font-bold">Sou uma operadora</h3>
@@ -76,10 +76,10 @@ export default function ForClinics() {
               </div>
 
               {/* Patient Card */}
-              <div className="text-center space-y-6">
+              <div className="card-soft text-center group hover:shadow-xl transition-all">
                 <div className="flex justify-center">
-                  <div className="h-20 w-20 rounded-2xl bg-secondary/10 flex items-center justify-center">
-                    <Smile className="h-10 w-10 text-secondary" />
+                  <div className="h-20 w-20 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Smile className="h-10 w-10 text-primary" />
                   </div>
                 </div>
                 <h3 className="text-2xl font-bold">Sou um paciente</h3>
@@ -95,13 +95,13 @@ export default function ForClinics() {
         </section>
 
         {/* Features Grid */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-soft-purple/50">
-          <div className="mx-auto max-w-7xl">
+        <section className="section-padding bg-soft-purple">
+          <div className="container-modern">
             <div className="text-center mb-16 space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold">
+              <h2 className="text-4xl md:text-5xl font-bold">
                 Gestão completa de clínicas
               </h2>
-              <p className="text-xl text-foreground/70 max-w-3xl mx-auto">
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-light">
                 Tudo que você precisa para administrar sua prática médica moderna
               </p>
             </div>
@@ -139,38 +139,40 @@ export default function ForClinics() {
                   description: "App exclusivo para pacientes acessarem documentos e agendarem"
                 }
               ].map((feature) => (
-                <Card key={feature.title} className="p-8 hover:shadow-xl transition-all">
-                  <div className="h-14 w-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
+                <div key={feature.title} className="card-modern group">
+                  <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <feature.icon className="h-7 w-7 text-primary" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                  <p className="text-foreground/70">{feature.description}</p>
-                </Card>
+                  <h3 className="text-2xl font-bold mb-3">{feature.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl text-center space-y-8">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-              Pronto para modernizar sua clínica?
-            </h2>
-            <p className="text-xl text-foreground/70 max-w-2xl mx-auto">
-              Junte-se a centenas de clínicas que já transformaram sua gestão com nossa plataforma
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" className="h-14 px-10 text-base rounded-full" asChild>
-                <Link to="/auth?mode=signup&role=clinic_admin">Começar teste grátis</Link>
-              </Button>
-              <Button size="lg" variant="outline" className="h-14 px-10 text-base rounded-full" asChild>
-                <Link to="/contact">Falar com especialista</Link>
-              </Button>
+        <section className="section-padding">
+          <div className="container-modern max-w-5xl">
+            <div className="card-modern text-center border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Pronto para modernizar sua clínica?
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 font-light">
+                Junte-se a centenas de clínicas que já transformaram sua gestão com nossa plataforma
+              </p>
+              <div className="flex flex-col sm:flex-row gap-5 justify-center">
+                <Button size="lg" className="h-16 px-12 text-lg rounded-full shadow-xl font-bold" asChild>
+                  <Link to="/auth?mode=signup&role=clinic_admin">Começar teste grátis</Link>
+                </Button>
+                <Button size="lg" variant="outline" className="h-16 px-10 text-lg rounded-full border-2 font-semibold" asChild>
+                  <Link to="/contact">Falar com especialista</Link>
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mt-8">
+                ✓ 14 dias grátis ✓ Sem cartão de crédito ✓ Cancelamento a qualquer momento
+              </p>
             </div>
-            <p className="text-sm text-foreground/60">
-              ✓ 14 dias grátis ✓ Sem cartão de crédito ✓ Cancelamento a qualquer momento
-            </p>
           </div>
         </section>
     </Layout>

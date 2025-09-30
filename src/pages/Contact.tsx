@@ -30,13 +30,13 @@ export default function Contact() {
   return (
     <Layout>
         {/* Hero Section */}
-        <section className="gradient-hero py-20">
-          <div className="container px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Get in Touch
+        <section className="section-padding bg-gradient-to-br from-soft-purple via-background to-accent/5">
+          <div className="container-modern">
+            <div className="max-w-3xl mx-auto text-center space-y-6">
+              <h1 className="font-display">
+                Get in <span className="gradient-text">Touch</span>
               </h1>
-              <p className="text-xl text-muted-foreground">
+              <p className="text-2xl text-muted-foreground font-light">
                 Have questions? We're here to help. Reach out to our team.
               </p>
             </div>
@@ -44,17 +44,17 @@ export default function Contact() {
         </section>
 
         {/* Contact Content */}
-        <section className="py-16 container px-4">
+        <section className="section-padding container-modern">
           <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
             {/* Contact Form */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Send Us a Message</CardTitle>
-                <CardDescription>
+            <div className="card-modern">
+              <div className="space-y-4">
+                <h2 className="text-3xl font-bold">Send Us a Message</h2>
+                <p className="text-muted-foreground text-lg">
                   Fill out the form below and we'll respond within 24 hours
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </p>
+              </div>
+              <div className="mt-8">
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -102,73 +102,65 @@ export default function Contact() {
                     {isSubmitting ? 'Sending...' : 'Send Message'}
                   </Button>
                 </form>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Contact Information */}
             <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Mail className="h-5 w-5 text-primary" />
-                    Email
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">support@duniamed.com</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    We typically respond within 24 hours
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="glass-panel">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <Mail className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold">Email</h3>
+                </div>
+                <p className="text-foreground text-lg font-medium mb-1">support@duniamed.com</p>
+                <p className="text-sm text-muted-foreground">
+                  We typically respond within 24 hours
+                </p>
+              </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Phone className="h-5 w-5 text-primary" />
-                    Phone
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">+1 (555) 123-4567</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Monday - Friday, 9AM - 6PM EST
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="glass-panel">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <Phone className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold">Phone</h3>
+                </div>
+                <p className="text-foreground text-lg font-medium mb-1">+1 (555) 123-4567</p>
+                <p className="text-sm text-muted-foreground">
+                  Monday - Friday, 9AM - 6PM EST
+                </p>
+              </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5 text-primary" />
-                    Office
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    123 Healthcare Drive<br />
-                    San Francisco, CA 94102<br />
-                    United States
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="glass-panel">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <MapPin className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold">Office</h3>
+                </div>
+                <p className="text-foreground leading-relaxed">
+                  123 Healthcare Drive<br />
+                  San Francisco, CA 94102<br />
+                  United States
+                </p>
+              </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MessageSquare className="h-5 w-5 text-primary" />
-                    Live Chat
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-4">
-                    Need immediate assistance? Chat with our support team.
-                  </p>
-                  <Button variant="outline" className="w-full">
-                    Start Live Chat
-                  </Button>
-                </CardContent>
-              </Card>
+              <div className="glass-panel">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <MessageSquare className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold">Live Chat</h3>
+                </div>
+                <p className="text-muted-foreground mb-4">
+                  Need immediate assistance? Chat with our support team.
+                </p>
+                <Button className="w-full h-12 rounded-full">
+                  Start Live Chat
+                </Button>
+              </div>
             </div>
           </div>
         </section>
