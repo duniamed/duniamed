@@ -74,7 +74,7 @@ export function ClinicSignupForm({ form }: ClinicSignupFormProps) {
       <div className="space-y-2">
         <Label htmlFor="clinicType">Facility Type</Label>
         <Select
-          value={form.watch('clinicType')}
+          value={form.watch('clinicType') || ''}
           onValueChange={(value) => form.setValue('clinicType', value)}
         >
           <SelectTrigger>

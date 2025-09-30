@@ -47,7 +47,7 @@ export function PatientSignupForm({ form }: PatientSignupFormProps) {
         <div className="space-y-2">
           <Label htmlFor="gdprArticle9Basis">Legal Basis for Processing (GDPR Article 9)</Label>
           <Select
-            value={form.watch('gdprArticle9Basis')}
+            value={form.watch('gdprArticle9Basis') || ''}
             onValueChange={(value) => form.setValue('gdprArticle9Basis', value)}
           >
             <SelectTrigger>

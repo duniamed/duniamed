@@ -62,7 +62,7 @@ export function SpecialistSignupForm({ form }: SpecialistSignupFormProps) {
       <div className="space-y-2">
         <Label htmlFor="specialistType">Professional Type</Label>
         <Select
-          value={form.watch('specialistType')}
+          value={form.watch('specialistType') || ''}
           onValueChange={(value) => form.setValue('specialistType', value)}
         >
           <SelectTrigger>
