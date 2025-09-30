@@ -19,11 +19,7 @@ interface Notification {
 }
 
 export default function Notifications() {
-  return (
-    <ProtectedRoute allowedRoles={['patient', 'specialist']}>
-      <NotificationsContent />
-    </ProtectedRoute>
-  );
+  return <NotificationsContent />;
 }
 
 function NotificationsContent() {

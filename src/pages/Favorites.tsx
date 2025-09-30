@@ -29,11 +29,7 @@ interface Favorite {
 }
 
 export default function Favorites() {
-  return (
-    <ProtectedRoute allowedRoles={['patient']}>
-      <FavoritesContent />
-    </ProtectedRoute>
-  );
+  return <FavoritesContent />;
 }
 
 function FavoritesContent() {

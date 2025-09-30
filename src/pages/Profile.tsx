@@ -17,11 +17,7 @@ import { AlertCircle, User, Lock, Trash2 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 
 export default function Profile() {
-  return (
-    <ProtectedRoute>
-      <ProfileContent />
-    </ProtectedRoute>
-  );
+  return <ProfileContent />;
 }
 
 function ProfileContent() {

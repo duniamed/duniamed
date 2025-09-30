@@ -36,11 +36,7 @@ interface Specialist {
 }
 
 export default function Search() {
-  return (
-    <ProtectedRoute allowedRoles={['patient']}>
-      <SearchContent />
-    </ProtectedRoute>
-  );
+  return <SearchContent />;
 }
 
 function SearchContent() {

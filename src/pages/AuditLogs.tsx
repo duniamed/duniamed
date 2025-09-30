@@ -19,11 +19,7 @@ interface AuditLog {
 }
 
 export default function AuditLogs() {
-  return (
-    <ProtectedRoute allowedRoles={['clinic_admin']}>
-      <AuditLogsContent />
-    </ProtectedRoute>
-  );
+  return <AuditLogsContent />;
 }
 
 function AuditLogsContent() {

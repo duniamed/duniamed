@@ -12,11 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 export default function CreatePrescription() {
-  return (
-    <ProtectedRoute allowedRoles={['specialist']}>
-      <CreatePrescriptionContent />
-    </ProtectedRoute>
-  );
+  return <CreatePrescriptionContent />;
 }
 
 function CreatePrescriptionContent() {

@@ -13,11 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Star } from 'lucide-react';
 
 export default function CreateReview() {
-  return (
-    <ProtectedRoute allowedRoles={['patient']}>
-      <CreateReviewContent />
-    </ProtectedRoute>
-  );
+  return <CreateReviewContent />;
 }
 
 function CreateReviewContent() {

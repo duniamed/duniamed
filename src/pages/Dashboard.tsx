@@ -7,15 +7,12 @@ import { Calendar, Search, FileText, MessageSquare, CreditCard, Pill, Users, Bel
 import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
-  return (
-    <ProtectedRoute allowedRoles={['patient']}>
-      <DashboardContent />
-    </ProtectedRoute>
-  );
+  return <DashboardContent />;
 }
 
 function DashboardContent() {
   const { profile } = useAuth();
+  const firstName = profile?.first_name || 'Guest';
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -23,7 +20,7 @@ function DashboardContent() {
       <main className="flex-1 container py-8 px-4">
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold">Welcome back, {profile?.first_name}!</h1>
+            <h1 className="text-3xl font-bold">Welcome back, {firstName}!</h1>
             <p className="text-muted-foreground">Manage your healthcare appointments and records</p>
           </div>
 

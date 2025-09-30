@@ -11,11 +11,7 @@ import { Users, Shield, Calendar, AlertTriangle, CheckCircle, XCircle } from 'lu
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export default function AdminPanel() {
-  return (
-    <ProtectedRoute allowedRoles={['clinic_admin']}>
-      <AdminPanelContent />
-    </ProtectedRoute>
-  );
+  return <AdminPanelContent />;
 }
 
 function AdminPanelContent() {

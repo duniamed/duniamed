@@ -26,11 +26,7 @@ interface Specialist {
 }
 
 export default function BookAppointment() {
-  return (
-    <ProtectedRoute allowedRoles={['patient']}>
-      <BookAppointmentContent />
-    </ProtectedRoute>
-  );
+  return <BookAppointmentContent />;
 }
 
 function BookAppointmentContent() {
@@ -87,6 +83,16 @@ function BookAppointmentContent() {
   };
 
   const handleSubmit = async () => {
+    if (!profile) {
+      toast({
+        title: 'Authentication Required',
+        description: 'Please sign in to book an appointment',
+        variant: 'destructive',
+      });
+      navigate('/auth');
+      return;
+    }
+
     if (!selectedDate || !selectedTime || !chiefComplaint) {
       toast({
         title: 'Missing information',

@@ -27,11 +27,7 @@ interface Payment {
 }
 
 export default function Payments() {
-  return (
-    <ProtectedRoute allowedRoles={['patient']}>
-      <PaymentsContent />
-    </ProtectedRoute>
-  );
+  return <PaymentsContent />;
 }
 
 function PaymentsContent() {

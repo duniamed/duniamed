@@ -22,11 +22,7 @@ interface MedicalRecord {
 }
 
 export default function MedicalRecords() {
-  return (
-    <ProtectedRoute allowedRoles={['patient']}>
-      <MedicalRecordsContent />
-    </ProtectedRoute>
-  );
+  return <MedicalRecordsContent />;
 }
 
 function MedicalRecordsContent() {

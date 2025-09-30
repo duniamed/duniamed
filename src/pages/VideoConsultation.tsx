@@ -9,11 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function VideoConsultation() {
-  return (
-    <ProtectedRoute>
-      <VideoConsultationContent />
-    </ProtectedRoute>
-  );
+  return <VideoConsultationContent />;
 }
 
 function VideoConsultationContent() {

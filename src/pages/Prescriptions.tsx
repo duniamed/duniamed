@@ -30,11 +30,7 @@ interface Prescription {
 }
 
 export default function Prescriptions() {
-  return (
-    <ProtectedRoute allowedRoles={['patient']}>
-      <PrescriptionsContent />
-    </ProtectedRoute>
-  );
+  return <PrescriptionsContent />;
 }
 
 function PrescriptionsContent() {

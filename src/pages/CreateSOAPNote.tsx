@@ -12,11 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { FileText } from 'lucide-react';
 
 export default function CreateSOAPNote() {
-  return (
-    <ProtectedRoute allowedRoles={['specialist']}>
-      <CreateSOAPNoteContent />
-    </ProtectedRoute>
-  );
+  return <CreateSOAPNoteContent />;
 }
 
 function CreateSOAPNoteContent() {

@@ -20,11 +20,7 @@ interface Session {
 }
 
 export default function SessionManagement() {
-  return (
-    <ProtectedRoute allowedRoles={['patient', 'specialist', 'clinic_admin']}>
-      <SessionManagementContent />
-    </ProtectedRoute>
-  );
+  return <SessionManagementContent />;
 }
 
 function SessionManagementContent() {

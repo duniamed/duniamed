@@ -8,11 +8,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Calendar, Users, DollarSign, TrendingUp } from 'lucide-react';
 
 export default function Analytics() {
-  return (
-    <ProtectedRoute allowedRoles={['specialist', 'clinic_admin']}>
-      <AnalyticsContent />
-    </ProtectedRoute>
-  );
+  return <AnalyticsContent />;
 }
 
 function AnalyticsContent() {

@@ -50,11 +50,7 @@ interface Review {
 }
 
 export default function SpecialistProfile() {
-  return (
-    <ProtectedRoute allowedRoles={['patient']}>
-      <SpecialistProfileContent />
-    </ProtectedRoute>
-  );
+  return <SpecialistProfileContent />;
 }
 
 function SpecialistProfileContent() {
