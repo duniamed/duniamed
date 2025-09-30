@@ -33,15 +33,23 @@
     --input: 214 32% 91%;
     --ring: 217 91% 60%;
     --radius: 0.75rem;
+    
+    /* Modern accent colors */
+    --accent-yellow: 54 100% 62%;
+    --accent-yellow-foreground: 0 0% 0%;
+    --soft-blue: 214 100% 97%;
+    --soft-gray: 220 14% 96%;
 
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 75%));
     --gradient-hero: linear-gradient(180deg, hsl(217 91% 97%), hsl(0 0% 100%));
+    --gradient-soft-blue: linear-gradient(180deg, hsl(214 100% 97%), hsl(0 0% 100%));
     
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
     --shadow-primary: 0 10px 30px -10px hsl(217 91% 60% / 0.3);
     
     --sidebar-background: 217 91% 97%;
@@ -76,8 +84,15 @@
     --input: 217 33% 20%;
     --ring: 217 91% 60%;
     
+    /* Modern accent colors for dark mode */
+    --accent-yellow: 54 100% 62%;
+    --accent-yellow-foreground: 0 0% 0%;
+    --soft-blue: 217 32% 17%;
+    --soft-gray: 217 24% 12%;
+    
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 75%));
     --gradient-hero: linear-gradient(180deg, hsl(222 47% 15%), hsl(222 47% 11%));
+    --gradient-soft-blue: linear-gradient(180deg, hsl(217 32% 17%), hsl(222 47% 11%));
     
     --sidebar-background: 222 47% 11%;
     --sidebar-foreground: 210 40% 98%;
@@ -128,8 +143,25 @@
     background: var(--gradient-hero);
   }
   
+  .gradient-soft-blue {
+    background: var(--gradient-soft-blue);
+  }
+  
   .shadow-primary {
     box-shadow: var(--shadow-primary);
+  }
+  
+  .shadow-xl-custom {
+    box-shadow: var(--shadow-xl);
+  }
+  
+  /* Modern Card Styles */
+  .card-modern {
+    @apply rounded-2xl border-0 shadow-xl bg-card transition-all duration-300 hover:shadow-2xl;
+  }
+  
+  .card-soft {
+    @apply rounded-xl bg-muted/30 border-0 backdrop-blur-sm;
   }
   
   /* Persuasive Design Elements - Based on Behavioral Psychology */
@@ -147,5 +179,10 @@
   
   .scarcity-highlight {
     @apply bg-yellow-500/10 border-yellow-500/30 text-yellow-700 dark:text-yellow-400;
+  }
+  
+  /* Button Enhancements */
+  .btn-primary-modern {
+    @apply rounded-full px-8 h-14 font-semibold shadow-xl hover:shadow-2xl transition-all hover:scale-105;
   }
 }

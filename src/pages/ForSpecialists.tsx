@@ -84,10 +84,6 @@ export default function ForSpecialists() {
       <main className="flex-1 pt-24">
         {/* Hero with Loss Aversion */}
         <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
-          </div>
           
           <div className="relative mx-auto max-w-7xl">
             <div className="text-center max-w-3xl mx-auto space-y-6">
@@ -105,12 +101,12 @@ export default function ForSpecialists() {
                 Every day you wait is lost income. While you're limited to local patients, competitors are earning $50K+ extra annually from global telemedicine. 
                 <span className="font-semibold text-foreground"> Don't miss out.</span>
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                <Button size="lg" className="h-14 text-base shadow-lg shadow-primary/25" asChild>
-                  <Link to="/auth?mode=signup&role=specialist">Apply Now - Free Setup</Link>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+                <Button size="lg" className="h-14 px-8 text-base rounded-full shadow-xl hover:shadow-2xl transition-all" asChild>
+                  <Link to="/auth?mode=signup&role=specialist">Get Started</Link>
                 </Button>
-                <Button size="lg" variant="outline" className="h-14 text-base border-2" asChild>
-                  <Link to="#earnings">Calculate Earnings</Link>
+                <Button size="lg" variant="outline" className="h-14 px-8 text-base rounded-full border-2" asChild>
+                  <Link to="#earnings">888 (492) 5488</Link>
                 </Button>
               </div>
             </div>

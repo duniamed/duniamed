@@ -95,12 +95,12 @@ export default function ForClinics() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
       <main className="flex-1 pt-16">
-        {/* Hero with Loss Aversion */}
-        <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative overflow-hidden">
+        {/* Hero with Modern Medical Design */}
+        <section className="py-20 md:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[hsl(var(--soft-blue))] to-background relative overflow-hidden">
           <div className="absolute inset-0 opacity-30">
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
@@ -114,12 +114,11 @@ export default function ForClinics() {
               </Badge>
               
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                Stop losing patients to competitors
-                <span className="block text-primary mt-2">Scale your clinic globally</span>
+                For private clinics and
+                <span className="block mt-2">medical centers</span>
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                Every day without digital tools, you're losing patients to modern clinics. Competitors are capturing YOUR potential patients online. 
-                <span className="font-semibold text-foreground"> Don't get left behind.</span>
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
+                Good health is a state of mental, physical and social well being and it does not just mean the absence of diseases!
               </p>
               
               {/* Loss Indicators */}
@@ -138,12 +137,12 @@ export default function ForClinics() {
                 </div>
               </Card>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                <Button size="lg" className="h-14 text-base shadow-lg shadow-primary/25" asChild>
-                  <Link to="/auth?mode=signup&role=clinic_admin">Start Free 14-Day Trial</Link>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+                <Button size="lg" className="h-14 px-8 text-base rounded-full shadow-xl hover:shadow-2xl transition-all bg-primary hover:bg-primary/90" asChild>
+                  <Link to="/auth?mode=signup&role=clinic_admin">Get In Touch →</Link>
                 </Button>
-                <Button size="lg" variant="outline" className="h-14 text-base border-2" asChild>
-                  <Link to="#roi">Calculate Your ROI</Link>
+                <Button size="lg" variant="outline" className="h-14 px-8 text-base rounded-full border-2 hover:bg-muted/50" asChild>
+                  <Link to="#roi">See More →</Link>
                 </Button>
               </div>
               
