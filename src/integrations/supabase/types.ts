@@ -106,6 +106,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "appointments_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "appointments_patient_id_fkey"
             columns: ["patient_id"]
             isOneToOne: false
@@ -237,6 +244,13 @@ export type Database = {
             columns: ["clinic_id"]
             isOneToOne: false
             referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinic_staff_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
             referencedColumns: ["id"]
           },
           {
@@ -1214,7 +1228,54 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      clinics_public: {
+        Row: {
+          city: string | null
+          clinic_type: Database["public"]["Enums"]["clinic_type"] | null
+          country: string | null
+          created_at: string | null
+          description: string | null
+          id: string | null
+          is_active: boolean | null
+          logo_url: string | null
+          name: string | null
+          operating_hours: Json | null
+          specialties: string[] | null
+          state: string | null
+          website: string | null
+        }
+        Insert: {
+          city?: string | null
+          clinic_type?: Database["public"]["Enums"]["clinic_type"] | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          logo_url?: string | null
+          name?: string | null
+          operating_hours?: Json | null
+          specialties?: string[] | null
+          state?: string | null
+          website?: string | null
+        }
+        Update: {
+          city?: string | null
+          clinic_type?: Database["public"]["Enums"]["clinic_type"] | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          logo_url?: string | null
+          name?: string | null
+          operating_hours?: Json | null
+          specialties?: string[] | null
+          state?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
