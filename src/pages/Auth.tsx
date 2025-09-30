@@ -153,7 +153,10 @@ export default function Auth() {
       setError(error.message);
       setIsLoading(false);
     } else {
-      setError('Account created! Please check your email to confirm your account.');
+      // Redirect to login page
+      setSearchParams({ mode: 'login' });
+      setSignupStep(1);
+      setError('Account created! Please check your email to confirm your account, then login.');
       setIsLoading(false);
     }
   };
