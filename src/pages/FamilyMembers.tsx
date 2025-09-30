@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -137,14 +137,12 @@ function FamilyMembersContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16 max-w-4xl">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold">Family Members</h1>
-            <p className="text-muted-foreground">Manage your family members for appointments</p>
-          </div>
+    <DashboardLayout 
+      title="Family Members"
+      description="Manage your family members for appointments"
+    >
+      <div className="space-y-6 max-w-4xl mx-auto">
+        <div className="flex justify-end">
           <Button onClick={() => setShowAddForm(!showAddForm)}>
             <Plus className="h-4 w-4 mr-2" />
             Add Member
@@ -306,7 +304,7 @@ function FamilyMembersContent() {
             ))
           )}
         </div>
-      </main>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }

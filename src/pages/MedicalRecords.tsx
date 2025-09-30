@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -103,15 +103,13 @@ function MedicalRecordsContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold">Medical Records</h1>
-            <p className="text-muted-foreground">View and manage your health documents</p>
-          </div>
-          <Button onClick={() => navigate('/medical-records/upload')}>
+    <DashboardLayout 
+      title="Medical Records"
+      description="View and manage your health documents"
+    >
+      <div className="space-y-6">
+        <div className="flex justify-end">
+          <Button onClick={() => navigate('/patient/medical-records/upload')}>
             <Upload className="h-4 w-4 mr-2" />
             Upload Record
           </Button>
@@ -123,7 +121,7 @@ function MedicalRecordsContent() {
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <FileText className="h-12 w-12 text-muted-foreground mb-4" />
                 <p className="text-muted-foreground mb-4">No medical records yet</p>
-                <Button onClick={() => navigate('/medical-records/upload')}>
+                <Button onClick={() => navigate('/patient/medical-records/upload')}>
                   <Upload className="h-4 w-4 mr-2" />
                   Upload Your First Record
                 </Button>
@@ -174,7 +172,7 @@ function MedicalRecordsContent() {
             ))
           )}
         </div>
-      </main>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }

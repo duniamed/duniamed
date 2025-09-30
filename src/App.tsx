@@ -20,6 +20,7 @@ import HIPAACompliance from "./pages/HIPAACompliance";
 import CookiePolicy from "./pages/CookiePolicy";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import PatientDashboardHome from "./pages/PatientDashboardHome";
 import Profile from "./pages/Profile";
 import Search from "./pages/Search";
 import SpecialistProfile from "./pages/SpecialistProfile";
@@ -91,7 +92,8 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             
             {/* PATIENT PORTAL */}
-            <Route path="/patient/dashboard" element={<Dashboard />} />
+            <Route path="/patient/dashboard" element={<PatientDashboardHome />} />
+            <Route path="/dashboard" element={<PatientDashboardHome />} />
             <Route path="/patient/profile" element={<Profile />} />
             <Route path="/profile/edit" element={<PatientProfileEdit />} />
             <Route path="/patient/appointments" element={<Appointments />} />

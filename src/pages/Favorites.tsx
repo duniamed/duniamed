@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { Star, User, Calendar, DollarSign, MapPin } from 'lucide-react';
@@ -86,21 +86,20 @@ function FavoritesContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
-        <h1 className="text-3xl font-bold mb-6">Favorite Specialists</h1>
-
-        {favorites.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <Star className="h-12 w-12 text-muted-foreground mb-4" />
-              <p className="text-muted-foreground mb-4">No favorite specialists yet</p>
-              <Button onClick={() => navigate('/search')}>Find Specialists</Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <DashboardLayout 
+      title="Favorite Specialists"
+      description="Your saved doctors for quick access"
+    >
+      {favorites.length === 0 ? (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Star className="h-12 w-12 text-muted-foreground mb-4" />
+            <p className="text-muted-foreground mb-4">No favorite specialists yet</p>
+            <Button onClick={() => navigate('/search/specialists')}>Find Specialists</Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {favorites.map((fav) => (
               <Card key={fav.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
@@ -151,7 +150,6 @@ function FavoritesContent() {
             ))}
           </div>
         )}
-      </main>
-    </div>
+    </DashboardLayout>
   );
 }
