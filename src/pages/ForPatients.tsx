@@ -3,8 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Search, Calendar, Video, FileText, Heart, Shield, Globe, Clock, Star, MessageSquare, Users, Bot } from "lucide-react";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import Layout from "@/components/layout/Layout";
 
 export default function ForPatients() {
   const features = [
@@ -91,10 +90,7 @@ export default function ForPatients() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-background">
-      <Header />
-      
-      <main className="flex-1 pt-16">
+    <Layout>
         {/* Hero - Clean and Modern */}
         <section className="section-padding bg-white dark:bg-background">
           <div className="container-modern">
@@ -258,9 +254,6 @@ export default function ForPatients() {
             </Card>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </Layout>
   );
 }

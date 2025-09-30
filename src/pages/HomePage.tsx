@@ -15,8 +15,7 @@ import {
   Award,
   TrendingUp
 } from "lucide-react";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import Layout from "@/components/layout/Layout";
 
 export default function Home() {
   const services = [
@@ -59,10 +58,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-background">
-      <Header />
-      
-      <main className="flex-1 pt-16">
+    <Layout>
         {/* Hero Section - Modern & Clean */}
         <section className="section-padding">
           <div className="container-modern">
@@ -378,9 +374,6 @@ export default function Home() {
             </Card>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </Layout>
   );
 }

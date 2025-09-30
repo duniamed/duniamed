@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,9 +28,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 pt-16">
+    <Layout>
         {/* Hero Section */}
         <section className="gradient-hero py-20">
           <div className="container px-4">
@@ -175,8 +172,6 @@ export default function Contact() {
             </div>
           </div>
         </section>
-      </main>
-      <Footer />
-    </div>
+    </Layout>
   );
 }

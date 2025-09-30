@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -107,31 +107,31 @@ function SpecialistProfileContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--soft-blue))]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
+      <Layout>
+        <div className="container-modern py-12 flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </Layout>
     );
   }
 
   if (!specialist) {
     return (
-      <div className="min-h-screen flex flex-col bg-[hsl(var(--soft-blue))]">
-        <Header />
-        <main className="flex-1 container py-8 px-4 mt-16">
+      <Layout>
+        <div className="container-modern py-12">
           <Card className="shadow-xl">
             <CardContent className="py-12 text-center">
               <p className="text-muted-foreground">Specialist not found</p>
             </CardContent>
           </Card>
-        </main>
-      </div>
+        </div>
+      </Layout>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[hsl(var(--soft-blue))]">
-      <Header />
-      <main className="flex-1 container py-12 px-4 mt-16">
+    <Layout>
+      <div className="container-modern py-12">
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Main Profile Card */}
           <Card className="shadow-xl border-0 overflow-hidden">
@@ -401,7 +401,7 @@ function SpecialistProfileContent() {
             </TabsContent>
           </Tabs>
         </div>
-      </main>
-    </div>
+      </div>
+    </Layout>
   );
 }

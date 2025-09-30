@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -151,23 +151,21 @@ function BookAppointmentContent() {
 
   if (!specialist) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 container py-8 px-4 mt-16">
+      <Layout>
+        <div className="container-modern py-12">
           <Card>
             <CardContent className="py-12 text-center">
               <p className="text-muted-foreground">Specialist not found</p>
             </CardContent>
           </Card>
-        </main>
-      </div>
+        </div>
+      </Layout>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
+    <Layout>
+      <div className="container-modern py-12">
         <div className="max-w-3xl mx-auto space-y-6">
           {/* Header with Urgency */}
           <div className="space-y-4">
@@ -400,7 +398,7 @@ function BookAppointmentContent() {
             </Card>
           )}
         </div>
-      </main>
-    </div>
+      </div>
+    </Layout>
   );
 }

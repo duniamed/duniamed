@@ -3,8 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Search, Calendar, Video, FileText, ArrowRight, Clock, CheckCircle2, AlertCircle, Users } from "lucide-react";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import Layout from "@/components/layout/Layout";
 
 export default function HowItWorks() {
   const steps = [
@@ -59,10 +58,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[hsl(var(--soft-blue))]">
-      <Header />
-      
-      <main className="flex-1 pt-16">
+    <Layout>
         {/* Hero with Loss Aversion */}
         <section className="py-24 md:py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-background">
           <div className="mx-auto max-w-5xl text-center space-y-8">
@@ -244,9 +240,6 @@ export default function HowItWorks() {
             </div>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </Layout>
   );
 }

@@ -2,15 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Building2, Users, Smile, Shield, Calendar, Video } from "lucide-react";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import Layout from "@/components/layout/Layout";
 
 export default function ForClinics() {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
-      <main className="flex-1 pt-16">
+    <Layout>
         {/* Hero Section - VOA Health inspired */}
         <section className="py-20 md:py-32 px-4 sm:px-6 lg:px-8 bg-soft-purple">
           <div className="mx-auto max-w-6xl text-center space-y-8">
@@ -177,9 +173,6 @@ export default function ForClinics() {
             </p>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </Layout>
   );
 }

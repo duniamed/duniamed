@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Video, Star, MapPin, Loader2, Clock, CheckCircle } from 'lucide-react';
@@ -127,9 +127,8 @@ function InstantConsultationContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <Header />
-      <main className="container py-8 px-4 mt-16">
+    <Layout>
+      <div className="container-modern py-12">
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Hero Section - Loss Aversion Framing */}
           <div className="text-center space-y-4 py-8">
@@ -313,7 +312,7 @@ function InstantConsultationContent() {
             </Card>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </Layout>
   );
 }
