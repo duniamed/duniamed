@@ -51,6 +51,9 @@ import AdminPanel from "./pages/AdminPanel";
 import AuditLogs from "./pages/AuditLogs";
 import SessionManagement from "./pages/SessionManagement";
 import NotFound from "./pages/NotFound";
+import SpecialistProfileEdit from "./pages/SpecialistProfileEdit";
+import ClinicProfileEdit from "./pages/ClinicProfileEdit";
+import CreateVirtualClinic from "./pages/CreateVirtualClinic";
 
 const queryClient = new QueryClient();
 
@@ -103,6 +106,8 @@ const App = () => (
             {/* SPECIALIST PORTAL */}
             <Route path="/specialist/dashboard" element={<SpecialistDashboard />} />
             <Route path="/specialist/profile" element={<Profile />} />
+            <Route path="/specialist/profile/edit" element={<SpecialistProfileEdit />} />
+            <Route path="/specialist/create-virtual-clinic" element={<CreateVirtualClinic />} />
             <Route path="/specialist/availability" element={<SpecialistAvailability />} />
             <Route path="/specialist/time-off" element={<SpecialistTimeOff />} />
             <Route path="/specialist/appointments" element={<Appointments />} />
@@ -118,6 +123,7 @@ const App = () => (
             {/* CLINIC PORTAL */}
             <Route path="/clinic/dashboard" element={<ClinicDashboard />} />
             <Route path="/clinic/settings" element={<ClinicSettings />} />
+            <Route path="/clinic/profile/edit" element={<ClinicProfileEdit />} />
             <Route path="/clinic/staff" element={<ClinicStaff />} />
             <Route path="/clinic/appointments" element={<Appointments />} />
             <Route path="/clinic/appointments/:id" element={<AppointmentDetails />} />

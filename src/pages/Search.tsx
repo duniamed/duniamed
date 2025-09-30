@@ -97,14 +97,15 @@ function SearchContent() {
       query = query.lte('consultation_fee_max', parseFloat(maxFee));
     }
 
+    // Order by online status first, then by selected sort
     if (sortBy === 'rating') {
-      query = query.order('average_rating', { ascending: false });
+      query = query.order('is_online', { ascending: false }).order('average_rating', { ascending: false });
     } else if (sortBy === 'price_low') {
-      query = query.order('consultation_fee_min', { ascending: true });
+      query = query.order('is_online', { ascending: false }).order('consultation_fee_min', { ascending: true });
     } else if (sortBy === 'price_high') {
-      query = query.order('consultation_fee_min', { ascending: false });
+      query = query.order('is_online', { ascending: false }).order('consultation_fee_min', { ascending: false });
     } else if (sortBy === 'experience') {
-      query = query.order('years_experience', { ascending: false });
+      query = query.order('is_online', { ascending: false }).order('years_experience', { ascending: false });
     }
 
     const { data, error } = await query;
@@ -266,8 +267,10 @@ function SearchContent() {
                           {specialist.profiles?.first_name?.[0]}
                           {specialist.profiles?.last_name?.[0]}
                         </div>
-                        {specialist.is_accepting_patients && (
-                          <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-green-500 border-2 border-background" />
+                        {(specialist as any).is_online && (
+                          <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-green-500 border-2 border-background flex items-center justify-center">
+                            <div className="h-2 w-2 rounded-full bg-white animate-pulse" />
+                          </div>
                         )}
                       </div>
                       <div className="flex-1">
@@ -322,8 +325,13 @@ function SearchContent() {
                       <p className="text-xs text-muted-foreground">vs. in-person visit</p>
                     </div>
 
-                    {/* Scarcity Indicator */}
-                    {specialist.is_accepting_patients && (
+                    {/* Online/Scarcity Indicator */}
+                    {(specialist as any).is_online ? (
+                      <div className="flex items-center gap-2 text-xs text-green-700 dark:text-green-400 bg-green-500/10 rounded px-3 py-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                        <span className="font-medium">Online Now - Available for instant consultation</span>
+                      </div>
+                    ) : specialist.is_accepting_patients && (
                       <div className="flex items-center gap-2 text-xs text-yellow-700 dark:text-yellow-500 bg-yellow-500/10 rounded px-3 py-2">
                         <div className="h-1.5 w-1.5 rounded-full bg-yellow-500 animate-pulse" />
                         <span className="font-medium">Taking patients - Book before slots fill</span>

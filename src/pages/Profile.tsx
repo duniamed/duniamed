@@ -11,9 +11,9 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { AlertCircle, User, Lock, Trash2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import Header from '@/components/layout/Header';
 
 export default function Profile() {
@@ -121,7 +121,7 @@ function ProfileContent() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 container max-w-4xl py-8 px-4">
+      <main className="flex-1 container max-w-4xl py-8 px-4 mt-16">
         <div className="space-y-6">
           <div>
             <h1 className="text-3xl font-bold">Profile Settings</h1>
@@ -135,6 +135,71 @@ function ProfileContent() {
             </Alert>
           )}
 
+          {/* Profile Overview Card with Role-Specific Options */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5" />
+                Profile Overview
+              </CardTitle>
+              <CardDescription>
+                {profile?.role === 'specialist' && 'Manage your specialist profile and settings'}
+                {profile?.role === 'clinic_admin' && 'Manage your clinic profile and settings'}
+                {profile?.role === 'patient' && 'Manage your account settings and preferences'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
+                    {profile?.first_name?.[0]}{profile?.last_name?.[0]}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-lg">
+                      {profile?.first_name} {profile?.last_name}
+                    </p>
+                    <p className="text-sm text-muted-foreground">{profile?.email}</p>
+                    <Badge variant="secondary" className="mt-1 capitalize">
+                      {profile?.role?.replace('_', ' ')}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-2 pt-4">
+                  {profile?.role === 'specialist' && (
+                    <>
+                      <Button asChild className="flex-1">
+                        <a href="/specialist/profile/edit">
+                          Edit Specialist Profile
+                        </a>
+                      </Button>
+                      <Button asChild variant="outline" className="flex-1">
+                        <a href="/specialist/create-virtual-clinic">
+                          Create Virtual Clinic
+                        </a>
+                      </Button>
+                    </>
+                  )}
+                  
+                  {profile?.role === 'clinic_admin' && (
+                    <Button asChild className="flex-1">
+                      <a href="/clinic/profile/edit">
+                        Edit Clinic Profile
+                      </a>
+                    </Button>
+                  )}
+                  
+                  {profile?.role === 'patient' && (
+                    <p className="text-sm text-muted-foreground">
+                      Use the forms below to update your patient information
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Personal Information Form */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -186,6 +251,7 @@ function ProfileContent() {
             </CardContent>
           </Card>
 
+          {/* Change Password Form */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -227,6 +293,7 @@ function ProfileContent() {
             </CardContent>
           </Card>
 
+          {/* Danger Zone */}
           <Card className="border-destructive">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-destructive">
