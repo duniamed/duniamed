@@ -57,6 +57,22 @@ export default function Header() {
           </div>
 
           <div className="hidden md:flex md:items-center md:gap-4">
+            <select className="text-xs bg-background border rounded-md px-2 py-1">
+              <option value="en">🇬🇧 EN</option>
+              <option value="es">🇪🇸 ES</option>
+              <option value="pt">🇵🇹 PT</option>
+              <option value="fr">🇫🇷 FR</option>
+              <option value="de">🇩🇪 DE</option>
+            </select>
+            <select className="text-xs bg-background border rounded-md px-2 py-1">
+              <option value="us">🇺🇸</option>
+              <option value="uk">🇬🇧</option>
+              <option value="br">🇧🇷</option>
+              <option value="pt">🇵🇹</option>
+              <option value="es">🇪🇸</option>
+              <option value="fr">🇫🇷</option>
+              <option value="de">🇩🇪</option>
+            </select>
             {user && profile ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -149,6 +165,24 @@ export default function Header() {
               </Link>
             ))}
             <div className="flex flex-col gap-2 pt-4 border-t">
+              <div className="flex gap-2 mb-2">
+                <select className="flex-1 text-sm bg-background border rounded-md px-3 py-2">
+                  <option value="en">🇬🇧 English</option>
+                  <option value="es">🇪🇸 Español</option>
+                  <option value="pt">🇵🇹 Português</option>
+                  <option value="fr">🇫🇷 Français</option>
+                  <option value="de">🇩🇪 Deutsch</option>
+                </select>
+                <select className="flex-1 text-sm bg-background border rounded-md px-3 py-2">
+                  <option value="us">🇺🇸 US</option>
+                  <option value="uk">🇬🇧 UK</option>
+                  <option value="br">🇧🇷 BR</option>
+                  <option value="pt">🇵🇹 PT</option>
+                  <option value="es">🇪🇸 ES</option>
+                  <option value="fr">🇫🇷 FR</option>
+                  <option value="de">🇩🇪 DE</option>
+                </select>
+              </div>
               {user && profile ? (
                 <>
                   <Button variant="outline" asChild className="w-full">

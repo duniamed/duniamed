@@ -58,9 +58,29 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t">
-          <p className="text-sm text-muted-foreground text-center">
-            © {new Date().getFullYear()} DUNIAMED. All rights reserved.
-          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} DUNIAMED. All rights reserved.
+            </p>
+            <div className="flex items-center gap-4">
+              <select className="text-sm bg-background border rounded-md px-3 py-1.5">
+                <option value="en">🇬🇧 English</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="pt">🇵🇹 Português</option>
+                <option value="fr">🇫🇷 Français</option>
+                <option value="de">🇩🇪 Deutsch</option>
+              </select>
+              <select className="text-sm bg-background border rounded-md px-3 py-1.5">
+                <option value="us">🇺🇸 United States</option>
+                <option value="uk">🇬🇧 United Kingdom</option>
+                <option value="br">🇧🇷 Brazil</option>
+                <option value="pt">🇵🇹 Portugal</option>
+                <option value="es">🇪🇸 Spain</option>
+                <option value="fr">🇫🇷 France</option>
+                <option value="de">🇩🇪 Germany</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
