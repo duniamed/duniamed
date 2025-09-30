@@ -131,4 +131,21 @@
   .shadow-primary {
     box-shadow: var(--shadow-primary);
   }
+  
+  /* Persuasive Design Elements - Based on Behavioral Psychology */
+  .urgency-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-destructive/10 text-destructive text-sm font-medium animate-pulse;
+  }
+  
+  .trust-indicator {
+    @apply flex items-center gap-2 text-sm text-muted-foreground;
+  }
+  
+  .benefit-card {
+    @apply relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+  
+  .scarcity-highlight {
+    @apply bg-yellow-500/10 border-yellow-500/30 text-yellow-700 dark:text-yellow-400;
+  }
 }
