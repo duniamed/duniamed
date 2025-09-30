@@ -19,10 +19,10 @@ export default function Header() {
   const { user, profile, signOut } = useAuth();
 
   const navigation = [
-    { name: "How It Works", href: "/how-it-works" },
-    { name: "For Patients", href: "/for-patients" },
-    { name: "For Specialists", href: "/for-specialists" },
-    { name: "For Clinics", href: "/for-clinics" },
+    { name: "Urgent Care", href: "/instant-consultation" },
+    { name: "Find Specialists", href: "/search" },
+    { name: "How It Works", href: "/home#how-it-works" },
+    { name: "About", href: "/about" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
