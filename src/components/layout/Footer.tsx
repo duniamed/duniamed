@@ -9,16 +9,16 @@ export default function Footer() {
       { name: "For Clinics", href: "/for-clinics" },
     ],
     Company: [
-      { name: "About Us", href: "#" },
-      { name: "Careers", href: "#" },
-      { name: "Blog", href: "#" },
-      { name: "Contact", href: "#" },
+      { name: "About Us", href: "/about" },
+      { name: "Careers", href: "/careers" },
+      { name: "Blog", href: "/blog" },
+      { name: "Contact", href: "/contact" },
     ],
     Legal: [
-      { name: "Privacy Policy", href: "#" },
-      { name: "Terms of Service", href: "#" },
-      { name: "HIPAA Compliance", href: "#" },
-      { name: "Cookie Policy", href: "#" },
+      { name: "Privacy Policy", href: "/privacy" },
+      { name: "Terms of Service", href: "/terms" },
+      { name: "HIPAA Compliance", href: "/hipaa" },
+      { name: "Cookie Policy", href: "/cookies" },
     ],
   };
 
