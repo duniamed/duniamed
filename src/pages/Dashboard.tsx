@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, Search, FileText, MessageSquare } from 'lucide-react';
+import { Calendar, Search, FileText, MessageSquare, CreditCard, Pill } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
@@ -27,7 +27,7 @@ function DashboardContent() {
             <p className="text-muted-foreground">Manage your healthcare appointments and records</p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -61,15 +61,45 @@ function DashboardContent() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
+                  <Pill className="h-5 w-5" />
+                  Prescriptions
+                </CardTitle>
+                <CardDescription>View your prescriptions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link to="/prescriptions">
+                  <Button variant="outline" className="w-full">View All</Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="h-5 w-5" />
+                  Payments
+                </CardTitle>
+                <CardDescription>View payment history</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link to="/payments">
+                  <Button variant="outline" className="w-full">View History</Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
                   Medical Records
                 </CardTitle>
                 <CardDescription>Access your health records</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button variant="outline" className="w-full" disabled>
-                  Coming Soon
-                </Button>
+                <Link to="/medical-records">
+                  <Button variant="outline" className="w-full">View Records</Button>
+                </Link>
               </CardContent>
             </Card>
 
@@ -82,9 +112,9 @@ function DashboardContent() {
                 <CardDescription>Chat with your providers</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button variant="outline" className="w-full" disabled>
-                  Coming Soon
-                </Button>
+                <Link to="/messages">
+                  <Button variant="outline" className="w-full">Open Messages</Button>
+                </Link>
               </CardContent>
             </Card>
           </div>

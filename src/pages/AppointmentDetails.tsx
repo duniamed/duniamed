@@ -35,7 +35,7 @@ interface Appointment {
 
 export default function AppointmentDetails() {
   return (
-    <ProtectedRoute allowedRoles={['patient']}>
+    <ProtectedRoute allowedRoles={['patient', 'specialist']}>
       <AppointmentDetailsContent />
     </ProtectedRoute>
   );
@@ -76,6 +76,34 @@ function AppointmentDetailsContent() {
       setAppointment(data as any);
     }
     setLoading(false);
+  };
+
+  const handleCompleteAppointment = async () => {
+    try {
+      const { error } = await supabase
+        .from('appointments')
+        .update({ 
+          status: 'completed',
+          completed_at: new Date().toISOString()
+        })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'Appointment marked as completed',
+      });
+
+      fetchAppointment();
+    } catch (error) {
+      console.error('Error completing appointment:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to complete appointment',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleCancel = async () => {
@@ -258,12 +286,36 @@ function AppointmentDetailsContent() {
                 </>
               )}
 
-              {canCancel && (
-                <>
-                  <Separator />
+              <Separator />
+              
+              <div className="flex flex-col gap-2">
+                {appointment.status === 'scheduled' && profile?.role === 'specialist' && (
+                  <Button onClick={handleCompleteAppointment}>
+                    Mark as Completed
+                  </Button>
+                )}
+
+                {appointment.status === 'completed' && profile?.role === 'patient' && (
+                  <Button onClick={() => navigate(`/reviews/create/${id}`)}>
+                    Leave a Review
+                  </Button>
+                )}
+
+                {appointment.status === 'completed' && profile?.role === 'specialist' && (
+                  <>
+                    <Button onClick={() => navigate(`/soap-notes/create/${id}`)}>
+                      Create SOAP Note
+                    </Button>
+                    <Button variant="outline" onClick={() => navigate(`/prescriptions/create/${id}`)}>
+                      Create Prescription
+                    </Button>
+                  </>
+                )}
+
+                {canCancel && profile?.role === 'patient' && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="destructive" className="w-full">
+                      <Button variant="destructive">
                         <XCircle className="mr-2 h-4 w-4" />
                         Cancel Appointment
                       </Button>
@@ -283,8 +335,8 @@ function AppointmentDetailsContent() {
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
-                </>
-              )}
+                )}
+              </div>
             </CardContent>
           </Card>
 

@@ -25,6 +25,9 @@ import VideoConsultation from "./pages/VideoConsultation";
 import ClinicDashboard from "./pages/ClinicDashboard";
 import Prescriptions from "./pages/Prescriptions";
 import CreatePrescription from "./pages/CreatePrescription";
+import CreateReview from "./pages/CreateReview";
+import CreateSOAPNote from "./pages/CreateSOAPNote";
+import Payments from "./pages/Payments";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -54,6 +57,9 @@ const App = () => (
             <Route path="/specialist/availability" element={<SpecialistAvailability />} />
             <Route path="/prescriptions" element={<Prescriptions />} />
             <Route path="/prescriptions/create/:appointmentId" element={<CreatePrescription />} />
+            <Route path="/reviews/create/:appointmentId" element={<CreateReview />} />
+            <Route path="/soap-notes/create/:appointmentId" element={<CreateSOAPNote />} />
+            <Route path="/payments" element={<Payments />} />
             <Route path="/medical-records" element={<MedicalRecords />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/consultation/:appointmentId" element={<VideoConsultation />} />
