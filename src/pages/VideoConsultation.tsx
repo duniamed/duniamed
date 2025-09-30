@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Phone, Mic, MicOff, Video, VideoOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function VideoConsultation() {
   return (
@@ -19,35 +20,149 @@ function VideoConsultationContent() {
   const { appointmentId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { profile } = useAuth();
   const [appointment, setAppointment] = useState<any>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [videoError, setVideoError] = useState<string | null>(null);
+  const callFrameRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchAppointment();
+    
+    return () => {
+      // Cleanup video call on unmount
+      if (callFrameRef.current) {
+        callFrameRef.current.destroy();
+      }
+    };
   }, [appointmentId]);
 
   const fetchAppointment = async () => {
-    if (!appointmentId) return;
+    if (!appointmentId || !profile) return;
 
-    const { data, error } = await supabase
-      .from('appointments')
-      .select('*')
-      .eq('id', appointmentId)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('appointments')
+        .select('*')
+        .eq('id', appointmentId)
+        .single();
 
-    if (!error && data) {
-      setAppointment(data);
-      
-      // In production, initialize Daily.co or Twilio video here
-      // For now, this is a placeholder UI
+      if (error) throw error;
+
+      if (data) {
+        setAppointment(data);
+        await initializeVideoRoom(data);
+      }
+    } catch (error: any) {
+      console.error('Error fetching appointment:', error);
+      setVideoError(error.message);
     }
 
     setLoading(false);
   };
 
+  const initializeVideoRoom = async (appointmentData: any) => {
+    try {
+      // Check if we already have a video room URL
+      if (appointmentData.video_room_url) {
+        await loadDailyScript();
+        createCallFrame(appointmentData.video_room_url);
+        return;
+      }
+
+      // Create a new video room via edge function
+      const { data, error } = await supabase.functions.invoke('create-video-room', {
+        body: {
+          appointmentId: appointmentData.id,
+          userName: `${profile.first_name} ${profile.last_name}`
+        }
+      });
+
+      if (error) throw error;
+
+      // Update appointment with video room URL
+      await supabase
+        .from('appointments')
+        .update({ 
+          video_room_url: data.roomUrl,
+          video_room_id: data.roomUrl.split('/').pop()
+        })
+        .eq('id', appointmentData.id);
+
+      await loadDailyScript();
+      createCallFrame(data.roomUrl, data.token);
+    } catch (error: any) {
+      console.error('Error initializing video room:', error);
+      setVideoError('Failed to initialize video room. Please try again.');
+    }
+  };
+
+  const loadDailyScript = () => {
+    return new Promise((resolve, reject) => {
+      if ((window as any).DailyIframe) {
+        resolve(true);
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/@daily-co/daily-js';
+      script.onload = resolve;
+      script.onerror = reject;
+      document.body.appendChild(script);
+    });
+  };
+
+  const createCallFrame = (url: string, token?: string) => {
+    if (!containerRef.current || !(window as any).DailyIframe) return;
+
+    const DailyIframe = (window as any).DailyIframe;
+    
+    callFrameRef.current = DailyIframe.createFrame(containerRef.current, {
+      iframeStyle: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        border: '0',
+      },
+      showLeaveButton: true,
+    });
+
+    const joinOptions: any = { url };
+    if (token) {
+      joinOptions.token = token;
+    }
+
+    callFrameRef.current.join(joinOptions);
+
+    // Handle call events
+    callFrameRef.current
+      .on('left-meeting', handleEndCall)
+      .on('error', (error: any) => {
+        console.error('Daily.co error:', error);
+        setVideoError('Video connection error. Please refresh.');
+      });
+  };
+
   const handleEndCall = async () => {
+    if (callFrameRef.current) {
+      callFrameRef.current.leave();
+      callFrameRef.current.destroy();
+    }
+
+    // Update appointment status
+    if (appointmentId) {
+      await supabase
+        .from('appointments')
+        .update({ 
+          status: 'completed',
+          completed_at: new Date().toISOString()
+        })
+        .eq('id', appointmentId);
+    }
+
     toast({
       title: 'Call Ended',
       description: 'The consultation has been completed',
@@ -55,10 +170,46 @@ function VideoConsultationContent() {
     navigate(`/appointments/${appointmentId}`);
   };
 
+  const toggleMute = () => {
+    if (callFrameRef.current) {
+      callFrameRef.current.setLocalAudio(!isMuted);
+    }
+    setIsMuted(!isMuted);
+  };
+
+  const toggleVideo = () => {
+    if (callFrameRef.current) {
+      callFrameRef.current.setLocalVideo(!isVideoOff);
+    }
+    setIsVideoOff(!isVideoOff);
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-white">Connecting to video consultation...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (videoError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <Card className="max-w-md">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <Video className="h-16 w-16 text-destructive mx-auto mb-4" />
+              <h2 className="text-xl font-bold mb-2">Connection Error</h2>
+              <p className="text-muted-foreground mb-4">{videoError}</p>
+              <Button onClick={() => navigate(`/appointments/${appointmentId}`)}>
+                Back to Appointment
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -66,26 +217,8 @@ function VideoConsultationContent() {
   return (
     <div className="min-h-screen bg-black flex flex-col">
       <div className="flex-1 relative">
-        {/* Video placeholder - Replace with actual video component */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center">
-          <div className="text-center">
-            <Video className="h-24 w-24 text-gray-600 mx-auto mb-4" />
-            <p className="text-white text-lg">Video Consultation</p>
-            <p className="text-gray-400 text-sm mt-2">
-              Daily.co integration pending - Placeholder UI
-            </p>
-          </div>
-        </div>
-
-        {/* Local video preview (small) */}
-        <Card className="absolute bottom-24 right-4 w-48 h-36 overflow-hidden">
-          <CardContent className="p-0 h-full bg-gray-800 flex items-center justify-center">
-            <div className="text-center">
-              <Video className="h-8 w-8 text-gray-600 mx-auto" />
-              <p className="text-gray-400 text-xs mt-2">You</p>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Daily.co video container */}
+        <div ref={containerRef} className="absolute inset-0" />
       </div>
 
       {/* Controls */}
@@ -95,7 +228,7 @@ function VideoConsultationContent() {
             size="lg"
             variant={isMuted ? 'destructive' : 'secondary'}
             className="rounded-full h-14 w-14"
-            onClick={() => setIsMuted(!isMuted)}
+            onClick={toggleMute}
           >
             {isMuted ? <MicOff /> : <Mic />}
           </Button>
@@ -104,7 +237,7 @@ function VideoConsultationContent() {
             size="lg"
             variant={isVideoOff ? 'destructive' : 'secondary'}
             className="rounded-full h-14 w-14"
-            onClick={() => setIsVideoOff(!isVideoOff)}
+            onClick={toggleVideo}
           >
             {isVideoOff ? <VideoOff /> : <Video />}
           </Button>
