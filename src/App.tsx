@@ -17,6 +17,11 @@ import SpecialistProfile from "./pages/SpecialistProfile";
 import BookAppointment from "./pages/BookAppointment";
 import Appointments from "./pages/Appointments";
 import AppointmentDetails from "./pages/AppointmentDetails";
+import SpecialistDashboard from "./pages/SpecialistDashboard";
+import SpecialistAvailability from "./pages/SpecialistAvailability";
+import MedicalRecords from "./pages/MedicalRecords";
+import Messages from "./pages/Messages";
+import VideoConsultation from "./pages/VideoConsultation";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +47,11 @@ const App = () => (
             <Route path="/book/:id" element={<BookAppointment />} />
             <Route path="/appointments" element={<Appointments />} />
             <Route path="/appointments/:id" element={<AppointmentDetails />} />
+            <Route path="/specialist/dashboard" element={<SpecialistDashboard />} />
+            <Route path="/specialist/availability" element={<SpecialistAvailability />} />
+            <Route path="/medical-records" element={<MedicalRecords />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/consultation/:appointmentId" element={<VideoConsultation />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
