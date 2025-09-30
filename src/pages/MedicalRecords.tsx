@@ -6,8 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
-import { FileText, Download, Eye } from 'lucide-react';
-import { format } from 'date-fns';
+import { FileText, Download, Upload, Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface MedicalRecord {
   id: string;
@@ -16,9 +16,9 @@ interface MedicalRecord {
   record_type: string;
   file_url: string;
   file_type: string;
+  file_size: number;
   recorded_at: string;
-  specialist_id: string;
-  appointment_id: string;
+  created_at: string;
 }
 
 export default function MedicalRecords() {
@@ -31,8 +31,9 @@ export default function MedicalRecords() {
 
 function MedicalRecordsContent() {
   const { user } = useAuth();
-  const [records, setRecords] = useState<MedicalRecord[]>([]);
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [records, setRecords] = useState<MedicalRecord[]>([]);
 
   useEffect(() => {
     fetchRecords();
@@ -45,7 +46,7 @@ function MedicalRecordsContent() {
       .from('medical_records')
       .select('*')
       .eq('patient_id', user.id)
-      .order('recorded_at', { ascending: false });
+      .order('created_at', { ascending: false });
 
     if (!error && data) {
       setRecords(data);
@@ -54,19 +55,43 @@ function MedicalRecordsContent() {
     setLoading(false);
   };
 
-  const getRecordTypeColor = (type: string) => {
-    switch (type) {
-      case 'lab_result':
-        return 'bg-blue-500';
-      case 'prescription':
-        return 'bg-green-500';
-      case 'imaging':
-        return 'bg-purple-500';
-      case 'clinical_note':
-        return 'bg-orange-500';
-      default:
-        return 'bg-gray-500';
+  const downloadFile = async (filePath: string, fileName: string) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from('medical-records')
+        .download(filePath);
+
+      if (error) throw error;
+
+      const url = URL.createObjectURL(data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading file:', error);
     }
+  };
+
+  const getRecordTypeBadge = (type: string) => {
+    const colors: Record<string, string> = {
+      lab_result: 'bg-blue-500/10 text-blue-500',
+      prescription: 'bg-purple-500/10 text-purple-500',
+      imaging: 'bg-green-500/10 text-green-500',
+      diagnosis: 'bg-red-500/10 text-red-500',
+      vaccination: 'bg-yellow-500/10 text-yellow-500',
+      other: 'bg-gray-500/10 text-gray-500',
+    };
+    return colors[type] || colors.other;
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   };
 
   if (loading) {
@@ -81,58 +106,72 @@ function MedicalRecordsContent() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 container py-8 px-4 mt-16">
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold">Medical Records</h1>
-              <p className="text-muted-foreground">Access your health documents</p>
-            </div>
-            <Button>
-              <Download className="mr-2 h-4 w-4" />
-              Export All (FHIR)
-            </Button>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold">Medical Records</h1>
+            <p className="text-muted-foreground">View and manage your health documents</p>
           </div>
+          <Button onClick={() => navigate('/medical-records/upload')}>
+            <Upload className="h-4 w-4 mr-2" />
+            Upload Record
+          </Button>
+        </div>
 
+        <div className="space-y-4">
           {records.length === 0 ? (
             <Card>
-              <CardContent className="py-12 text-center">
-                <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">No medical records yet</p>
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <FileText className="h-12 w-12 text-muted-foreground mb-4" />
+                <p className="text-muted-foreground mb-4">No medical records yet</p>
+                <Button onClick={() => navigate('/medical-records/upload')}>
+                  <Upload className="h-4 w-4 mr-2" />
+                  Upload Your First Record
+                </Button>
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-4">
-              {records.map((record) => (
-                <Card key={record.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-lg">{record.title}</CardTitle>
-                        <CardDescription>
-                          {format(new Date(record.recorded_at), 'MMM dd, yyyy')}
-                        </CardDescription>
+            records.map((record) => (
+              <Card key={record.id}>
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3 flex-1">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <FileText className="h-5 w-5 text-primary" />
                       </div>
-                      <Badge className={getRecordTypeColor(record.record_type)}>
-                        {record.record_type.replace('_', ' ')}
-                      </Badge>
+                      <div className="flex-1">
+                        <CardTitle className="text-lg">{record.title}</CardTitle>
+                        <CardDescription>{record.description}</CardDescription>
+                      </div>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">{record.description}</p>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
-                        <Eye className="mr-2 h-4 w-4" />
-                        View
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Download className="mr-2 h-4 w-4" />
-                        Download
-                      </Button>
+                    <Badge className={getRecordTypeBadge(record.record_type)}>
+                      {record.record_type.replace('_', ' ')}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="h-4 w-4" />
+                        {new Date(record.created_at).toLocaleDateString()}
+                      </div>
+                      <span>•</span>
+                      <span>{formatFileSize(record.file_size)}</span>
+                      <span>•</span>
+                      <span>{record.file_type}</span>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => downloadFile(record.file_url, record.title)}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Download
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
           )}
         </div>
       </main>

@@ -495,7 +495,7 @@ export type Database = {
           fhir_data: Json | null
           file_size: number | null
           file_type: string | null
-          file_url: string | null
+          file_url: string
           id: string
           is_fhir_compliant: boolean | null
           metadata: Json | null
@@ -513,7 +513,7 @@ export type Database = {
           fhir_data?: Json | null
           file_size?: number | null
           file_type?: string | null
-          file_url?: string | null
+          file_url: string
           id?: string
           is_fhir_compliant?: boolean | null
           metadata?: Json | null
@@ -531,7 +531,7 @@ export type Database = {
           fhir_data?: Json | null
           file_size?: number | null
           file_type?: string | null
-          file_url?: string | null
+          file_url?: string
           id?: string
           is_fhir_compliant?: boolean | null
           metadata?: Json | null

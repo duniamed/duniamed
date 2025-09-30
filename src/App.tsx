@@ -31,6 +31,12 @@ import Payments from "./pages/Payments";
 import FamilyMembers from "./pages/FamilyMembers";
 import Notifications from "./pages/Notifications";
 import SpecialistTimeOff from "./pages/SpecialistTimeOff";
+import UploadMedicalRecord from "./pages/UploadMedicalRecord";
+import Favorites from "./pages/Favorites";
+import Analytics from "./pages/Analytics";
+import AdminPanel from "./pages/AdminPanel";
+import AuditLogs from "./pages/AuditLogs";
+import SessionManagement from "./pages/SessionManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -67,6 +73,12 @@ const App = () => (
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/specialist/time-off" element={<SpecialistTimeOff />} />
             <Route path="/medical-records" element={<MedicalRecords />} />
+            <Route path="/medical-records/upload" element={<UploadMedicalRecord />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/audit-logs" element={<AuditLogs />} />
+            <Route path="/sessions" element={<SessionManagement />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/consultation/:appointmentId" element={<VideoConsultation />} />
             <Route path="/clinic/dashboard" element={<ClinicDashboard />} />
