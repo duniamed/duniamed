@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, Search, FileText, MessageSquare, CreditCard, Pill } from 'lucide-react';
+import { Calendar, Search, FileText, MessageSquare, CreditCard, Pill, Users, Bell } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
@@ -84,6 +84,36 @@ function DashboardContent() {
               <CardContent>
                 <Link to="/payments">
                   <Button variant="outline" className="w-full">View History</Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Family Members
+                </CardTitle>
+                <CardDescription>Manage family members</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link to="/family-members">
+                  <Button variant="outline" className="w-full">Manage</Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="h-5 w-5" />
+                  Notifications
+                </CardTitle>
+                <CardDescription>View your notifications</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link to="/notifications">
+                  <Button variant="outline" className="w-full">View All</Button>
                 </Link>
               </CardContent>
             </Card>
