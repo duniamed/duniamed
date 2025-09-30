@@ -5,10 +5,12 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, Users, DollarSign, Clock, TrendingUp } from 'lucide-react';
+import { Calendar, Users, DollarSign, Clock, TrendingUp, LayoutDashboard, MessageSquare, BarChart3, User, CalendarOff } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 
 interface SpecialistData {
   id: string;
@@ -53,6 +55,16 @@ function DashboardContent() {
     totalPatients: 0,
     avgConsultation: 0,
   });
+
+  const menuItems = [
+    { title: 'Dashboard', url: '/specialist/dashboard', icon: LayoutDashboard },
+    { title: 'Appointments', url: '/appointments', icon: Calendar },
+    { title: 'Availability', url: '/specialist/availability', icon: Clock },
+    { title: 'Time Off', url: '/specialist/time-off', icon: CalendarOff },
+    { title: 'Messages', url: '/messages', icon: MessageSquare },
+    { title: 'Analytics', url: '/analytics', icon: BarChart3 },
+    { title: 'Profile', url: '/specialist/profile', icon: User },
+  ];
 
   useEffect(() => {
     fetchSpecialistData();
@@ -156,9 +168,13 @@ function DashboardContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
+    <SidebarProvider defaultOpen>
+      <div className="min-h-screen flex w-full">
+        <DashboardSidebar items={menuItems} groupLabel="Specialist Portal" />
+        <div className="flex-1 flex flex-col">
+          <Header />
+          <main className="flex-1 container py-8 px-4 mt-16">
+            <SidebarTrigger className="mb-4" />
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <div>
@@ -274,7 +290,9 @@ function DashboardContent() {
             </CardContent>
           </Card>
         </div>
-      </main>
-    </div>
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 }

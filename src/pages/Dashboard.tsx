@@ -3,8 +3,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, Search, FileText, MessageSquare, CreditCard, Pill, Users, Bell } from 'lucide-react';
+import { Calendar, Search, FileText, MessageSquare, CreditCard, Pill, Users, Bell, User, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 
 export default function Dashboard() {
   return (
@@ -18,10 +20,28 @@ function DashboardContent() {
   const { profile } = useAuth();
   const firstName = profile?.first_name || 'Guest';
 
+  const menuItems = [
+    { title: 'Dashboard', url: '/patient/dashboard', icon: Users },
+    { title: 'Search Specialists', url: '/search', icon: Search },
+    { title: 'Search Clinics', url: '/search/clinics', icon: MapPin },
+    { title: 'My Appointments', url: '/appointments', icon: Calendar },
+    { title: 'Prescriptions', url: '/prescriptions', icon: Pill },
+    { title: 'Medical Records', url: '/medical-records', icon: FileText },
+    { title: 'Messages', url: '/messages', icon: MessageSquare },
+    { title: 'Payments', url: '/payments', icon: CreditCard },
+    { title: 'Family Members', url: '/family-members', icon: Users },
+    { title: 'Notifications', url: '/notifications', icon: Bell },
+    { title: 'Profile', url: '/patient/profile', icon: User },
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4">
+    <SidebarProvider defaultOpen>
+      <div className="min-h-screen flex w-full">
+        <DashboardSidebar items={menuItems} groupLabel="Patient Portal" />
+        <div className="flex-1 flex flex-col">
+          <Header />
+          <main className="flex-1 container py-8 px-4 mt-16">
+            <SidebarTrigger className="mb-4" />
         <div className="space-y-6">
           <div>
             <h1 className="text-3xl font-bold">Welcome back, {firstName}!</h1>
@@ -168,7 +188,9 @@ function DashboardContent() {
             </CardContent>
           </Card>
         </div>
-      </main>
-    </div>
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 }

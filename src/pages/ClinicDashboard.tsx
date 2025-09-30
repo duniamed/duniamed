@@ -5,8 +5,10 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Building2, Users, Calendar, DollarSign } from 'lucide-react';
+import { Building2, Users, Calendar, DollarSign, LayoutDashboard, Settings, MessageSquare, BarChart3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 
 export default function ClinicDashboard() {
   return (
@@ -27,6 +29,15 @@ function ClinicDashboardContent() {
     monthlyAppointments: 0,
     monthlyRevenue: 0,
   });
+
+  const menuItems = [
+    { title: 'Dashboard', url: '/clinic/dashboard', icon: LayoutDashboard },
+    { title: 'Appointments', url: '/appointments', icon: Calendar },
+    { title: 'Staff', url: '/clinic/staff', icon: Users },
+    { title: 'Settings', url: '/clinic/settings', icon: Settings },
+    { title: 'Messages', url: '/messages', icon: MessageSquare },
+    { title: 'Analytics', url: '/analytics', icon: BarChart3 },
+  ];
 
   useEffect(() => {
     fetchClinicData();
@@ -108,9 +119,13 @@ function ClinicDashboardContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
+    <SidebarProvider defaultOpen>
+      <div className="min-h-screen flex w-full">
+        <DashboardSidebar items={menuItems} groupLabel="Clinic Portal" />
+        <div className="flex-1 flex flex-col">
+          <Header />
+          <main className="flex-1 container py-8 px-4 mt-16">
+            <SidebarTrigger className="mb-4" />
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">{clinic.name}</h1>
           <p className="text-muted-foreground">{clinic.description}</p>
@@ -198,7 +213,9 @@ function ClinicDashboardContent() {
             </CardContent>
           </Card>
         </div>
-      </main>
-    </div>
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 }
