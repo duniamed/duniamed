@@ -1321,6 +1321,7 @@ export type Database = {
         | "clinic_admin"
         | "reviewer"
         | "super_admin"
+        | "admin"
       verification_status: "pending" | "in_review" | "verified" | "rejected"
     }
     CompositeTypes: {
@@ -1481,6 +1482,7 @@ export const Constants = {
         "clinic_admin",
         "reviewer",
         "super_admin",
+        "admin",
       ],
       verification_status: ["pending", "in_review", "verified", "rejected"],
     },

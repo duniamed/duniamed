@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface ProtectedRouteProps {
   children: ReactNode;
-  allowedRoles?: Array<'patient' | 'specialist' | 'clinic_admin'>;
+  allowedRoles?: Array<'patient' | 'specialist' | 'clinic_admin' | 'admin'>;
 }
 
 export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
@@ -15,6 +15,11 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
     if (!loading) {
       if (!user) {
         navigate('/auth');
+        return;
+      }
+
+      // Admin users can access everything
+      if (profile?.role === 'admin') {
         return;
       }
 
@@ -41,6 +46,11 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
 
   if (!user) {
     return null;
+  }
+
+  // Admin users can access everything
+  if (profile?.role === 'admin') {
+    return <>{children}</>;
   }
 
   if (allowedRoles && profile && !allowedRoles.includes(profile.role)) {

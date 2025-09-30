@@ -8,7 +8,7 @@ interface Profile {
   email: string;
   first_name: string;
   last_name: string;
-  role: 'patient' | 'specialist' | 'clinic_admin';
+  role: 'patient' | 'specialist' | 'clinic_admin' | 'admin';
   phone?: string;
   avatar_url?: string;
   date_of_birth?: string;
