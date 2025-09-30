@@ -1278,7 +1278,18 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      get_user_clinic_ids: {
+        Args: { _user_id: string }
+        Returns: string[]
+      }
+      is_clinic_owner: {
+        Args: { _clinic_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_clinic_staff: {
+        Args: { _clinic_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       appointment_status:
