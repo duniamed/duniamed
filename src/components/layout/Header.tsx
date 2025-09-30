@@ -30,24 +30,24 @@ export default function Header() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b">
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
-            <Link to="/home" className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b">
+      <nav className="mx-auto max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8">
+        <div className="flex h-14 sm:h-16 items-center justify-between gap-2">
+          <div className="flex items-center shrink-0">
+            <Link to="/home" className="flex items-center gap-1.5 sm:gap-2">
+              <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
                 D
               </div>
-              <span className="text-xl font-bold">DUNIAMED</span>
+              <span className="text-base sm:text-lg md:text-xl font-bold">DUNIAMED</span>
             </Link>
           </div>
 
-          <div className="hidden md:flex md:items-center md:gap-8">
-            {navigation.map((item) => (
+          <div className="hidden lg:flex lg:items-center lg:gap-4 xl:gap-6">
+            {navigation.slice(0, 4).map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
+                className={`text-xs xl:text-sm font-medium transition-colors hover:text-primary whitespace-nowrap ${
                   isActive(item.href) ? "text-primary" : "text-muted-foreground"
                 }`}
               >
@@ -56,33 +56,22 @@ export default function Header() {
             ))}
           </div>
 
-          <div className="hidden md:flex md:items-center md:gap-4">
-            <select className="text-xs bg-background border rounded-md px-2 py-1">
+          <div className="hidden md:flex md:items-center md:gap-2 lg:gap-3">
+            <select className="hidden lg:block text-xs bg-background border rounded-md px-2 py-1.5">
               <option value="en">🇬🇧 EN</option>
               <option value="es">🇪🇸 ES</option>
               <option value="pt">🇵🇹 PT</option>
-              <option value="fr">🇫🇷 FR</option>
-              <option value="de">🇩🇪 DE</option>
-            </select>
-            <select className="text-xs bg-background border rounded-md px-2 py-1">
-              <option value="us">🇺🇸</option>
-              <option value="uk">🇬🇧</option>
-              <option value="br">🇧🇷</option>
-              <option value="pt">🇵🇹</option>
-              <option value="es">🇪🇸</option>
-              <option value="fr">🇫🇷</option>
-              <option value="de">🇩🇪</option>
             </select>
             {user && profile ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback>
+                  <Button variant="ghost" size="sm" className="flex items-center gap-1.5 h-9">
+                    <Avatar className="h-7 w-7">
+                      <AvatarFallback className="text-xs">
                         {profile.first_name[0]}{profile.last_name[0]}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="hidden lg:inline">{profile.first_name}</span>
+                    <span className="hidden xl:inline text-sm">{profile.first_name}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -127,11 +116,11 @@ export default function Header() {
               </DropdownMenu>
             ) : (
               <>
-                <Button variant="ghost" asChild>
+                <Button variant="ghost" size="sm" asChild className="h-9 px-3 text-sm">
                   <Link to="/auth">Sign In</Link>
                 </Button>
-                <Button asChild>
-                  <Link to="/auth?mode=signup">Get Started</Link>
+                <Button size="sm" asChild className="h-9 px-3 text-sm">
+                  <Link to="/auth?mode=signup">Start</Link>
                 </Button>
               </>
             )}
@@ -139,24 +128,25 @@ export default function Header() {
 
           <button
             type="button"
-            className="md:hidden"
+            className="md:hidden p-2"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
+              <X className="h-5 w-5" />
             ) : (
-              <Menu className="h-6 w-6" />
+              <Menu className="h-5 w-5" />
             )}
           </button>
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-4">
+          <div className="md:hidden py-3 space-y-2 border-t">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`block text-sm font-medium transition-colors hover:text-primary ${
+                className={`block py-2 text-sm font-medium transition-colors hover:text-primary ${
                   isActive(item.href) ? "text-primary" : "text-muted-foreground"
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
@@ -164,28 +154,10 @@ export default function Header() {
                 {item.name}
               </Link>
             ))}
-            <div className="flex flex-col gap-2 pt-4 border-t">
-              <div className="flex gap-2 mb-2">
-                <select className="flex-1 text-sm bg-background border rounded-md px-3 py-2">
-                  <option value="en">🇬🇧 English</option>
-                  <option value="es">🇪🇸 Español</option>
-                  <option value="pt">🇵🇹 Português</option>
-                  <option value="fr">🇫🇷 Français</option>
-                  <option value="de">🇩🇪 Deutsch</option>
-                </select>
-                <select className="flex-1 text-sm bg-background border rounded-md px-3 py-2">
-                  <option value="us">🇺🇸 US</option>
-                  <option value="uk">🇬🇧 UK</option>
-                  <option value="br">🇧🇷 BR</option>
-                  <option value="pt">🇵🇹 PT</option>
-                  <option value="es">🇪🇸 ES</option>
-                  <option value="fr">🇫🇷 FR</option>
-                  <option value="de">🇩🇪 DE</option>
-                </select>
-              </div>
+            <div className="flex flex-col gap-2 pt-3 border-t">
               {user && profile ? (
                 <>
-                  <Button variant="outline" asChild className="w-full">
+                  <Button variant="outline" size="sm" asChild className="w-full h-9 text-sm">
                     <Link 
                       to={
                         profile.role === 'specialist' 
@@ -200,28 +172,14 @@ export default function Header() {
                       Dashboard
                     </Link>
                   </Button>
-                  <Button variant="outline" asChild className="w-full">
-                    <Link 
-                      to={
-                        profile.role === 'specialist' 
-                          ? '/specialist/profile' 
-                          : profile.role === 'clinic_admin' 
-                          ? '/clinic/settings' 
-                          : '/patient/profile'
-                      } 
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <User className="mr-2 h-4 w-4" />
-                      Profile
-                    </Link>
-                  </Button>
                   <Button
                     variant="destructive"
+                    size="sm"
                     onClick={() => {
                       setMobileMenuOpen(false);
                       signOut();
                     }}
-                    className="w-full"
+                    className="w-full h-9 text-sm"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign Out
@@ -229,10 +187,10 @@ export default function Header() {
                 </>
               ) : (
                 <>
-                  <Button variant="outline" asChild className="w-full">
+                  <Button variant="outline" size="sm" asChild className="w-full h-9 text-sm">
                     <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
                   </Button>
-                  <Button asChild className="w-full">
+                  <Button size="sm" asChild className="w-full h-9 text-sm">
                     <Link to="/auth?mode=signup" onClick={() => setMobileMenuOpen(false)}>Get Started</Link>
                   </Button>
                 </>

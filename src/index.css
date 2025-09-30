@@ -119,23 +119,24 @@
     line-height: 1.2;
   }
   
+  /* Mobile-first typography */
   h1 {
-    @apply text-5xl md:text-6xl lg:text-7xl;
+    @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl;
     letter-spacing: -0.02em;
   }
   
   h2 {
-    @apply text-4xl md:text-5xl lg:text-6xl;
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl;
     letter-spacing: -0.02em;
   }
   
   h3 {
-    @apply text-3xl md:text-4xl;
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl;
     letter-spacing: -0.01em;
   }
   
   p {
-    @apply leading-relaxed;
+    @apply leading-relaxed text-sm sm:text-base;
   }
 }
 
@@ -164,26 +165,26 @@
     box-shadow: var(--shadow-xl);
   }
   
-  /* Modern Card Styles */
+  /* Modern Card Styles - Mobile Optimized */
   .card-modern {
-    @apply rounded-3xl border border-border/50 shadow-lg bg-card p-8 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1;
+    @apply rounded-2xl md:rounded-3xl border border-border/50 shadow-lg bg-card p-4 sm:p-6 md:p-8 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1;
   }
   
   .card-soft {
-    @apply rounded-3xl bg-card/80 dark:bg-card/60 p-8 border border-border/30 backdrop-blur-xl shadow-lg;
+    @apply rounded-2xl md:rounded-3xl bg-card/80 dark:bg-card/60 p-4 sm:p-6 md:p-8 border border-border/30 backdrop-blur-xl shadow-lg;
   }
   
   .card-glass {
-    @apply rounded-3xl bg-white/80 dark:bg-card/80 p-8 border border-border/30 backdrop-blur-2xl shadow-2xl;
+    @apply rounded-2xl md:rounded-3xl bg-white/80 dark:bg-card/80 p-4 sm:p-6 md:p-8 border border-border/30 backdrop-blur-2xl shadow-2xl;
   }
   
-  /* Persuasive Design Elements - Based on Behavioral Psychology */
+  /* Persuasive Design Elements - Mobile Optimized */
   .urgency-badge {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-destructive/10 text-destructive text-sm font-medium animate-pulse;
+    @apply inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-full bg-destructive/10 text-destructive text-xs sm:text-sm font-medium animate-pulse;
   }
   
   .trust-indicator {
-    @apply flex items-center gap-2 text-sm text-muted-foreground;
+    @apply flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground;
   }
   
   .benefit-card {
@@ -191,21 +192,21 @@
   }
   
   .scarcity-highlight {
-    @apply bg-yellow-500/10 border-yellow-500/30 text-yellow-700 dark:text-yellow-400;
+    @apply bg-yellow-500/10 border-yellow-500/30 text-yellow-700 dark:text-yellow-400 text-xs sm:text-sm;
   }
   
-  /* Button Enhancements */
+  /* Button Enhancements - Mobile Responsive */
   .btn-primary-modern {
-    @apply rounded-full px-8 h-14 font-semibold shadow-xl hover:shadow-2xl transition-all hover:scale-105;
+    @apply rounded-full px-5 sm:px-6 md:px-8 h-11 sm:h-12 md:h-14 text-sm sm:text-base font-semibold shadow-xl hover:shadow-2xl transition-all hover:scale-105;
   }
   
-  /* Modern Layout Utilities */
+  /* Modern Layout Utilities - Mobile First */
   .section-padding {
-    @apply py-24 md:py-32 lg:py-40;
+    @apply py-10 px-4 sm:py-14 sm:px-5 md:py-20 md:px-6 lg:py-28 lg:px-8;
   }
   
   .container-modern {
-    @apply max-w-7xl mx-auto px-6 md:px-8;
+    @apply max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8;
   }
   
   .gradient-text {
@@ -213,6 +214,6 @@
   }
   
   .glass-panel {
-    @apply rounded-3xl bg-white/90 dark:bg-card/90 backdrop-blur-2xl border border-border/30 shadow-2xl;
+    @apply rounded-2xl md:rounded-3xl bg-white/90 dark:bg-card/90 backdrop-blur-2xl border border-border/30 shadow-2xl p-4 sm:p-5 md:p-6;
   }
 }
