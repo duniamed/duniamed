@@ -1083,6 +1083,7 @@ export type Database = {
           id: string
           in_person_enabled: boolean | null
           is_accepting_patients: boolean | null
+          is_online: boolean | null
           languages: string[] | null
           license_country: string
           license_expiry: string | null
@@ -1115,6 +1116,7 @@ export type Database = {
           id?: string
           in_person_enabled?: boolean | null
           is_accepting_patients?: boolean | null
+          is_online?: boolean | null
           languages?: string[] | null
           license_country: string
           license_expiry?: string | null
@@ -1147,6 +1149,7 @@ export type Database = {
           id?: string
           in_person_enabled?: boolean | null
           is_accepting_patients?: boolean | null
+          is_online?: boolean | null
           languages?: string[] | null
           license_country?: string
           license_expiry?: string | null

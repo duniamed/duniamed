@@ -5,12 +5,14 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, Users, DollarSign, Clock, TrendingUp, LayoutDashboard, MessageSquare, BarChart3, User, CalendarOff } from 'lucide-react';
+import { Calendar, Users, DollarSign, Clock, TrendingUp, LayoutDashboard, MessageSquare, BarChart3, User, CalendarOff, Video, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
+import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/hooks/use-toast';
 
 interface SpecialistData {
   id: string;
@@ -46,9 +48,11 @@ export default function SpecialistDashboard() {
 function DashboardContent() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [specialist, setSpecialist] = useState<SpecialistData | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isOnline, setIsOnline] = useState(false);
   const [stats, setStats] = useState({
     todayAppointments: 0,
     weekRevenue: 0,
@@ -69,7 +73,34 @@ function DashboardContent() {
   useEffect(() => {
     fetchSpecialistData();
     fetchAppointments();
+    fetchOnlineStatus();
   }, [user]);
+
+  const fetchOnlineStatus = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from('specialists')
+      .select('is_online')
+      .eq('user_id', user.id)
+      .single();
+    if (data) setIsOnline(data.is_online || false);
+  };
+
+  const toggleOnlineStatus = async (checked: boolean) => {
+    if (!user) return;
+    const { error } = await supabase
+      .from('specialists')
+      .update({ is_online: checked })
+      .eq('user_id', user.id);
+    
+    if (!error) {
+      setIsOnline(checked);
+      toast({
+        title: checked ? '🟢 You\'re Online' : '⚫ You\'re Offline',
+        description: checked ? 'Patients can now request instant consultations' : 'You won\'t receive instant consultation requests',
+      });
+    }
+  };
 
   const fetchSpecialistData = async () => {
     if (!user) return;
@@ -169,119 +200,208 @@ function DashboardContent() {
 
   return (
     <SidebarProvider defaultOpen>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-background to-muted/20">
         <DashboardSidebar items={menuItems} groupLabel="Specialist Portal" />
         <div className="flex-1 flex flex-col">
           <Header />
           <main className="flex-1 container py-8 px-4 mt-16">
             <SidebarTrigger className="mb-4" />
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold">Specialist Dashboard</h1>
-              <p className="text-muted-foreground">Manage your practice and appointments</p>
+        <div className="space-y-8">
+          {/* Hero Section with Status Toggle */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20">
+            <div className="flex-1">
+              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Your Practice Dashboard
+              </h1>
+              <p className="text-muted-foreground text-lg">Welcome back! Here's what's happening today.</p>
             </div>
-            <div className="flex gap-2">
-              <Button onClick={() => navigate('/specialist/availability')}>
-                <Clock className="mr-2 h-4 w-4" />
-                Manage Availability
-              </Button>
-              <Button onClick={() => navigate('/specialist/profile')}>
-                Edit Profile
-              </Button>
+            <div className="flex flex-col gap-4">
+              <Card className="p-4 border-2 border-primary/20 shadow-lg">
+                <div className="flex items-center gap-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm font-medium">Availability Status</span>
+                    <span className="text-xs text-muted-foreground">
+                      {isOnline ? 'Accept instant consultations' : 'Only scheduled appointments'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {isOnline ? (
+                      <CheckCircle2 className="h-5 w-5 text-green-500 animate-pulse" />
+                    ) : (
+                      <AlertCircle className="h-5 w-5 text-muted-foreground" />
+                    )}
+                    <Switch checked={isOnline} onCheckedChange={toggleOnlineStatus} />
+                  </div>
+                </div>
+              </Card>
             </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Today's Appointments</CardTitle>
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.todayAppointments}</div>
-                <p className="text-xs text-muted-foreground">
-                  {stats.todayAppointments > 0 ? 'Upcoming today' : 'No appointments'}
-                </p>
+          {/* Quick Actions */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card className="group hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50" onClick={() => navigate('/appointments')}>
+              <CardContent className="pt-6 text-center">
+                <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Calendar className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Today's Schedule</h3>
+                <p className="text-3xl font-bold text-primary">{stats.todayAppointments}</p>
+                <p className="text-sm text-muted-foreground mt-1">appointments</p>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Week Revenue</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <Card className="group hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50" onClick={() => navigate('/messages')}>
+              <CardContent className="pt-6 text-center">
+                <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <MessageSquare className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Messages</h3>
+                <p className="text-3xl font-bold text-primary">0</p>
+                <p className="text-sm text-muted-foreground mt-1">new messages</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50" onClick={() => navigate('/specialist/availability')}>
+              <CardContent className="pt-6 text-center">
+                <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Clock className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Manage Hours</h3>
+                <p className="text-sm text-muted-foreground mt-2">Set your availability</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-blue-500/10">
+                    <DollarSign className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Week Revenue</CardTitle>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
                   {specialist?.currency} {stats.weekRevenue.toFixed(2)}
                 </div>
-                <p className="text-xs text-muted-foreground">Last 7 days</p>
+                <p className="text-xs text-muted-foreground mt-1">Last 7 days</p>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Consultations</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
+            <Card className="border-l-4 border-l-green-500 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-green-500/10">
+                    <Users className="h-5 w-5 text-green-500" />
+                  </div>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Total Patients</CardTitle>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{specialist?.total_consultations || 0}</div>
-                <p className="text-xs text-muted-foreground">All time</p>
+                <p className="text-xs text-muted-foreground mt-1">All time consultations</p>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Average Rating</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <Card className="border-l-4 border-l-yellow-500 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-yellow-500/10">
+                    <TrendingUp className="h-5 w-5 text-yellow-500" />
+                  </div>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Average Rating</CardTitle>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {specialist?.average_rating?.toFixed(1) || '0.0'}
+                  {specialist?.average_rating?.toFixed(1) || '0.0'} ⭐
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground mt-1">
                   {specialist?.total_reviews || 0} reviews
                 </p>
               </CardContent>
             </Card>
+
+            <Card className="border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-purple-500/10">
+                    <Video className="h-5 w-5 text-purple-500" />
+                  </div>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Avg Fee</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {specialist?.currency} {specialist?.consultation_fee_min || 0}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">Per consultation</p>
+              </CardContent>
+            </Card>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Upcoming Appointments</CardTitle>
-              <CardDescription>Your scheduled consultations</CardDescription>
+          {/* Upcoming Appointments */}
+          <Card className="border-2">
+            <CardHeader className="bg-gradient-to-r from-muted/50 to-transparent">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-2xl">Upcoming Appointments</CardTitle>
+                  <CardDescription className="text-base">Your scheduled consultations</CardDescription>
+                </div>
+                <Button onClick={() => navigate('/appointments')} variant="outline" size="lg">
+                  View All
+                </Button>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               {appointments.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  No upcoming appointments
+                <div className="text-center py-12">
+                  <Calendar className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+                  <p className="text-xl font-medium text-muted-foreground mb-2">No upcoming appointments</p>
+                  <p className="text-sm text-muted-foreground">Patients will be able to book with you soon!</p>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {appointments.map((appointment) => (
                     <div
                       key={appointment.id}
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent cursor-pointer"
+                      className="group flex items-center justify-between p-5 border-2 rounded-xl hover:border-primary/50 hover:bg-accent/50 cursor-pointer transition-all duration-200 hover:shadow-md"
                       onClick={() => navigate(`/appointments/${appointment.id}`)}
                     >
-                      <div className="flex items-center gap-4">
-                        <div className="flex flex-col">
-                          <span className="font-medium">
+                      <div className="flex items-center gap-6">
+                        <div className="p-3 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                          {appointment.consultation_type === 'video' ? (
+                            <Video className="h-6 w-6 text-primary" />
+                          ) : (
+                            <Calendar className="h-6 w-6 text-primary" />
+                          )}
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <span className="font-bold text-lg">
                             {appointment.patient?.first_name} {appointment.patient?.last_name}
                           </span>
-                          <span className="text-sm text-muted-foreground">
-                            {format(new Date(appointment.scheduled_at), 'MMM dd, yyyy - hh:mm a')}
+                          <span className="text-sm text-muted-foreground font-medium">
+                            {format(new Date(appointment.scheduled_at), 'EEEE, MMM dd, yyyy')} at {format(new Date(appointment.scheduled_at), 'hh:mm a')}
                           </span>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
-                        <Badge variant="secondary">{appointment.consultation_type}</Badge>
-                        <Badge className={getStatusColor(appointment.status)}>
+                        <div className="text-right">
+                          <p className="text-sm text-muted-foreground">Duration</p>
+                          <p className="font-bold">{appointment.duration_minutes} min</p>
+                        </div>
+                        <Badge 
+                          variant="secondary" 
+                          className="text-base py-2 px-4 capitalize"
+                        >
+                          {appointment.consultation_type}
+                        </Badge>
+                        <Badge className={`${getStatusColor(appointment.status)} text-white text-base py-2 px-4 capitalize`}>
                           {appointment.status}
                         </Badge>
-                        <span className="text-sm text-muted-foreground">
-                          {appointment.duration_minutes} min
-                        </span>
                       </div>
                     </div>
                   ))}

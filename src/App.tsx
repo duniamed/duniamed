@@ -31,6 +31,7 @@ import SpecialistAvailability from "./pages/SpecialistAvailability";
 import MedicalRecords from "./pages/MedicalRecords";
 import Messages from "./pages/Messages";
 import VideoConsultation from "./pages/VideoConsultation";
+import InstantConsultation from "./pages/InstantConsultation";
 import ClinicDashboard from "./pages/ClinicDashboard";
 import ClinicStaff from "./pages/ClinicStaff";
 import ClinicSettings from "./pages/ClinicSettings";
@@ -125,6 +126,7 @@ const App = () => (
             <Route path="/clinic/analytics" element={<Analytics />} />
             
             {/* SHARED FEATURES */}
+            <Route path="/instant-consultation" element={<InstantConsultation />} />
             <Route path="/consultation/:appointmentId" element={<VideoConsultation />} />
             
             {/* ADMIN */}

@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, Search, FileText, MessageSquare, CreditCard, Pill, Users, Bell, User, MapPin } from 'lucide-react';
+import { Calendar, Search, FileText, MessageSquare, CreditCard, Pill, Users, Bell, User, MapPin, Video } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
@@ -22,6 +22,7 @@ function DashboardContent() {
 
   const menuItems = [
     { title: 'Dashboard', url: '/patient/dashboard', icon: Users },
+    { title: 'Instant Video Call', url: '/instant-consultation', icon: Video },
     { title: 'Search Specialists', url: '/search', icon: Search },
     { title: 'Search Clinics', url: '/search/clinics', icon: MapPin },
     { title: 'My Appointments', url: '/appointments', icon: Calendar },
@@ -49,6 +50,24 @@ function DashboardContent() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <Card className="border-2 border-primary/50 shadow-lg bg-gradient-to-br from-primary/5 to-transparent">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Video className="h-6 w-6 text-primary" />
+                  Instant Video Call
+                </CardTitle>
+                <CardDescription className="text-base">Talk to a doctor right now</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link to="/instant-consultation">
+                  <Button className="w-full h-12 text-base font-semibold" size="lg">
+                    <Video className="mr-2 h-5 w-5" />
+                    Start Now
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
