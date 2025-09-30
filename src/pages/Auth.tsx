@@ -53,6 +53,8 @@ export default function Auth() {
       dataProcessingConsent: false,
       jurisdiction: undefined,
       hipaaAcknowledgment: false,
+      specialties: [],
+      clinicSpecialties: [],
     },
   });
 
@@ -130,12 +132,13 @@ export default function Auth() {
           role: data.role,
           jurisdiction: data.jurisdiction,
           specialist_type: data.specialistType,
-          specialty: data.specialty,
+          specialties: data.specialties,
           license_number: data.licenseNumber,
           license_state: data.licenseState,
           registration_number: data.registrationNumber,
           clinic_name: data.clinicName,
           clinic_type: data.clinicType,
+          clinic_specialties: data.clinicSpecialties,
           facility_id: data.facilityId,
           responsible_director: data.responsibleDirector,
           gdpr_article_9_basis: data.gdprArticle9Basis,

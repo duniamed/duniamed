@@ -4,7 +4,13 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Checkbox } from '@/components/ui/checkbox';
 import { InfoIcon } from 'lucide-react';
+import { MEDICAL_SPECIALTIES, SPECIALIST_TYPES } from '@/lib/constants/specialties';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { X } from 'lucide-react';
 
 interface SpecialistSignupFormProps {
   form: UseFormReturn<SignupFormData>;
@@ -12,6 +18,8 @@ interface SpecialistSignupFormProps {
 
 export function SpecialistSignupForm({ form }: SpecialistSignupFormProps) {
   const jurisdiction = form.watch('jurisdiction');
+  const selectedSpecialties = form.watch('specialties') || [];
+  const [specialtySearch, setSpecialtySearch] = useState('');
 
   const getJurisdictionInfo = () => {
     switch (jurisdiction) {
@@ -32,23 +40,40 @@ export function SpecialistSignupForm({ form }: SpecialistSignupFormProps) {
     }
   };
 
+  const filteredSpecialties = MEDICAL_SPECIALTIES.filter(specialty =>
+    specialty.toLowerCase().includes(specialtySearch.toLowerCase())
+  );
+
+  const toggleSpecialty = (specialty: string) => {
+    const current = selectedSpecialties;
+    if (current.includes(specialty)) {
+      form.setValue('specialties', current.filter(s => s !== specialty));
+    } else {
+      form.setValue('specialties', [...current, specialty]);
+    }
+  };
+
+  const removeSpecialty = (specialty: string) => {
+    form.setValue('specialties', selectedSpecialties.filter(s => s !== specialty));
+  };
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="specialistType">Specialist Type</Label>
+        <Label htmlFor="specialistType">Professional Type</Label>
         <Select
           value={form.watch('specialistType')}
-          onValueChange={(value) => form.setValue('specialistType', value as any)}
+          onValueChange={(value) => form.setValue('specialistType', value)}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select type" />
+            <SelectValue placeholder="Select professional type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="physician">Physician</SelectItem>
-            <SelectItem value="psychologist">Psychologist</SelectItem>
-            <SelectItem value="nurse">Nurse</SelectItem>
-            <SelectItem value="physiotherapist">Physiotherapist</SelectItem>
-            <SelectItem value="dentist">Dentist</SelectItem>
+            {SPECIALIST_TYPES.map(type => (
+              <SelectItem key={type.value} value={type.value}>
+                {type.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
         {form.formState.errors.specialistType && (
@@ -57,12 +82,50 @@ export function SpecialistSignupForm({ form }: SpecialistSignupFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="specialty">Specialty</Label>
+        <Label>Medical Specialties (Select all that apply)</Label>
         <Input
-          id="specialty"
-          placeholder="e.g., Cardiology, General Medicine"
-          {...form.register('specialty')}
+          placeholder="Search specialties..."
+          value={specialtySearch}
+          onChange={(e) => setSpecialtySearch(e.target.value)}
         />
+        
+        {selectedSpecialties.length > 0 && (
+          <div className="flex flex-wrap gap-2 p-3 bg-muted rounded-md">
+            {selectedSpecialties.map(specialty => (
+              <Badge key={specialty} variant="secondary" className="gap-1">
+                {specialty}
+                <button
+                  type="button"
+                  onClick={() => removeSpecialty(specialty)}
+                  className="ml-1 hover:text-destructive"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            ))}
+          </div>
+        )}
+
+        <div className="border rounded-md max-h-64 overflow-y-auto">
+          <div className="p-2 space-y-1">
+            {filteredSpecialties.map(specialty => (
+              <div
+                key={specialty}
+                className="flex items-center space-x-2 p-2 hover:bg-accent rounded-sm cursor-pointer"
+                onClick={() => toggleSpecialty(specialty)}
+              >
+                <Checkbox
+                  checked={selectedSpecialties.includes(specialty)}
+                  onCheckedChange={() => toggleSpecialty(specialty)}
+                />
+                <span className="text-sm">{specialty}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Selected {selectedSpecialties.length} specialt{selectedSpecialties.length === 1 ? 'y' : 'ies'}
+        </p>
       </div>
 
       {jurisdiction && (

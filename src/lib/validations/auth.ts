@@ -11,8 +11,8 @@ export const signupSchema = z.object({
     required_error: 'Please select a role',
   }),
   // Specialist subtype
-  specialistType: z.enum(['physician', 'psychologist', 'nurse', 'physiotherapist', 'dentist']).optional(),
-  specialty: z.string().optional(),
+  specialistType: z.string().optional(),
+  specialties: z.array(z.string()).optional(),
   
   // Basic info
   firstName: z.string()
@@ -46,6 +46,7 @@ export const signupSchema = z.object({
   // Clinic information
   clinicName: z.string().optional(),
   clinicType: z.string().optional(),
+  clinicSpecialties: z.array(z.string()).optional(),
   facilityId: z.string().optional(),
   responsibleDirector: z.string().optional(),
   
