@@ -59,83 +59,106 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background via-background to-muted/20">
       <Header />
       
-      <main className="flex-1">
+      <main className="flex-1 pt-16">
         {/* Hero Section - Loss Aversion & Urgency */}
-        <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
+        <section className="relative pt-20 pb-24 md:pt-28 md:pb-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          {/* Background Elements */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+          <div className="absolute top-20 right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 left-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
           
           <div className="relative mx-auto max-w-7xl">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="text-left">
-                {/* Urgency & Scarcity Indicator */}
-                <div className="flex flex-wrap gap-3 mb-6">
-                  <Badge className="urgency-badge">
-                    <Clock className="h-3.5 w-3.5" />
-                    Doctors available now
-                  </Badge>
-                  <Badge variant="secondary" className="flex items-center gap-1.5">
-                    <Users className="h-3.5 w-3.5" />
-                    12,847 patients helped this week
-                  </Badge>
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div className="text-left space-y-8">
+                {/* Badges */}
+                <div className="flex flex-wrap gap-3">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 backdrop-blur-sm">
+                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                      Doctors available now
+                    </span>
+                  </div>
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
+                    <Users className="h-3.5 w-3.5 text-primary" />
+                    <span className="text-sm font-medium text-primary">
+                      12,847 helped this week
+                    </span>
+                  </div>
                 </div>
                 
-                {/* Loss Aversion Framing */}
-                <h1 className="text-balance mb-6 leading-tight">
-                  Don't let health issues wait - See a doctor in minutes
-                </h1>
-                <p className="text-xl md:text-2xl text-muted-foreground mb-6 leading-relaxed">
-                  Delaying care can turn minor issues into serious problems. Get immediate access to board-certified doctors 24/7.
-                </p>
+                {/* Headline */}
+                <div className="space-y-4">
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight">
+                    Don't let health issues wait
+                    <span className="block text-primary mt-2">See a doctor in minutes</span>
+                  </h1>
+                  <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
+                    Delaying care can turn minor issues into serious problems. Get immediate access to board-certified doctors 24/7.
+                  </p>
+                </div>
                 
-                {/* Risk Reduction - What they might lose */}
-                <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-4 mb-8">
-                  <div className="flex gap-3">
-                    <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-semibold text-destructive mb-1">Why wait and risk it?</p>
-                      <p className="text-sm text-muted-foreground">Most conditions worsen without timely treatment. Average wait times at urgent care: 2-4 hours. Here? Under 5 minutes.</p>
+                {/* Warning Box */}
+                <div className="bg-gradient-to-r from-destructive/10 via-destructive/5 to-transparent border-l-4 border-destructive rounded-lg p-5">
+                  <div className="flex gap-4">
+                    <AlertCircle className="h-6 w-6 text-destructive flex-shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <p className="font-semibold text-foreground">Why risk waiting?</p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        Most conditions worsen without timely treatment. Average ER wait: 2-4 hours. 
+                        <span className="font-medium text-foreground"> Here? Under 5 minutes.</span>
+                      </p>
                     </div>
                   </div>
                 </div>
                 
-                {/* Anchored CTA */}
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button size="lg" className="text-lg h-14 px-8 shadow-lg" asChild>
+                {/* CTAs */}
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                  <Button size="lg" className="text-base h-14 px-8 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all" asChild>
                     <Link to="/instant-consultation">
                       Get Care Now - From $0
                     </Link>
                   </Button>
-                  <Button size="lg" variant="outline" className="text-lg h-14 px-8" asChild>
+                  <Button size="lg" variant="outline" className="text-base h-14 px-8 border-2" asChild>
                     <Link to="#how-it-works">
                       See how it works
-                      <ArrowDown className="ml-2 h-5 w-5" />
+                      <ArrowDown className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
                 </div>
                 
-                {/* Trust Indicators - Loss Prevention */}
-                <div className="flex flex-wrap gap-6 mt-6 text-sm">
-                  <div className="trust-indicator">
-                    <CheckCircle2 className="h-4 w-4 text-primary" />
-                    <span>Most insurance = $0 copay</span>
+                {/* Trust Badges */}
+                <div className="flex flex-wrap gap-6 pt-2">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center">
+                      <CheckCircle2 className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Most insurance = $0</span>
                   </div>
-                  <div className="trust-indicator">
-                    <Shield className="h-4 w-4 text-primary" />
-                    <span>100% secure & HIPAA compliant</span>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Shield className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>HIPAA compliant</span>
                   </div>
-                  <div className="trust-indicator">
-                    <Award className="h-4 w-4 text-primary" />
-                    <span>Board-certified doctors only</span>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Award className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Board-certified only</span>
                   </div>
                 </div>
               </div>
               
-              <div className="relative lg:block">
-                <div className="relative bg-gradient-to-br from-primary/10 to-accent/10 rounded-3xl p-8 aspect-square flex items-center justify-center">
-                  <Video className="w-32 h-32 text-primary opacity-20" />
+              {/* Hero Visual */}
+              <div className="relative lg:block hidden">
+                <div className="relative aspect-square rounded-3xl bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 backdrop-blur-sm border border-primary/10 p-12 flex items-center justify-center">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl animate-pulse" />
+                    <Video className="relative w-40 h-40 text-primary" strokeWidth={1.5} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -143,47 +166,81 @@ export default function Home() {
         </section>
 
         {/* Services Section - Benefit Framing */}
-        <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-muted/30">
+        <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8 bg-muted/30">
           <div className="mx-auto max-w-7xl">
-            <div className="text-center mb-12">
-              <h2 className="mb-4">Stop suffering - Get help for any condition</h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            {/* Section Header */}
+            <div className="text-center mb-16 space-y-4">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+                Stop suffering - Get help for any condition
+              </h2>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
                 Why endure discomfort when relief is just minutes away? Board-certified specialists ready to help.
               </p>
             </div>
 
+            {/* Service Cards */}
             <div className="grid md:grid-cols-3 gap-8">
               {services.map((service, index) => (
-                <Card key={service.title} className="benefit-card p-8 border-2">
+                <Card 
+                  key={service.title} 
+                  className={`benefit-card group relative overflow-hidden border-2 ${
+                    index === 0 ? 'border-primary/20 shadow-lg shadow-primary/10' : 'hover:border-primary/20'
+                  }`}
+                >
                   {index === 0 && (
-                    <div className="absolute top-4 right-4">
-                      <Badge className="bg-primary text-primary-foreground">Most Popular</Badge>
+                    <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-bold px-4 py-1.5 rounded-bl-lg">
+                      Most Popular
                     </div>
                   )}
-                  <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                    <service.icon className="h-8 w-8 text-primary" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
-                  <p className="text-muted-foreground mb-6">{service.description}</p>
                   
-                  {/* Anchoring - Show starting price */}
-                  <div className="bg-primary/5 rounded-lg p-3 mb-4">
-                    <p className="text-sm text-muted-foreground">Typical visit</p>
-                    <p className="text-2xl font-bold text-primary">$0 - $79</p>
-                    <p className="text-xs text-muted-foreground">With insurance usually $0</p>
+                  <div className="p-8 space-y-6">
+                    {/* Icon */}
+                    <div className="relative w-16 h-16">
+                      <div className="absolute inset-0 bg-primary/10 rounded-2xl" />
+                      <div className="relative w-full h-full flex items-center justify-center">
+                        <service.icon className="h-8 w-8 text-primary" strokeWidth={2} />
+                      </div>
+                    </div>
+                    
+                    {/* Title & Description */}
+                    <div className="space-y-2">
+                      <h3 className="text-2xl font-bold">{service.title}</h3>
+                      <p className="text-muted-foreground">{service.description}</p>
+                    </div>
+                    
+                    {/* Price Anchoring */}
+                    <div className="bg-gradient-to-r from-primary/10 to-accent/5 rounded-xl p-4 space-y-1">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wide">Typical visit</p>
+                      <div className="flex items-baseline gap-2">
+                        <p className="text-3xl font-bold text-primary">$0-79</p>
+                        <p className="text-sm text-muted-foreground line-through">$200</p>
+                      </div>
+                      <p className="text-xs text-muted-foreground">With insurance usually $0</p>
+                    </div>
+                    
+                    {/* Conditions List */}
+                    <ul className="space-y-3">
+                      {service.conditions.map((condition) => (
+                        <li key={condition} className="flex items-center gap-3">
+                          <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                            <CheckCircle2 className="h-3 w-3 text-primary" />
+                          </div>
+                          <span className="text-sm">{condition}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    
+                    {/* CTA */}
+                    <Button 
+                      asChild 
+                      className={`w-full h-12 font-semibold ${
+                        index === 0 ? 'shadow-md shadow-primary/20' : ''
+                      }`}
+                      variant={index === 0 ? "default" : "outline"}
+                    >
+                      <Link to="/search">Get Help Now</Link>
+                    </Button>
                   </div>
-                  
-                  <ul className="space-y-2 mb-6">
-                    {service.conditions.map((condition) => (
-                      <li key={condition} className="flex items-center gap-2 text-sm">
-                        <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
-                        <span>{condition}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button asChild className="w-full" variant={index === 0 ? "default" : "outline"}>
-                    <Link to="/search">Get Help Now</Link>
-                  </Button>
                 </Card>
               ))}
             </div>
@@ -191,32 +248,45 @@ export default function Home() {
         </section>
 
         {/* How It Works */}
-        <section id="how-it-works" className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 scroll-mt-16">
+        <section id="how-it-works" className="py-20 md:py-28 px-4 sm:px-6 lg:px-8 scroll-mt-16">
           <div className="mx-auto max-w-7xl">
-            <div className="text-center mb-16">
-              <h2 className="mb-4">How it works</h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Get the care you need in three simple steps
+            {/* Section Header */}
+            <div className="text-center mb-16 space-y-4">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">Get care in 3 simple steps</h2>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                No complicated processes. Just fast, effective healthcare.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8 md:gap-12">
+            {/* Steps */}
+            <div className="grid md:grid-cols-3 gap-8 md:gap-12 mb-12">
               {howItWorks.map((item, index) => (
-                <div key={item.step} className="relative text-center">
-                  <div className="mx-auto w-20 h-20 bg-primary text-primary-foreground rounded-full flex items-center justify-center mb-6 text-3xl font-bold">
-                    {item.step}
-                  </div>
-                  <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
-                  <p className="text-muted-foreground text-lg">{item.description}</p>
+                <div key={item.step} className="relative">
+                  {/* Connector Line */}
                   {index < howItWorks.length - 1 && (
-                    <div className="hidden md:block absolute top-10 left-[60%] w-full h-0.5 bg-border" />
+                    <div className="hidden md:block absolute top-12 left-[60%] w-full h-0.5 bg-gradient-to-r from-primary/30 to-primary/10" />
                   )}
+                  
+                  {/* Card */}
+                  <div className="relative bg-background border-2 border-border rounded-2xl p-8 hover:border-primary/30 transition-all hover:shadow-lg group">
+                    {/* Step Number */}
+                    <div className="relative inline-flex mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/70 text-primary-foreground rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
+                        <span className="text-2xl font-bold">{item.step}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Content */}
+                    <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
+                    <p className="text-muted-foreground text-base leading-relaxed">{item.description}</p>
+                  </div>
                 </div>
               ))}
             </div>
 
-            <div className="text-center mt-12">
-              <Button size="lg" asChild>
+            {/* CTA */}
+            <div className="text-center">
+              <Button size="lg" className="h-14 px-10 text-base font-semibold shadow-lg shadow-primary/20" asChild>
                 <Link to="/instant-consultation">Get Started Now</Link>
               </Button>
             </div>
@@ -224,119 +294,128 @@ export default function Home() {
         </section>
 
         {/* Trust Section - Social Proof & Risk Reduction */}
-        <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-primary text-primary-foreground">
-          <div className="mx-auto max-w-7xl">
-            <div className="text-center mb-12">
-              <h2 className="text-white mb-3">Don't risk waiting - Join thousands who chose better care</h2>
-              <p className="text-primary-foreground/80 text-lg">Your health is too important to compromise on</p>
+        <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary via-primary to-primary/90 text-primary-foreground relative overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl" />
+          </div>
+          
+          <div className="relative mx-auto max-w-7xl">
+            {/* Header */}
+            <div className="text-center mb-16 space-y-4">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
+                Don't risk waiting - Join 50,000+ patients
+              </h2>
+              <p className="text-lg md:text-xl text-primary-foreground/90 max-w-2xl mx-auto">
+                Your health is too important to compromise on
+              </p>
             </div>
             
-            <div className="grid md:grid-cols-4 gap-8 mb-12">
-              <div className="text-center">
-                <div className="text-4xl font-bold mb-2">50K+</div>
-                <p className="text-primary-foreground/80">Patients treated monthly</p>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold mb-2">4.9★</div>
-                <p className="text-primary-foreground/80">Average rating</p>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold mb-2">&lt;5min</div>
-                <p className="text-primary-foreground/80">Average wait time</p>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold mb-2">24/7</div>
-                <p className="text-primary-foreground/80">Always available</p>
-              </div>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-16">
+              {[
+                { number: "50K+", label: "Patients monthly" },
+                { number: "4.9★", label: "Average rating" },
+                { number: "<5min", label: "Avg wait time" },
+                { number: "24/7", label: "Always available" }
+              ].map((stat) => (
+                <div key={stat.label} className="text-center p-6 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20">
+                  <div className="text-3xl md:text-4xl font-bold mb-2 text-white">{stat.number}</div>
+                  <p className="text-sm md:text-base text-primary-foreground/80">{stat.label}</p>
+                </div>
+              ))}
             </div>
             
+            {/* Features Grid */}
             <div className="grid md:grid-cols-3 gap-8">
-              <div>
-                <Shield className="h-12 w-12 mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-2 text-center">100% Secure</h3>
-                <p className="opacity-90 text-center">HIPAA compliant - Your data never gets compromised</p>
-              </div>
-              <div>
-                <Award className="h-12 w-12 mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-2 text-center">Quality Guaranteed</h3>
-                <p className="opacity-90 text-center">Only board-certified doctors - No risk of unqualified care</p>
-              </div>
-              <div>
-                <TrendingUp className="h-12 w-12 mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-2 text-center">Money-Back Promise</h3>
-                <p className="opacity-90 text-center">Not satisfied? Full refund - Zero risk to try</p>
-              </div>
+              {[
+                { icon: Shield, title: "100% Secure", desc: "HIPAA compliant - Your data never gets compromised" },
+                { icon: Award, title: "Quality Guaranteed", desc: "Only board-certified doctors - No risk of unqualified care" },
+                { icon: TrendingUp, title: "Money-Back Promise", desc: "Not satisfied? Full refund - Zero risk to try" }
+              ].map((feature) => (
+                <div key={feature.title} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 text-center hover:bg-white/15 transition-all">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-6">
+                    <feature.icon className="h-8 w-8 text-white" strokeWidth={2} />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 text-white">{feature.title}</h3>
+                  <p className="text-primary-foreground/90 leading-relaxed">{feature.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* CTA Section - Final Loss Aversion Push */}
-        <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl">
-            <div className="bg-gradient-to-br from-primary/10 via-background to-accent/10 rounded-3xl p-8 md:p-12 text-center border-2 border-primary/20">
-              <Badge className="urgency-badge mb-6">
-                <Clock className="h-3.5 w-3.5" />
-                Limited spots available today
-              </Badge>
+        {/* CTA Section - Final Push */}
+        <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl">
+            <Card className="relative overflow-hidden border-2 border-primary/20 shadow-2xl">
+              {/* Background Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
               
-              <h2 className="mb-6">Don't miss out on immediate care</h2>
-              <p className="text-xl text-muted-foreground mb-8">
-                Thousands already got help today. Your health concern won't improve by waiting. 
-                <span className="font-semibold text-foreground"> Act now before symptoms worsen.</span>
-              </p>
-              
-              {/* Loss Aversion Framing */}
-              <div className="bg-background rounded-xl p-6 mb-8 max-w-2xl mx-auto">
-                <p className="text-lg mb-4 font-semibold">What you risk by waiting:</p>
-                <div className="grid md:grid-cols-2 gap-4 text-left">
-                  <div className="flex gap-3">
-                    <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-medium">Condition worsens</p>
-                      <p className="text-sm text-muted-foreground">Simple issues become complex</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-medium">Higher costs later</p>
-                      <p className="text-sm text-muted-foreground">ER visits cost 10x more</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-medium">Lost productivity</p>
-                      <p className="text-sm text-muted-foreground">Days missed from work/life</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-medium">Unnecessary suffering</p>
-                      <p className="text-sm text-muted-foreground">Why endure preventable pain?</p>
-                    </div>
+              <div className="relative p-8 md:p-12 space-y-8">
+                {/* Badge */}
+                <div className="text-center">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium animate-pulse">
+                    <Clock className="h-4 w-4" />
+                    Limited spots available today - Don't miss out
                   </div>
                 </div>
+                
+                {/* Headline */}
+                <div className="text-center space-y-4">
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+                    Your health can't wait
+                  </h2>
+                  <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                    Thousands already got help today. Don't let your symptoms worsen. 
+                    <span className="font-semibold text-foreground"> Act now before it's too late.</span>
+                  </p>
+                </div>
+                
+                {/* Risk Grid */}
+                <div className="bg-background/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-border">
+                  <p className="text-center text-lg font-semibold mb-6">What you risk by waiting:</p>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {[
+                      { title: "Condition worsens", desc: "Simple issues become complex", icon: AlertCircle },
+                      { title: "Higher costs later", desc: "ER visits cost 10x more", icon: AlertCircle },
+                      { title: "Lost productivity", desc: "Days missed from work/life", icon: AlertCircle },
+                      { title: "Unnecessary suffering", desc: "Why endure preventable pain?", icon: AlertCircle }
+                    ].map((risk) => (
+                      <div key={risk.title} className="flex gap-3">
+                        <div className="h-10 w-10 rounded-xl bg-destructive/10 flex items-center justify-center flex-shrink-0">
+                          <risk.icon className="h-5 w-5 text-destructive" />
+                        </div>
+                        <div>
+                          <p className="font-semibold mb-1">{risk.title}</p>
+                          <p className="text-sm text-muted-foreground">{risk.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* CTAs */}
+                <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                  <Button size="lg" className="text-base h-14 px-10 shadow-xl shadow-primary/25" asChild>
+                    <Link to="/instant-consultation">
+                      Get Care Now - Don't Wait
+                    </Link>
+                  </Button>
+                  <Button size="lg" variant="outline" className="text-base h-14 px-8 border-2" asChild>
+                    <Link to="/auth?mode=signup">
+                      Try Free First Visit
+                    </Link>
+                  </Button>
+                </div>
+                
+                {/* Trust Line */}
+                <p className="text-center text-sm text-muted-foreground">
+                  ✓ No commitment required  ✓ Most insurance accepted  ✓ 100% money-back guarantee
+                </p>
               </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="text-lg h-14 px-10 shadow-xl" asChild>
-                  <Link to="/instant-consultation">
-                    Get Care Now - Don't Wait
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" className="text-lg h-14 px-8" asChild>
-                  <Link to="/auth?mode=signup">
-                    Try Free First Visit
-                  </Link>
-                </Button>
-              </div>
-              
-              <p className="text-sm text-muted-foreground mt-6">
-                ✓ No commitment required  ✓ Most insurance accepted  ✓ 100% money-back guarantee
-              </p>
-            </div>
+            </Card>
           </div>
         </section>
       </main>
