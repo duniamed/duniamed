@@ -60,8 +60,8 @@ export default function HowItWorks() {
   return (
     <Layout>
         {/* Hero with Loss Aversion */}
-        <section className="py-24 md:py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-background">
-          <div className="mx-auto max-w-5xl text-center space-y-8">
+        <section className="section-padding bg-white dark:bg-background">
+          <div className="container-modern text-center space-y-10">
             <Badge className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-50 dark:bg-green-500/10 border-0 text-green-700 dark:text-green-400 rounded-full font-medium">
               <Users className="h-4 w-4" />
               50,000+ patients this month
@@ -96,8 +96,8 @@ export default function HowItWorks() {
         </section>
 
         {/* Steps with Urgency */}
-        <section className="py-24 md:py-32 px-4 sm:px-6 lg:px-8 bg-[hsl(var(--soft-blue))]">
-          <div className="mx-auto max-w-7xl">
+        <section className="section-padding bg-soft-purple">
+          <div className="container-modern">
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {steps.map((step, index) => (
                 <div key={step.title} className="card-modern group hover:scale-105 transition-transform">
@@ -136,8 +136,8 @@ export default function HowItWorks() {
         </section>
 
         {/* Time Comparison */}
-        <section className="py-24 md:py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-background">
-          <div className="mx-auto max-w-6xl">
+        <section className="section-padding bg-white dark:bg-background">
+          <div className="container-modern">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold mb-6">Time is Money. Save Both.</h2>
               <p className="text-xl text-muted-foreground">
@@ -204,8 +204,8 @@ export default function HowItWorks() {
         </section>
 
         {/* CTA with Loss Aversion */}
-        <section className="py-24 md:py-32 px-4 sm:px-6 lg:px-8 bg-[hsl(var(--soft-blue))]">
-          <div className="mx-auto max-w-4xl">
+        <section className="section-padding bg-soft-purple">
+          <div className="container-modern max-w-5xl">
             <div className="card-modern text-center bg-gradient-to-br from-primary/5 to-accent/5 border-2 border-primary/10">
               <Badge className="inline-flex items-center gap-2 px-5 py-2.5 bg-red-50 dark:bg-red-500/10 border-0 text-red-700 dark:text-red-400 rounded-full font-semibold mb-6">
                 <Clock className="h-4 w-4" />

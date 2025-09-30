@@ -153,8 +153,8 @@ function InstantConsultationContent() {
             </p>
             
             {/* Loss Aversion Warning */}
-            <Card className="max-w-2xl mx-auto bg-yellow-500/5 border-yellow-500/20">
-              <CardContent className="pt-6 pb-6">
+            <div className="glass-panel max-w-2xl mx-auto bg-yellow-500/5 border-yellow-500/20">
+              <div className="pt-6 pb-6">
                 <div className="flex items-start gap-3">
                   <Clock className="h-5 w-5 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-0.5" />
                   <div className="text-left">
@@ -167,14 +167,14 @@ function InstantConsultationContent() {
                     </p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
 
           {/* Specialists Grid */}
           {specialists.length === 0 ? (
-            <Card className="border-2">
-              <CardContent className="py-16 text-center">
+            <div className="card-modern border-2">
+              <div className="py-16 text-center">
                 <Video className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
                 <h3 className="text-2xl font-bold mb-2">No Specialists Online</h3>
                 <p className="text-muted-foreground mb-6">
@@ -183,8 +183,8 @@ function InstantConsultationContent() {
                 <Button onClick={() => navigate('/search')} size="lg">
                   Schedule Appointment
                 </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {specialists.map((specialist) => (

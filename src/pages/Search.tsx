@@ -153,8 +153,8 @@ function SearchContent() {
             <p className="text-lg text-muted-foreground">Connect with verified specialists before your condition worsens. Most available for immediate consultation.</p>
           </div>
 
-          <Card>
-            <CardContent className="pt-6">
+          <div className="card-modern">
+            <div className="pt-6 pb-6 px-6">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Search</label>
@@ -245,19 +245,19 @@ function SearchContent() {
                   </Button>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {loading ? (
             <div className="text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
             </div>
           ) : specialists.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
+            <div className="card-modern">
+              <div className="py-12 text-center">
                 <p className="text-muted-foreground">No specialists found matching your criteria</p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {specialists.map((specialist) => (

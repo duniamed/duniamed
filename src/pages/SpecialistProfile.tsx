@@ -134,8 +134,8 @@ function SpecialistProfileContent() {
       <div className="container-modern py-12">
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Main Profile Card */}
-          <Card className="shadow-xl border-0 overflow-hidden">
-            <CardContent className="p-0">
+          <div className="card-modern overflow-hidden border-0 shadow-2xl">
+            <div className="p-0">
               <div className="grid md:grid-cols-[400px_1fr] gap-0">
                 {/* Left: Doctor Photo & Contact */}
                 <div className="bg-gradient-to-br from-muted/30 to-muted/10 p-8 flex flex-col items-center justify-center space-y-6 border-r">
@@ -291,8 +291,8 @@ function SpecialistProfileContent() {
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Tabs Section */}
           <Tabs defaultValue="reviews" className="space-y-6">
@@ -303,56 +303,54 @@ function SpecialistProfileContent() {
 
             <TabsContent value="reviews" className="space-y-4">
               {reviews.length === 0 ? (
-                <Card className="shadow-lg">
-                  <CardContent className="py-16 text-center">
+                <div className="card-modern">
+                  <div className="py-16 text-center">
                     <p className="text-muted-foreground text-lg">No reviews yet</p>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               ) : (
                 reviews.map((review) => (
-                  <Card key={review.id} className="shadow-lg hover:shadow-xl transition-shadow">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
+                  <div key={review.id} className="card-modern hover:shadow-2xl transition-all">
+                    <div className="p-8">
+                      <div className="flex items-start justify-between mb-6">
                         <div>
-                          <CardTitle className="text-lg">
+                          <h4 className="text-xl font-bold">
                             {review.is_anonymous
                               ? 'Anonymous Patient'
                               : `${review.profiles?.first_name} ${review.profiles?.last_name}`}
-                          </CardTitle>
-                          <CardDescription className="mt-1">
+                          </h4>
+                          <p className="text-muted-foreground mt-2">
                             {new Date(review.created_at).toLocaleDateString('en-US', { 
                               year: 'numeric', 
                               month: 'long', 
                               day: 'numeric' 
                             })}
-                          </CardDescription>
+                          </p>
                         </div>
                         <div className="flex items-center gap-1 bg-primary/10 px-3 py-1 rounded-full">
                           <Star className="h-4 w-4 fill-primary text-primary" />
                           <span className="font-bold text-primary">{review.rating.toFixed(1)}</span>
                         </div>
                       </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-muted-foreground leading-relaxed">{review.comment}</p>
-                      {review.specialist_response && (
-                        <div className="pl-4 border-l-4 border-primary/30 bg-primary/5 p-4 rounded-r-lg space-y-2">
-                          <p className="text-sm font-bold text-primary">Response from Dr. {specialist.profiles?.last_name}</p>
-                          <p className="text-sm text-muted-foreground">{review.specialist_response}</p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
+                      <div className="space-y-4">
+                        <p className="text-muted-foreground leading-relaxed">{review.comment}</p>
+                        {review.specialist_response && (
+                          <div className="pl-4 border-l-4 border-primary/30 bg-primary/5 p-4 rounded-r-lg space-y-2">
+                            <p className="text-sm font-bold text-primary">Response from Dr. {specialist.profiles?.last_name}</p>
+                            <p className="text-sm text-muted-foreground">{review.specialist_response}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 ))
               )}
             </TabsContent>
 
             <TabsContent value="credentials">
-              <Card className="shadow-lg">
-                <CardHeader>
-                  <CardTitle className="text-2xl">Education & Credentials</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
+              <div className="card-modern">
+                <div className="p-8 space-y-6">
+                  <h3 className="text-3xl font-bold">Education & Credentials</h3>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2 p-6 rounded-xl bg-muted/30">
                       <div className="flex items-center gap-2 text-muted-foreground mb-2">
@@ -396,8 +394,8 @@ function SpecialistProfileContent() {
                       <span className="text-muted-foreground">successful consultations</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         </div>

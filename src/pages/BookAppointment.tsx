@@ -192,8 +192,8 @@ function BookAppointmentContent() {
             </div>
             
             {/* Loss Aversion Warning */}
-            <Card className="bg-yellow-500/5 border-yellow-500/20">
-              <CardContent className="pt-6 pb-6">
+            <div className="glass-panel bg-yellow-500/5 border-yellow-500/20">
+              <div className="pt-6 pb-6">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-0.5" />
                   <div className="space-y-1">
@@ -205,8 +205,8 @@ function BookAppointmentContent() {
                     </p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
 
           {/* Progress Steps */}
@@ -235,12 +235,12 @@ function BookAppointmentContent() {
 
           {/* Step 1: Date & Time */}
           {step === 1 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Select Date & Time</CardTitle>
-                <CardDescription>Choose your preferred appointment time</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+            <div className="card-modern">
+              <div className="p-8 space-y-6">
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold">Select Date & Time</h3>
+                  <p className="text-muted-foreground">Choose your preferred appointment time</p>
+                </div>
                 <div>
                   <Label>Date</Label>
                   <Calendar
@@ -278,18 +278,18 @@ function BookAppointmentContent() {
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
 
           {/* Step 2: Details */}
           {step === 2 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Appointment Details</CardTitle>
-                <CardDescription>Tell us about your medical concern</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+            <div className="card-modern">
+              <div className="p-8 space-y-6">
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold">Appointment Details</h3>
+                  <p className="text-muted-foreground">Tell us about your medical concern</p>
+                </div>
                 <div className="space-y-2">
                   <Label>Consultation Type</Label>
                   <Select value={consultationType} onValueChange={(v: any) => setConsultationType(v)}>
@@ -337,18 +337,18 @@ function BookAppointmentContent() {
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
 
           {/* Step 3: Confirmation */}
           {step === 3 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Confirm Appointment</CardTitle>
-                <CardDescription>Review your appointment details</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+            <div className="card-modern">
+              <div className="p-8 space-y-6">
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold">Confirm Appointment</h3>
+                  <p className="text-muted-foreground">Review your appointment details</p>
+                </div>
                 <div className="space-y-4">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Doctor:</span>
@@ -394,8 +394,8 @@ function BookAppointmentContent() {
                     {submitting ? 'Booking...' : 'Confirm Booking'}
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
         </div>
       </div>
