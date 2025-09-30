@@ -100,9 +100,14 @@ export default function Auth() {
     } else if (signupStep === 3) {
       fieldsToValidate = ['jurisdiction'];
     }
+    // Step 4 (role-specific) has optional fields, no strict validation needed
 
-    const isValid = await signupForm.trigger(fieldsToValidate);
-    return isValid;
+    if (fieldsToValidate.length > 0) {
+      const isValid = await signupForm.trigger(fieldsToValidate);
+      return isValid;
+    }
+    
+    return true; // Allow progression if no validation needed
   };
 
   const handleNextStep = async () => {
@@ -604,7 +609,7 @@ export default function Auth() {
                   )}
 
                   <div className="flex gap-3">
-                    {signupStep > 1 && (
+                    {signupStep > 0 && (
                       <Button
                         type="button"
                         variant="outline"
@@ -612,7 +617,7 @@ export default function Auth() {
                         className="flex-1"
                       >
                         <ChevronLeft className="mr-2 h-4 w-4" />
-                        Previous
+                        Back
                       </Button>
                     )}
                     
@@ -621,9 +626,10 @@ export default function Auth() {
                         type="button"
                         onClick={handleNextStep}
                         className="flex-1"
+                        disabled={isLoading}
                       >
-                        Next
-                        <ChevronRight className="ml-2 h-4 w-4" />
+                        {signupStep === 1 ? "I'm Ready - Let's Begin" : "Next"}
+                        {signupStep > 1 && <ChevronRight className="ml-2 h-4 w-4" />}
                       </Button>
                     ) : (
                       <Button type="submit" className="flex-1" disabled={isLoading}>
