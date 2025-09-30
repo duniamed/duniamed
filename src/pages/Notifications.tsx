@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
@@ -183,18 +183,8 @@ function NotificationsContent() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
-        <div className="flex items-center gap-3 mb-6">
-          <Bell className="h-8 w-8" />
-          <div>
-            <h1 className="text-3xl font-bold">Notifications</h1>
-            <p className="text-muted-foreground">Stay updated with your healthcare activities</p>
-          </div>
-        </div>
-
-        <Tabs defaultValue="all" className="space-y-6">
+    <DashboardLayout title="Notifications" description="Stay updated with your healthcare activities">
+      <Tabs defaultValue="all" className="space-y-6">
           <TabsList>
             <TabsTrigger value="all">
               All ({notifications.length})
@@ -233,8 +223,7 @@ function NotificationsContent() {
               ))
             )}
           </TabsContent>
-        </Tabs>
-      </main>
-    </div>
+      </Tabs>
+    </DashboardLayout>
   );
 }

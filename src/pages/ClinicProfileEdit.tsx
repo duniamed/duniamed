@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,7 +11,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Save, Check } from 'lucide-react';
-import Header from '@/components/layout/Header';
 import { MEDICAL_SPECIALTIES } from '@/lib/constants/specialties';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
@@ -103,16 +103,8 @@ function ClinicProfileEditContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container max-w-4xl py-8 px-4 mt-16">
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold">Edit Clinic Profile</h1>
-            <p className="text-muted-foreground">Update your clinic information</p>
-          </div>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <DashboardLayout title="Edit Clinic Profile" description="Update your clinic information">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-4xl">
             {/* Basic Info */}
             <Card>
               <CardHeader>
@@ -277,10 +269,8 @@ function ClinicProfileEditContent() {
                   Save Changes
                 </>
               )}
-            </Button>
-          </form>
-        </div>
-      </main>
-    </div>
+        </Button>
+      </form>
+    </DashboardLayout>
   );
 }

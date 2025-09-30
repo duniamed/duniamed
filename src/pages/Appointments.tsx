@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -30,7 +30,7 @@ interface Appointment {
 
 export default function Appointments() {
   return (
-    <ProtectedRoute allowedRoles={['patient']}>
+    <ProtectedRoute>
       <AppointmentsContent />
     </ProtectedRoute>
   );
@@ -169,16 +169,9 @@ function AppointmentsContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold">My Appointments</h1>
-            <p className="text-muted-foreground">View and manage your healthcare appointments</p>
-          </div>
-
-          <Tabs defaultValue="upcoming">
+    <DashboardLayout title="Appointments" description="View and manage your healthcare appointments">
+      <div className="space-y-6">
+        <Tabs defaultValue="upcoming">
             <TabsList className="grid w-full grid-cols-3 max-w-md">
               <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
               <TabsTrigger value="past">Past</TabsTrigger>
@@ -235,9 +228,8 @@ function AppointmentsContent() {
                 </div>
               )}
             </TabsContent>
-          </Tabs>
-        </div>
-      </main>
-    </div>
+        </Tabs>
+      </div>
+    </DashboardLayout>
   );
 }

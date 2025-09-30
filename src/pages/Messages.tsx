@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -165,10 +165,8 @@ function MessagesContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
-        <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
+    <DashboardLayout title="Messages" description="Communicate with your healthcare providers">
+      <div className="grid grid-cols-12 gap-6 h-[calc(100vh-300px)]">
           <Card className="col-span-4">
             <CardHeader>
               <CardTitle>Messages</CardTitle>
@@ -260,9 +258,8 @@ function MessagesContent() {
                 <p className="text-muted-foreground">Select a conversation to start messaging</p>
               </CardContent>
             )}
-          </Card>
-        </div>
-      </main>
-    </div>
+        </Card>
+      </div>
+    </DashboardLayout>
   );
 }
