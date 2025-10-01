@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.send-sms]
 verify_jwt = false
+
+[functions.instant-connect]
+verify_jwt = true

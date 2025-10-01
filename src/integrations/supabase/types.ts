@@ -551,6 +551,30 @@ export type Database = {
           },
         ]
       }
+      conditions_catalog: {
+        Row: {
+          category: string
+          condition_name: string
+          created_at: string | null
+          id: string
+          specialty_tags: string[] | null
+        }
+        Insert: {
+          category: string
+          condition_name: string
+          created_at?: string | null
+          id?: string
+          specialty_tags?: string[] | null
+        }
+        Update: {
+          category?: string
+          condition_name?: string
+          created_at?: string | null
+          id?: string
+          specialty_tags?: string[] | null
+        }
+        Relationships: []
+      }
       consent_records: {
         Row: {
           consent_text: string
@@ -594,6 +618,113 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      document_access_logs: {
+        Row: {
+          access_type: string
+          accessed_at: string | null
+          accessed_by: string
+          document_id: string
+          id: string
+          ip_address: string | null
+          share_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          access_type: string
+          accessed_at?: string | null
+          accessed_by: string
+          document_id: string
+          id?: string
+          ip_address?: string | null
+          share_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          access_type?: string
+          accessed_at?: string | null
+          accessed_by?: string
+          document_id?: string
+          id?: string
+          ip_address?: string | null
+          share_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_access_logs_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "medical_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_access_logs_share_id_fkey"
+            columns: ["share_id"]
+            isOneToOne: false
+            referencedRelation: "document_shares"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      document_shares: {
+        Row: {
+          access_count: number | null
+          consent_given: boolean
+          consent_given_at: string | null
+          created_at: string | null
+          document_id: string
+          expires_at: string
+          id: string
+          last_accessed_at: string | null
+          purpose: string
+          revoked_at: string | null
+          revoked_by: string | null
+          shared_by: string
+          shared_with: string
+          updated_at: string | null
+        }
+        Insert: {
+          access_count?: number | null
+          consent_given?: boolean
+          consent_given_at?: string | null
+          created_at?: string | null
+          document_id: string
+          expires_at: string
+          id?: string
+          last_accessed_at?: string | null
+          purpose: string
+          revoked_at?: string | null
+          revoked_by?: string | null
+          shared_by: string
+          shared_with: string
+          updated_at?: string | null
+        }
+        Update: {
+          access_count?: number | null
+          consent_given?: boolean
+          consent_given_at?: string | null
+          created_at?: string | null
+          document_id?: string
+          expires_at?: string
+          id?: string
+          last_accessed_at?: string | null
+          purpose?: string
+          revoked_at?: string | null
+          revoked_by?: string | null
+          shared_by?: string
+          shared_with?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_shares_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "medical_records"
             referencedColumns: ["id"]
           },
         ]
@@ -677,6 +808,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      insurance_networks: {
+        Row: {
+          country: string
+          created_at: string | null
+          id: string
+          network_name: string
+          provider_type: string | null
+        }
+        Insert: {
+          country: string
+          created_at?: string | null
+          id?: string
+          network_name: string
+          provider_type?: string | null
+        }
+        Update: {
+          country?: string
+          created_at?: string | null
+          id?: string
+          network_name?: string
+          provider_type?: string | null
+        }
+        Relationships: []
       }
       medical_records: {
         Row: {
@@ -1043,8 +1198,10 @@ export type Database = {
           last_name: string
           phone: string | null
           postal_code: string | null
+          preferred_insurance: string | null
           preferred_language: string | null
           preferred_pharmacy: string | null
+          preferred_timezone: string | null
           reminder_preferences: Json | null
           role: Database["public"]["Enums"]["user_role"]
           state: string | null
@@ -1080,8 +1237,10 @@ export type Database = {
           last_name: string
           phone?: string | null
           postal_code?: string | null
+          preferred_insurance?: string | null
           preferred_language?: string | null
           preferred_pharmacy?: string | null
+          preferred_timezone?: string | null
           reminder_preferences?: Json | null
           role?: Database["public"]["Enums"]["user_role"]
           state?: string | null
@@ -1117,8 +1276,10 @@ export type Database = {
           last_name?: string
           phone?: string | null
           postal_code?: string | null
+          preferred_insurance?: string | null
           preferred_language?: string | null
           preferred_pharmacy?: string | null
+          preferred_timezone?: string | null
           reminder_preferences?: Json | null
           role?: Database["public"]["Enums"]["user_role"]
           state?: string | null
@@ -1361,12 +1522,14 @@ export type Database = {
       }
       specialists: {
         Row: {
+          accepts_insurance: boolean | null
           accepts_new_patients_date: string | null
           average_rating: number | null
           awards: string[] | null
           bio: string | null
           board_certifications: string[] | null
           clinical_focus: string[] | null
+          conditions_treated: string[] | null
           consultation_fee_max: number | null
           consultation_fee_min: number | null
           created_at: string | null
@@ -1395,6 +1558,7 @@ export type Database = {
           stripe_account_id: string | null
           sub_specialty: string[] | null
           telemedicine_platforms: string[] | null
+          timezone: string | null
           total_consultations: number | null
           total_reviews: number | null
           updated_at: string | null
@@ -1409,12 +1573,14 @@ export type Database = {
           years_experience: number | null
         }
         Insert: {
+          accepts_insurance?: boolean | null
           accepts_new_patients_date?: string | null
           average_rating?: number | null
           awards?: string[] | null
           bio?: string | null
           board_certifications?: string[] | null
           clinical_focus?: string[] | null
+          conditions_treated?: string[] | null
           consultation_fee_max?: number | null
           consultation_fee_min?: number | null
           created_at?: string | null
@@ -1443,6 +1609,7 @@ export type Database = {
           stripe_account_id?: string | null
           sub_specialty?: string[] | null
           telemedicine_platforms?: string[] | null
+          timezone?: string | null
           total_consultations?: number | null
           total_reviews?: number | null
           updated_at?: string | null
@@ -1457,12 +1624,14 @@ export type Database = {
           years_experience?: number | null
         }
         Update: {
+          accepts_insurance?: boolean | null
           accepts_new_patients_date?: string | null
           average_rating?: number | null
           awards?: string[] | null
           bio?: string | null
           board_certifications?: string[] | null
           clinical_focus?: string[] | null
+          conditions_treated?: string[] | null
           consultation_fee_max?: number | null
           consultation_fee_min?: number | null
           created_at?: string | null
@@ -1491,6 +1660,7 @@ export type Database = {
           stripe_account_id?: string | null
           sub_specialty?: string[] | null
           telemedicine_platforms?: string[] | null
+          timezone?: string | null
           total_consultations?: number | null
           total_reviews?: number | null
           updated_at?: string | null

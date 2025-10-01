@@ -8,9 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search as SearchIcon, MapPin, Star, Calendar, DollarSign } from 'lucide-react';
+import { Search as SearchIcon, MapPin, Star, Calendar, DollarSign, Filter, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { MEDICAL_SPECIALTIES } from '@/lib/constants/specialties';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface Specialist {
   id: string;
@@ -30,6 +32,10 @@ interface Specialist {
   verification_status: string;
   video_consultation_enabled: boolean;
   in_person_enabled: boolean;
+  timezone: string;
+  conditions_treated: string[];
+  accepts_insurance: boolean;
+  insurance_accepted: string[];
   profiles: {
     first_name: string;
     last_name: string;
@@ -53,14 +59,46 @@ function SearchContent() {
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'rating');
   const [minFee, setMinFee] = useState(searchParams.get('minFee') || '');
   const [maxFee, setMaxFee] = useState(searchParams.get('maxFee') || '');
+  
+  // Advanced filters
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [selectedCondition, setSelectedCondition] = useState(searchParams.get('condition') || 'all');
+  const [selectedTimezone, setSelectedTimezone] = useState(searchParams.get('timezone') || 'all');
+  const [acceptsInsurance, setAcceptsInsurance] = useState(searchParams.get('insurance') === 'true');
+  const [consultationType, setConsultationType] = useState(searchParams.get('type') || 'all');
+  const [availableNow, setAvailableNow] = useState(searchParams.get('available') === 'true');
+  
+  const [conditions, setConditions] = useState<string[]>([]);
+  const [insuranceNetworks, setInsuranceNetworks] = useState<string[]>([]);
 
   const specialties = MEDICAL_SPECIALTIES;
-
   const languages = ['English', 'Spanish', 'Portuguese', 'French', 'German'];
+  const timezones = [
+    'UTC-8 (PST)', 'UTC-5 (EST)', 'UTC+0 (GMT)', 
+    'UTC+1 (CET)', 'UTC+8 (SGT)', 'UTC+10 (AEST)'
+  ];
+
+  useEffect(() => {
+    fetchConditionsAndInsurance();
+  }, []);
 
   useEffect(() => {
     fetchSpecialists();
-  }, [searchQuery, selectedSpecialty, selectedLanguage, sortBy, minFee, maxFee]);
+  }, [searchQuery, selectedSpecialty, selectedLanguage, sortBy, minFee, maxFee, selectedCondition, selectedTimezone, acceptsInsurance, consultationType, availableNow]);
+
+  const fetchConditionsAndInsurance = async () => {
+    const [conditionsRes, insuranceRes] = await Promise.all([
+      supabase.from('conditions_catalog').select('condition_name').order('condition_name'),
+      supabase.from('insurance_networks').select('network_name').order('network_name')
+    ]);
+    
+    if (conditionsRes.data) {
+      setConditions(conditionsRes.data.map(c => c.condition_name));
+    }
+    if (insuranceRes.data) {
+      setInsuranceNetworks(insuranceRes.data.map(i => i.network_name));
+    }
+  };
 
   const fetchSpecialists = async () => {
     setLoading(true);
@@ -77,7 +115,7 @@ function SearchContent() {
           city
         )
       `)
-      .in('verification_status', ['verified', 'pending']) // Show pending for testing
+      .in('verification_status', ['verified', 'pending'])
       .eq('is_accepting_patients', true);
 
     if (searchQuery) {
@@ -98,6 +136,30 @@ function SearchContent() {
 
     if (maxFee) {
       query = query.lte('consultation_fee_max', parseFloat(maxFee));
+    }
+
+    // Advanced filters
+    if (selectedCondition !== 'all') {
+      query = query.contains('conditions_treated', [selectedCondition]);
+    }
+
+    if (selectedTimezone !== 'all') {
+      const tz = selectedTimezone.split(' ')[0]; // Extract UTC offset
+      query = query.eq('timezone', tz);
+    }
+
+    if (acceptsInsurance) {
+      query = query.eq('accepts_insurance', true);
+    }
+
+    if (consultationType === 'video') {
+      query = query.eq('video_consultation_enabled', true);
+    } else if (consultationType === 'in-person') {
+      query = query.eq('in_person_enabled', true);
+    }
+
+    if (availableNow) {
+      query = query.eq('is_online', true);
     }
 
     // Order by online status first, then by selected sort
@@ -128,7 +190,27 @@ function SearchContent() {
     if (sortBy !== 'rating') params.sort = sortBy;
     if (minFee) params.minFee = minFee;
     if (maxFee) params.maxFee = maxFee;
+    if (selectedCondition !== 'all') params.condition = selectedCondition;
+    if (selectedTimezone !== 'all') params.timezone = selectedTimezone;
+    if (acceptsInsurance) params.insurance = 'true';
+    if (consultationType !== 'all') params.type = consultationType;
+    if (availableNow) params.available = 'true';
     setSearchParams(params);
+  };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedSpecialty('all');
+    setSelectedLanguage('all');
+    setSortBy('rating');
+    setMinFee('');
+    setMaxFee('');
+    setSelectedCondition('all');
+    setSelectedTimezone('all');
+    setAcceptsInsurance(false);
+    setConsultationType('all');
+    setAvailableNow(false);
+    setSearchParams({});
   };
 
   return (
@@ -154,7 +236,8 @@ function SearchContent() {
           </div>
 
           <div className="card-modern">
-            <div className="pt-6 pb-6 px-6">
+            <div className="pt-6 pb-6 px-6 space-y-4">
+              {/* Basic Filters */}
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Search</label>
@@ -217,33 +300,125 @@ function SearchContent() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Min Fee ($)</label>
-                  <Input
-                    type="number"
-                    placeholder="0"
-                    value={minFee}
-                    onChange={(e) => setMinFee(e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Max Fee ($)</label>
-                  <Input
-                    type="number"
-                    placeholder="500"
-                    value={maxFee}
-                    onChange={(e) => setMaxFee(e.target.value)}
-                  />
-                </div>
-
-                <div className="flex items-end md:col-span-2">
-                  <Button onClick={handleSearch} className="w-full">
-                    <SearchIcon className="mr-2 h-4 w-4" />
-                    Search
+              {/* Advanced Filters Toggle */}
+              <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
+                <div className="flex items-center justify-between">
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="gap-2">
+                      <Filter className="h-4 w-4" />
+                      {showAdvanced ? 'Hide' : 'Show'} Advanced Filters
+                    </Button>
+                  </CollapsibleTrigger>
+                  <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-2">
+                    <X className="h-4 w-4" />
+                    Clear All
                   </Button>
                 </div>
+
+                <CollapsibleContent className="mt-4">
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 p-4 bg-muted/30 rounded-lg">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Condition</label>
+                      <Select value={selectedCondition} onValueChange={setSelectedCondition}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Any condition" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Any Condition</SelectItem>
+                          {conditions.map((condition) => (
+                            <SelectItem key={condition} value={condition}>
+                              {condition}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Time Zone</label>
+                      <Select value={selectedTimezone} onValueChange={setSelectedTimezone}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Any timezone" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Any Timezone</SelectItem>
+                          {timezones.map((tz) => (
+                            <SelectItem key={tz} value={tz}>
+                              {tz}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Consultation Type</label>
+                      <Select value={consultationType} onValueChange={setConsultationType}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Types</SelectItem>
+                          <SelectItem value="video">Video Only</SelectItem>
+                          <SelectItem value="in-person">In-Person Only</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Min Fee ($)</label>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        value={minFee}
+                        onChange={(e) => setMinFee(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Max Fee ($)</label>
+                      <Input
+                        type="number"
+                        placeholder="500"
+                        value={maxFee}
+                        onChange={(e) => setMaxFee(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="space-y-3 flex flex-col justify-end">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="insurance" 
+                          checked={acceptsInsurance}
+                          onCheckedChange={(checked) => setAcceptsInsurance(checked as boolean)}
+                        />
+                        <label htmlFor="insurance" className="text-sm font-medium cursor-pointer">
+                          Accepts Insurance
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="available" 
+                          checked={availableNow}
+                          onCheckedChange={(checked) => setAvailableNow(checked as boolean)}
+                        />
+                        <label htmlFor="available" className="text-sm font-medium cursor-pointer">
+                          Available Now
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+
+              {/* Search Button */}
+              <div className="flex items-end">
+                <Button onClick={handleSearch} className="w-full" size="lg">
+                  <SearchIcon className="mr-2 h-4 w-4" />
+                  Search Specialists
+                </Button>
               </div>
             </div>
           </div>

@@ -81,17 +81,46 @@ function InstantConsultationContent() {
     setRequesting(specialistId);
 
     try {
-      // Create an appointment for instant consultation
+      // Get patient timezone
+      const patientTimezone = profile.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const patientLanguage = profile.language_preference || 'en';
+
+      // Call intelligent routing
+      const { data: routingData, error: routingError } = await supabase.functions.invoke('instant-connect', {
+        body: {
+          patientTimezone,
+          patientLanguage,
+          urgencyLevel: 'routine'
+        }
+      });
+
+      if (routingError) throw routingError;
+
+      const matchedSpecialist = routingData.specialist;
+      if (!matchedSpecialist) {
+        toast({
+          title: 'No specialists available',
+          description: routingData.message || 'Please try again in a few minutes.',
+          variant: 'destructive',
+        });
+        setRequesting(null);
+        return;
+      }
+
+      // Create an appointment with the matched specialist
       const { data: appointment, error } = await supabase
         .from('appointments')
         .insert({
           patient_id: profile.id,
-          specialist_id: specialistId,
+          specialist_id: matchedSpecialist.id,
           scheduled_at: new Date().toISOString(),
           duration_minutes: 30,
           consultation_type: 'video' as const,
           status: 'pending' as const,
-          notes: 'Instant consultation request'
+          urgency_level: 'routine' as const,
+          fee: matchedSpecialist.consultation_fee_min,
+          currency: matchedSpecialist.currency,
+          notes: 'Instant consultation - intelligent routing'
         } as any)
         .select()
         .single();
@@ -99,8 +128,8 @@ function InstantConsultationContent() {
       if (error) throw error;
 
       toast({
-        title: '✅ Request Sent!',
-        description: 'The specialist will join shortly. Redirecting to video room...',
+        title: '✅ Best Match Found!',
+        description: `Connected with Dr. ${matchedSpecialist.profiles?.first_name} ${matchedSpecialist.profiles?.last_name}. Redirecting...`,
       });
 
       // Navigate to video consultation
@@ -108,6 +137,7 @@ function InstantConsultationContent() {
         navigate(`/consultation/${appointment.id}`);
       }, 2000);
     } catch (error: any) {
+      console.error('Instant connect error:', error);
       toast({
         title: 'Error',
         description: error.message || 'Failed to start consultation',
