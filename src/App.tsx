@@ -63,6 +63,7 @@ import WaitlistManagement from "./pages/WaitlistManagement";
 import VirtualClinicQueue from "./pages/VirtualClinicQueue";
 import ClinicBranding from "./pages/ClinicBranding";
 import ClinicIntegrations from "./pages/ClinicIntegrations";
+import ClinicRevenueSplits from "./pages/ClinicRevenueSplits";
 import AIFinance from "./pages/AIFinance";
 import PublicClinicPage from "./pages/PublicClinicPage";
 import EHDSCompliance from "./pages/EHDSCompliance";
@@ -152,6 +153,7 @@ const App = () => (
             <Route path="/clinic/profile/edit" element={<ClinicProfileEdit />} />
             <Route path="/clinic/staff" element={<ClinicStaff />} />
             <Route path="/clinic/branding" element={<ClinicBranding />} />
+            <Route path="/clinic/revenue-splits" element={<ClinicRevenueSplits />} />
             <Route path="/clinic/waitlist" element={<WaitlistManagement />} />
             <Route path="/clinic/virtual-clinic-queue" element={<VirtualClinicQueue />} />
             <Route path="/clinic/appointments" element={<Appointments />} />

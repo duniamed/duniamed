@@ -135,12 +135,35 @@ export default function PublicClinicPage() {
                 />
               )}
               <div className="flex-1">
-                <h1 className="text-4xl font-bold mb-2">{clinic.name}</h1>
+                <div className="flex items-center gap-3 mb-2">
+                  <h1 className="text-4xl font-bold">{clinic.name}</h1>
+                  <Badge 
+                    variant={clinic.clinic_type === 'virtual' ? 'default' : 'secondary'}
+                    className="text-sm"
+                  >
+                    {clinic.clinic_type === 'virtual' ? '🌐 Virtual Clinic' : 
+                     clinic.clinic_type === 'hybrid' ? '🏥 Hybrid Clinic' : '🏥 Physical Clinic'}
+                  </Badge>
+                </div>
                 {clinic.tagline && (
                   <p className="text-lg text-muted-foreground mb-3">{clinic.tagline}</p>
                 )}
                 <div className="flex items-center gap-4 flex-wrap">
-                  <Badge variant="secondary">{clinic.clinic_type}</Badge>
+                  {clinic.clinic_type === 'virtual' && (
+                    <Badge variant="outline" className="text-green-600 border-green-600">
+                      Online Consultations Available
+                    </Badge>
+                  )}
+                  {clinic.clinic_type === 'hybrid' && (
+                    <>
+                      <Badge variant="outline" className="text-blue-600 border-blue-600">
+                        In-Person Visits
+                      </Badge>
+                      <Badge variant="outline" className="text-green-600 border-green-600">
+                        Virtual Consultations
+                      </Badge>
+                    </>
+                  )}
                   {clinic.average_rating > 0 && (
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
@@ -150,7 +173,7 @@ export default function PublicClinicPage() {
                   {clinic.staff_count > 0 && (
                     <div className="flex items-center gap-1 text-sm text-muted-foreground">
                       <Users className="h-4 w-4" />
-                      <span>{clinic.staff_count} staff members</span>
+                      <span>{clinic.staff_count} healthcare professionals</span>
                     </div>
                   )}
                 </div>
