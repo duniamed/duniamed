@@ -69,6 +69,11 @@ import EHDSCompliance from "./pages/EHDSCompliance";
 import ReviewModeration from "./pages/ReviewModeration";
 import Complaints from "./pages/Complaints";
 import InsuranceVerification from "./pages/InsuranceVerification";
+import ClaimsManagement from "./pages/ClaimsManagement";
+import TeamChat from "./pages/TeamChat";
+import EmergencyProtocols from "./pages/EmergencyProtocols";
+import SpecialistForums from "./pages/SpecialistForums";
+import CalendarSync from "./pages/CalendarSync";
 
 const queryClient = new QueryClient();
 
@@ -167,6 +172,11 @@ const App = () => (
             <Route path="/reviews/moderation" element={<ReviewModeration />} />
             <Route path="/complaints" element={<Complaints />} />
             <Route path="/insurance/verification" element={<InsuranceVerification />} />
+            <Route path="/claims" element={<ClaimsManagement />} />
+            <Route path="/team-chat" element={<TeamChat />} />
+            <Route path="/emergency-protocols" element={<EmergencyProtocols />} />
+            <Route path="/forums" element={<SpecialistForums />} />
+            <Route path="/calendar-sync" element={<CalendarSync />} />
             
             {/* SHARED FEATURES */}
             <Route path="/instant-consultation" element={<InstantConsultation />} />
