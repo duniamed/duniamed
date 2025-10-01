@@ -7,33 +7,33 @@ import Layout from "@/components/layout/Layout";
 export default function ForClinics() {
   return (
     <Layout>
-        {/* Hero Section - VOA Health inspired */}
+        {/* Hero Section */}
         <section className="section-padding bg-gradient-to-br from-soft-purple via-background to-accent/5">
           <div className="container-modern text-center space-y-10">
             <h1 className="font-display">
-              Serviços digitais para saúde{" "}
-              <span className="gradient-text">conectados de ponta a ponta</span>
+              Digital Health Services{" "}
+              <span className="gradient-text">Connected End-to-End</span>
             </h1>
             
             <p className="text-2xl text-muted-foreground max-w-4xl mx-auto font-light leading-relaxed">
-              Integramos operadoras, clínicas e pacientes em uma plataforma inteligente e segura. Escolha seu perfil e descubra a solução ideal para seu negócio.
+              We integrate providers, clinics, and patients into one intelligent and secure platform. Choose your profile and discover the ideal solution for your practice.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-5 justify-center pt-6">
               <Button size="lg" className="h-16 px-12 text-lg rounded-full shadow-xl font-bold" asChild>
-                <Link to="/auth?mode=signup&role=clinic_admin">Comece grátis</Link>
+                <Link to="/auth?mode=signup&role=clinic_admin">Start Free</Link>
               </Button>
             </div>
             
             <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
               <span className="flex items-center gap-2">
-                ✓ Utilize agora em suas consultas
+                ✓ Use now in your consultations
               </span>
               <span className="flex items-center gap-2">
-                ✓ Use mesmo sem cartão de crédito
+                ✓ No credit card required
               </span>
               <span className="flex items-center gap-2">
-                ✓ Suporte 24 horas
+                ✓ 24/7 support
               </span>
             </div>
           </div>
@@ -99,10 +99,10 @@ export default function ForClinics() {
           <div className="container-modern">
             <div className="text-center mb-16 space-y-4">
               <h2 className="text-4xl md:text-5xl font-bold">
-                Gestão completa de clínicas
+                Complete Clinic Management
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-light">
-                Tudo que você precisa para administrar sua prática médica moderna
+                Everything you need to run your modern medical practice
               </p>
             </div>
 
@@ -110,33 +110,33 @@ export default function ForClinics() {
               {[
                 {
                   icon: Calendar,
-                  title: "Agendamento Inteligente",
-                  description: "Sistema de agendas com distribuição automática e otimização de horários"
+                  title: "Intelligent Scheduling",
+                  description: "Automated appointment distribution and schedule optimization system"
                 },
                 {
                   icon: Video,
-                  title: "Teleatendimento",
-                  description: "Consultas por vídeo com qualidade HD e gravação automática"
+                  title: "Telehealth",
+                  description: "HD video consultations with automatic recording"
                 },
                 {
                   icon: Shield,
-                  title: "Conformidade LGPD",
-                  description: "Totalmente em conformidade com LGPD e padrões internacionais"
+                  title: "GDPR/HIPAA Compliance",
+                  description: "Fully compliant with international privacy and data protection standards"
                 },
                 {
                   icon: Users,
-                  title: "Gestão de Equipe",
-                  description: "Gerenciamento completo de médicos, permissões e relatórios"
+                  title: "Team Management",
+                  description: "Complete physician management, permissions, and reporting"
                 },
                 {
                   icon: Building2,
-                  title: "Multi-unidades",
-                  description: "Gerencie múltiplas clínicas em uma única plataforma"
+                  title: "Multi-Location",
+                  description: "Manage multiple clinics from a single unified platform"
                 },
                 {
                   icon: Smile,
-                  title: "Portal do Paciente",
-                  description: "App exclusivo para pacientes acessarem documentos e agendarem"
+                  title: "Patient Portal",
+                  description: "Exclusive app for patients to access documents and schedule appointments"
                 }
               ].map((feature) => (
                 <div key={feature.title} className="card-modern group">
@@ -156,21 +156,21 @@ export default function ForClinics() {
           <div className="container-modern max-w-5xl">
             <div className="card-modern text-center border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-background to-accent/5">
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                Pronto para modernizar sua clínica?
+                Ready to Modernize Your Clinic?
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 font-light">
-                Junte-se a centenas de clínicas que já transformaram sua gestão com nossa plataforma
+                Join hundreds of clinics that have already transformed their practice with our platform
               </p>
               <div className="flex flex-col sm:flex-row gap-5 justify-center">
                 <Button size="lg" className="h-16 px-12 text-lg rounded-full shadow-xl font-bold" asChild>
-                  <Link to="/auth?mode=signup&role=clinic_admin">Começar teste grátis</Link>
+                  <Link to="/auth?mode=signup&role=clinic_admin">Start Free Trial</Link>
                 </Button>
                 <Button size="lg" variant="outline" className="h-16 px-10 text-lg rounded-full border-2 font-semibold" asChild>
-                  <Link to="/contact">Falar com especialista</Link>
+                  <Link to="/contact">Talk to Specialist</Link>
                 </Button>
               </div>
               <p className="text-sm text-muted-foreground mt-8">
-                ✓ 14 dias grátis ✓ Sem cartão de crédito ✓ Cancelamento a qualquer momento
+                ✓ 14 days free ✓ No credit card ✓ Cancel anytime
               </p>
             </div>
           </div>
