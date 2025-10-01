@@ -44,8 +44,8 @@ export default function Header() {
             </Link>
           </div>
 
-          <div className="hidden lg:flex lg:items-center lg:gap-4 xl:gap-6">
-            {navigation.slice(0, 4).map((item) => (
+          <div className="hidden lg:flex lg:items-center lg:gap-3 xl:gap-5">
+            {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
