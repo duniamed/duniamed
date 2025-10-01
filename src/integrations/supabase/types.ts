@@ -102,6 +102,7 @@ export type Database = {
           chief_complaint: string | null
           clinic_id: string | null
           completed_at: string | null
+          confirmation_required: boolean | null
           consultation_type: Database["public"]["Enums"]["consultation_type"]
           created_at: string | null
           currency: string | null
@@ -109,11 +110,15 @@ export type Database = {
           fee: number
           id: string
           notes: string | null
+          patient_confirmed: boolean | null
+          patient_confirmed_at: string | null
           patient_id: string
           payment_id: string | null
           reminder_sent: boolean | null
           reminder_sent_at: string | null
           scheduled_at: string
+          specialist_confirmed: boolean | null
+          specialist_confirmed_at: string | null
           specialist_id: string
           status: Database["public"]["Enums"]["appointment_status"] | null
           symptoms: Json | null
@@ -129,6 +134,7 @@ export type Database = {
           chief_complaint?: string | null
           clinic_id?: string | null
           completed_at?: string | null
+          confirmation_required?: boolean | null
           consultation_type: Database["public"]["Enums"]["consultation_type"]
           created_at?: string | null
           currency?: string | null
@@ -136,11 +142,15 @@ export type Database = {
           fee: number
           id?: string
           notes?: string | null
+          patient_confirmed?: boolean | null
+          patient_confirmed_at?: string | null
           patient_id: string
           payment_id?: string | null
           reminder_sent?: boolean | null
           reminder_sent_at?: string | null
           scheduled_at: string
+          specialist_confirmed?: boolean | null
+          specialist_confirmed_at?: string | null
           specialist_id: string
           status?: Database["public"]["Enums"]["appointment_status"] | null
           symptoms?: Json | null
@@ -156,6 +166,7 @@ export type Database = {
           chief_complaint?: string | null
           clinic_id?: string | null
           completed_at?: string | null
+          confirmation_required?: boolean | null
           consultation_type?: Database["public"]["Enums"]["consultation_type"]
           created_at?: string | null
           currency?: string | null
@@ -163,11 +174,15 @@ export type Database = {
           fee?: number
           id?: string
           notes?: string | null
+          patient_confirmed?: boolean | null
+          patient_confirmed_at?: string | null
           patient_id?: string
           payment_id?: string | null
           reminder_sent?: boolean | null
           reminder_sent_at?: string | null
           scheduled_at?: string
+          specialist_confirmed?: boolean | null
+          specialist_confirmed_at?: string | null
           specialist_id?: string
           status?: Database["public"]["Enums"]["appointment_status"] | null
           symptoms?: Json | null
@@ -611,6 +626,110 @@ export type Database = {
           },
         ]
       }
+      complaint_messages: {
+        Row: {
+          attachments: Json | null
+          complaint_id: string
+          created_at: string | null
+          id: string
+          is_internal: boolean | null
+          message: string
+          sender_id: string
+          sender_type: string
+        }
+        Insert: {
+          attachments?: Json | null
+          complaint_id: string
+          created_at?: string | null
+          id?: string
+          is_internal?: boolean | null
+          message: string
+          sender_id: string
+          sender_type: string
+        }
+        Update: {
+          attachments?: Json | null
+          complaint_id?: string
+          created_at?: string | null
+          id?: string
+          is_internal?: boolean | null
+          message?: string
+          sender_id?: string
+          sender_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "complaint_messages_complaint_id_fkey"
+            columns: ["complaint_id"]
+            isOneToOne: false
+            referencedRelation: "complaints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      complaints: {
+        Row: {
+          against_type: string
+          assigned_mediator: string | null
+          board_case_number: string | null
+          complaint_type: string
+          created_at: string | null
+          description: string
+          escalated_to_board: boolean | null
+          evidence_urls: Json | null
+          filed_against: string
+          filed_by: string
+          id: string
+          resolution_notes: string | null
+          resolved_at: string | null
+          severity: string | null
+          status: string | null
+          ticket_number: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          against_type: string
+          assigned_mediator?: string | null
+          board_case_number?: string | null
+          complaint_type: string
+          created_at?: string | null
+          description: string
+          escalated_to_board?: boolean | null
+          evidence_urls?: Json | null
+          filed_against: string
+          filed_by: string
+          id?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          severity?: string | null
+          status?: string | null
+          ticket_number?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          against_type?: string
+          assigned_mediator?: string | null
+          board_case_number?: string | null
+          complaint_type?: string
+          created_at?: string | null
+          description?: string
+          escalated_to_board?: boolean | null
+          evidence_urls?: Json | null
+          filed_against?: string
+          filed_by?: string
+          id?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          severity?: string | null
+          status?: string | null
+          ticket_number?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       conditions_catalog: {
         Row: {
           category: string
@@ -1046,6 +1165,73 @@ export type Database = {
         }
         Relationships: []
       }
+      insurance_verifications: {
+        Row: {
+          clinic_id: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          insurance_network: string
+          insurance_provider: string
+          last_checked: string | null
+          notes: string | null
+          specialist_id: string | null
+          verification_source: string | null
+          verification_status: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          clinic_id?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          insurance_network: string
+          insurance_provider: string
+          last_checked?: string | null
+          notes?: string | null
+          specialist_id?: string | null
+          verification_source?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          clinic_id?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          insurance_network?: string
+          insurance_provider?: string
+          last_checked?: string | null
+          notes?: string | null
+          specialist_id?: string | null
+          verification_source?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_verifications_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurance_verifications_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurance_verifications_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       medical_records: {
         Row: {
           appointment_id: string | null
@@ -1383,6 +1569,89 @@ export type Database = {
           },
         ]
       }
+      profile_analytics: {
+        Row: {
+          created_at: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          metadata: Json | null
+          metric_type: string
+          viewer_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          metadata?: Json | null
+          metric_type: string
+          viewer_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          metadata?: Json | null
+          metric_type?: string
+          viewer_id?: string | null
+        }
+        Relationships: []
+      }
+      profile_verifications: {
+        Row: {
+          created_at: string | null
+          document_url: string | null
+          expires_at: string | null
+          id: string
+          metadata: Json | null
+          rejection_reason: string | null
+          specialist_id: string
+          updated_at: string | null
+          verification_status: string | null
+          verification_type: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          document_url?: string | null
+          expires_at?: string | null
+          id?: string
+          metadata?: Json | null
+          rejection_reason?: string | null
+          specialist_id: string
+          updated_at?: string | null
+          verification_status?: string | null
+          verification_type: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          document_url?: string | null
+          expires_at?: string | null
+          id?: string
+          metadata?: Json | null
+          rejection_reason?: string | null
+          specialist_id?: string
+          updated_at?: string | null
+          verification_status?: string | null
+          verification_type?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_verifications_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address_line1: string | null
@@ -1505,7 +1774,10 @@ export type Database = {
       }
       reviews: {
         Row: {
+          administrative_feedback: string | null
+          appeal_status: string | null
           appointment_id: string
+          clinical_feedback: string | null
           comment: string | null
           created_at: string | null
           flag_reason: string | null
@@ -1513,6 +1785,10 @@ export type Database = {
           is_anonymous: boolean | null
           is_flagged: boolean | null
           is_verified: boolean | null
+          moderated_at: string | null
+          moderated_by: string | null
+          moderation_reason: string | null
+          moderation_status: string | null
           patient_id: string
           rating: number
           responded_at: string | null
@@ -1521,7 +1797,10 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          administrative_feedback?: string | null
+          appeal_status?: string | null
           appointment_id: string
+          clinical_feedback?: string | null
           comment?: string | null
           created_at?: string | null
           flag_reason?: string | null
@@ -1529,6 +1808,10 @@ export type Database = {
           is_anonymous?: boolean | null
           is_flagged?: boolean | null
           is_verified?: boolean | null
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_reason?: string | null
+          moderation_status?: string | null
           patient_id: string
           rating: number
           responded_at?: string | null
@@ -1537,7 +1820,10 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          administrative_feedback?: string | null
+          appeal_status?: string | null
           appointment_id?: string
+          clinical_feedback?: string | null
           comment?: string | null
           created_at?: string | null
           flag_reason?: string | null
@@ -1545,6 +1831,10 @@ export type Database = {
           is_anonymous?: boolean | null
           is_flagged?: boolean | null
           is_verified?: boolean | null
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_reason?: string | null
+          moderation_status?: string | null
           patient_id?: string
           rating?: number
           responded_at?: string | null

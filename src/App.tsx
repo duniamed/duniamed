@@ -66,6 +66,9 @@ import ClinicIntegrations from "./pages/ClinicIntegrations";
 import AIFinance from "./pages/AIFinance";
 import PublicClinicPage from "./pages/PublicClinicPage";
 import EHDSCompliance from "./pages/EHDSCompliance";
+import ReviewModeration from "./pages/ReviewModeration";
+import Complaints from "./pages/Complaints";
+import InsuranceVerification from "./pages/InsuranceVerification";
 
 const queryClient = new QueryClient();
 
@@ -159,6 +162,11 @@ const App = () => (
             
             {/* EHDS COMPLIANCE */}
             <Route path="/ehds-compliance" element={<EHDSCompliance />} />
+            
+            {/* REVIEW & COMPLAINT MANAGEMENT */}
+            <Route path="/reviews/moderation" element={<ReviewModeration />} />
+            <Route path="/complaints" element={<Complaints />} />
+            <Route path="/insurance/verification" element={<InsuranceVerification />} />
             
             {/* SHARED FEATURES */}
             <Route path="/instant-consultation" element={<InstantConsultation />} />
