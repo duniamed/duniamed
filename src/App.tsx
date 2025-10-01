@@ -60,6 +60,10 @@ import ClinicStaff from "./pages/ClinicStaff";
 import WaitlistManagement from "./pages/WaitlistManagement";
 import VirtualClinicQueue from "./pages/VirtualClinicQueue";
 import ClinicBranding from "./pages/ClinicBranding";
+import ClinicIntegrations from "./pages/ClinicIntegrations";
+import AIFinance from "./pages/AIFinance";
+import PublicClinicPage from "./pages/PublicClinicPage";
+import EHDSCompliance from "./pages/EHDSCompliance";
 
 const queryClient = new QueryClient();
 
@@ -145,6 +149,14 @@ const App = () => (
             <Route path="/clinic/messages" element={<Messages />} />
             <Route path="/clinic/notifications" element={<Notifications />} />
             <Route path="/clinic/analytics" element={<Analytics />} />
+            <Route path="/clinic/integrations" element={<ClinicIntegrations />} />
+            <Route path="/clinic/:slug" element={<PublicClinicPage />} />
+            
+            {/* FINANCIAL */}
+            <Route path="/ai-finance" element={<AIFinance />} />
+            
+            {/* EHDS COMPLIANCE */}
+            <Route path="/ehds-compliance" element={<EHDSCompliance />} />
             
             {/* SHARED FEATURES */}
             <Route path="/instant-consultation" element={<InstantConsultation />} />

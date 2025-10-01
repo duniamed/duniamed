@@ -4,6 +4,7 @@ import { Menu, X, User, LogOut, Bell } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,11 +70,7 @@ export default function Header() {
             
             {!isMobile && (
               <>
-                <select className="hidden lg:block text-xs bg-background border rounded-md px-2 py-1.5">
-                  <option value="en">🇬🇧 EN</option>
-                  <option value="es">🇪🇸 ES</option>
-                  <option value="pt">🇵🇹 PT</option>
-                </select>
+                <LanguageSwitcher />
                 {user && profile ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>

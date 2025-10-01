@@ -1,0 +1,74 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "language": "Language"
+  },
+  "nav": {
+    "home": "Home",
+    "search": "Find a Doctor",
+    "forPatients": "For Patients",
+    "forSpecialists": "For Specialists",
+    "forClinics": "For Clinics",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Login",
+    "signup": "Sign Up",
+    "dashboard": "Dashboard",
+    "logout": "Logout"
+  },
+  "home": {
+    "hero": {
+      "title": "Global Healthcare Access",
+      "subtitle": "Connect with verified healthcare professionals worldwide",
+      "cta": "Find a Doctor Now"
+    }
+  },
+  "search": {
+    "title": "Find Your Healthcare Provider",
+    "filters": {
+      "specialty": "Specialty",
+      "condition": "Condition",
+      "language": "Language",
+      "timezone": "Time Zone",
+      "insurance": "Insurance",
+      "consultationType": "Consultation Type",
+      "availability": "Availability"
+    }
+  },
+  "patient": {
+    "dashboard": "Patient Dashboard",
+    "appointments": "My Appointments",
+    "records": "Medical Records",
+    "prescriptions": "Prescriptions"
+  },
+  "specialist": {
+    "dashboard": "Specialist Dashboard",
+    "patients": "My Patients",
+    "schedule": "My Schedule"
+  },
+  "clinic": {
+    "dashboard": "Clinic Dashboard",
+    "staff": "Staff Management",
+    "integrations": "Integrations",
+    "publicPage": "Public Page"
+  },
+  "finance": {
+    "dashboard": "Financial Dashboard",
+    "transactions": "Transactions",
+    "analytics": "AI Analytics",
+    "insights": "Financial Insights"
+  }
+}

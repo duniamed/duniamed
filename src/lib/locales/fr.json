@@ -1,0 +1,74 @@
+{
+  "common": {
+    "welcome": "Bienvenue",
+    "search": "Rechercher",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre",
+    "language": "Langue"
+  },
+  "nav": {
+    "home": "Accueil",
+    "search": "Trouver un Médecin",
+    "forPatients": "Pour les Patients",
+    "forSpecialists": "Pour les Spécialistes",
+    "forClinics": "Pour les Cliniques",
+    "about": "À Propos",
+    "contact": "Contact",
+    "login": "Connexion",
+    "signup": "S'inscrire",
+    "dashboard": "Tableau de Bord",
+    "logout": "Déconnexion"
+  },
+  "home": {
+    "hero": {
+      "title": "Accès Mondial aux Soins de Santé",
+      "subtitle": "Connectez-vous avec des professionnels de santé vérifiés dans le monde entier",
+      "cta": "Trouver un Médecin Maintenant"
+    }
+  },
+  "search": {
+    "title": "Trouvez Votre Fournisseur de Soins",
+    "filters": {
+      "specialty": "Spécialité",
+      "condition": "Condition",
+      "language": "Langue",
+      "timezone": "Fuseau Horaire",
+      "insurance": "Assurance",
+      "consultationType": "Type de Consultation",
+      "availability": "Disponibilité"
+    }
+  },
+  "patient": {
+    "dashboard": "Tableau de Bord Patient",
+    "appointments": "Mes Rendez-vous",
+    "records": "Dossiers Médicaux",
+    "prescriptions": "Ordonnances"
+  },
+  "specialist": {
+    "dashboard": "Tableau de Bord Spécialiste",
+    "patients": "Mes Patients",
+    "schedule": "Mon Horaire"
+  },
+  "clinic": {
+    "dashboard": "Tableau de Bord Clinique",
+    "staff": "Gestion du Personnel",
+    "integrations": "Intégrations",
+    "publicPage": "Page Publique"
+  },
+  "finance": {
+    "dashboard": "Tableau de Bord Financier",
+    "transactions": "Transactions",
+    "analytics": "Analyse IA",
+    "insights": "Aperçus Financiers"
+  }
+}

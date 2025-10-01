@@ -25,4 +25,10 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.instant-connect]
+verify_jwt = false
+
+[functions.oauth-connect]
+verify_jwt = true
+
+[functions.ai-financial-analysis]
 verify_jwt = true

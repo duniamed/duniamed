@@ -1,0 +1,74 @@
+{
+  "common": {
+    "welcome": "Bem-vindo",
+    "search": "Pesquisar",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "view": "Ver",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "submit": "Enviar",
+    "language": "Idioma"
+  },
+  "nav": {
+    "home": "Início",
+    "search": "Encontrar Médico",
+    "forPatients": "Para Pacientes",
+    "forSpecialists": "Para Especialistas",
+    "forClinics": "Para Clínicas",
+    "about": "Sobre",
+    "contact": "Contato",
+    "login": "Entrar",
+    "signup": "Cadastrar",
+    "dashboard": "Painel",
+    "logout": "Sair"
+  },
+  "home": {
+    "hero": {
+      "title": "Acesso Global à Saúde",
+      "subtitle": "Conecte-se com profissionais de saúde verificados em todo o mundo",
+      "cta": "Encontrar um Médico Agora"
+    }
+  },
+  "search": {
+    "title": "Encontre seu Provedor de Saúde",
+    "filters": {
+      "specialty": "Especialidade",
+      "condition": "Condição",
+      "language": "Idioma",
+      "timezone": "Fuso Horário",
+      "insurance": "Seguro",
+      "consultationType": "Tipo de Consulta",
+      "availability": "Disponibilidade"
+    }
+  },
+  "patient": {
+    "dashboard": "Painel do Paciente",
+    "appointments": "Minhas Consultas",
+    "records": "Registros Médicos",
+    "prescriptions": "Prescrições"
+  },
+  "specialist": {
+    "dashboard": "Painel do Especialista",
+    "patients": "Meus Pacientes",
+    "schedule": "Minha Agenda"
+  },
+  "clinic": {
+    "dashboard": "Painel da Clínica",
+    "staff": "Gerenciamento de Equipe",
+    "integrations": "Integrações",
+    "publicPage": "Página Pública"
+  },
+  "finance": {
+    "dashboard": "Painel Financeiro",
+    "transactions": "Transações",
+    "analytics": "Análise de IA",
+    "insights": "Insights Financeiros"
+  }
+}

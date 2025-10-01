@@ -1,0 +1,74 @@
+{
+  "common": {
+    "welcome": "Willkommen",
+    "search": "Suchen",
+    "loading": "Wird geladen...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "view": "Ansehen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "submit": "Absenden",
+    "language": "Sprache"
+  },
+  "nav": {
+    "home": "Startseite",
+    "search": "Arzt Finden",
+    "forPatients": "Für Patienten",
+    "forSpecialists": "Für Spezialisten",
+    "forClinics": "Für Kliniken",
+    "about": "Über Uns",
+    "contact": "Kontakt",
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "dashboard": "Dashboard",
+    "logout": "Abmelden"
+  },
+  "home": {
+    "hero": {
+      "title": "Globaler Zugang zur Gesundheitsversorgung",
+      "subtitle": "Verbinden Sie sich mit verifizierten Gesundheitsexperten weltweit",
+      "cta": "Jetzt Arzt Finden"
+    }
+  },
+  "search": {
+    "title": "Finden Sie Ihren Gesundheitsdienstleister",
+    "filters": {
+      "specialty": "Fachgebiet",
+      "condition": "Zustand",
+      "language": "Sprache",
+      "timezone": "Zeitzone",
+      "insurance": "Versicherung",
+      "consultationType": "Konsultationsart",
+      "availability": "Verfügbarkeit"
+    }
+  },
+  "patient": {
+    "dashboard": "Patienten-Dashboard",
+    "appointments": "Meine Termine",
+    "records": "Medizinische Aufzeichnungen",
+    "prescriptions": "Verschreibungen"
+  },
+  "specialist": {
+    "dashboard": "Spezialisten-Dashboard",
+    "patients": "Meine Patienten",
+    "schedule": "Mein Zeitplan"
+  },
+  "clinic": {
+    "dashboard": "Klinik-Dashboard",
+    "staff": "Personalverwaltung",
+    "integrations": "Integrationen",
+    "publicPage": "Öffentliche Seite"
+  },
+  "finance": {
+    "dashboard": "Finanz-Dashboard",
+    "transactions": "Transaktionen",
+    "analytics": "KI-Analyse",
+    "insights": "Finanzielle Einblicke"
+  }
+}

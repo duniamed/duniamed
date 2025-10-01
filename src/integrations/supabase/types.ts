@@ -296,6 +296,66 @@ export type Database = {
           },
         ]
       }
+      clinic_integrations: {
+        Row: {
+          access_token: string | null
+          clinic_id: string
+          created_at: string | null
+          id: string
+          integration_type: string
+          is_active: boolean | null
+          profile_data: Json | null
+          profile_id: string | null
+          refresh_token: string | null
+          settings: Json | null
+          token_expires_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          access_token?: string | null
+          clinic_id: string
+          created_at?: string | null
+          id?: string
+          integration_type: string
+          is_active?: boolean | null
+          profile_data?: Json | null
+          profile_id?: string | null
+          refresh_token?: string | null
+          settings?: Json | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          access_token?: string | null
+          clinic_id?: string
+          created_at?: string | null
+          id?: string
+          integration_type?: string
+          is_active?: boolean | null
+          profile_data?: Json | null
+          profile_id?: string | null
+          refresh_token?: string | null
+          settings?: Json | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinic_integrations_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinic_integrations_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clinic_invitations: {
         Row: {
           accepted_at: string | null
@@ -622,6 +682,54 @@ export type Database = {
           },
         ]
       }
+      data_portability_requests: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          data_format: string | null
+          destination_system: string | null
+          export_url: string | null
+          id: string
+          include_appointments: boolean | null
+          include_medical_records: boolean | null
+          include_prescriptions: boolean | null
+          metadata: Json | null
+          request_type: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          data_format?: string | null
+          destination_system?: string | null
+          export_url?: string | null
+          id?: string
+          include_appointments?: boolean | null
+          include_medical_records?: boolean | null
+          include_prescriptions?: boolean | null
+          metadata?: Json | null
+          request_type: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          data_format?: string | null
+          destination_system?: string | null
+          export_url?: string | null
+          id?: string
+          include_appointments?: boolean | null
+          include_medical_records?: boolean | null
+          include_prescriptions?: boolean | null
+          metadata?: Json | null
+          request_type?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       document_access_logs: {
         Row: {
           access_type: string
@@ -729,6 +837,51 @@ export type Database = {
           },
         ]
       }
+      ehds_consents: {
+        Row: {
+          consent_document_url: string | null
+          consent_type: string
+          created_at: string | null
+          ehds_compliant: boolean | null
+          granted: boolean
+          granted_at: string | null
+          id: string
+          jurisdiction: string
+          legal_basis: string | null
+          metadata: Json | null
+          revoked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          consent_document_url?: string | null
+          consent_type: string
+          created_at?: string | null
+          ehds_compliant?: boolean | null
+          granted: boolean
+          granted_at?: string | null
+          id?: string
+          jurisdiction: string
+          legal_basis?: string | null
+          metadata?: Json | null
+          revoked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          consent_document_url?: string | null
+          consent_type?: string
+          created_at?: string | null
+          ehds_compliant?: boolean | null
+          granted?: boolean
+          granted_at?: string | null
+          id?: string
+          jurisdiction?: string
+          legal_basis?: string | null
+          metadata?: Json | null
+          revoked_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       family_members: {
         Row: {
           created_at: string | null
@@ -805,6 +958,66 @@ export type Database = {
             columns: ["specialist_id"]
             isOneToOne: false
             referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_transactions: {
+        Row: {
+          amount: number
+          appointment_id: string | null
+          category: string | null
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          id: string
+          metadata: Json | null
+          payment_id: string | null
+          transaction_date: string
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          appointment_id?: string | null
+          category?: string | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_id?: string | null
+          transaction_date?: string
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          appointment_id?: string | null
+          category?: string | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_id?: string | null
+          transaction_date?: string
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_transactions_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_transactions_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
             referencedColumns: ["id"]
           },
         ]
@@ -1902,48 +2115,81 @@ export type Database = {
     Views: {
       clinics_public: {
         Row: {
+          address_line1: string | null
+          average_rating: number | null
           city: string | null
           clinic_type: Database["public"]["Enums"]["clinic_type"] | null
           country: string | null
+          cover_image_url: string | null
           created_at: string | null
           description: string | null
+          email: string | null
           id: string | null
           is_active: boolean | null
+          languages_supported: string[] | null
           logo_url: string | null
+          mission_statement: string | null
           name: string | null
           operating_hours: Json | null
+          phone: string | null
+          postal_code: string | null
+          slug: string | null
           specialties: string[] | null
+          staff_count: number | null
           state: string | null
+          tagline: string | null
           website: string | null
         }
         Insert: {
+          address_line1?: string | null
+          average_rating?: never
           city?: string | null
           clinic_type?: Database["public"]["Enums"]["clinic_type"] | null
           country?: string | null
+          cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
+          email?: string | null
           id?: string | null
           is_active?: boolean | null
+          languages_supported?: string[] | null
           logo_url?: string | null
+          mission_statement?: string | null
           name?: string | null
           operating_hours?: Json | null
+          phone?: string | null
+          postal_code?: string | null
+          slug?: never
           specialties?: string[] | null
+          staff_count?: never
           state?: string | null
+          tagline?: string | null
           website?: string | null
         }
         Update: {
+          address_line1?: string | null
+          average_rating?: never
           city?: string | null
           clinic_type?: Database["public"]["Enums"]["clinic_type"] | null
           country?: string | null
+          cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
+          email?: string | null
           id?: string | null
           is_active?: boolean | null
+          languages_supported?: string[] | null
           logo_url?: string | null
+          mission_statement?: string | null
           name?: string | null
           operating_hours?: Json | null
+          phone?: string | null
+          postal_code?: string | null
+          slug?: never
           specialties?: string[] | null
+          staff_count?: never
           state?: string | null
+          tagline?: string | null
           website?: string | null
         }
         Relationships: []
