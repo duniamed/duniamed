@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
-import { ChevronLeft, ChevronRight, Check, Clock, AlertCircle, Users } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Clock, AlertCircle, Users, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Specialist {
@@ -53,7 +53,15 @@ function BookAppointmentContent() {
   const [chiefComplaint, setChiefComplaint] = useState('');
   const [urgencyLevel, setUrgencyLevel] = useState<'routine' | 'urgent' | 'emergency'>('routine');
   
-  // Step 3: Confirmation
+  // Step 3: Insurance & Cost
+  const [hasInsurance, setHasInsurance] = useState(false);
+  const [insurancePayerId, setInsurancePayerId] = useState('');
+  const [insuranceMemberId, setInsuranceMemberId] = useState('');
+  const [eligibilityResult, setEligibilityResult] = useState<any>(null);
+  const [checkingEligibility, setCheckingEligibility] = useState(false);
+  const [costEstimate, setCostEstimate] = useState<any>(null);
+  
+  // Step 4: Confirmation
   const [submitting, setSubmitting] = useState(false);
 
   const timeSlots = [
@@ -85,6 +93,56 @@ function BookAppointmentContent() {
       setSpecialist(data as any);
     }
     setLoading(false);
+  };
+
+  const checkEligibility = async () => {
+    setCheckingEligibility(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('check-eligibility', {
+        body: {
+          payer_id: insurancePayerId,
+          member_id: insuranceMemberId,
+          patient_id: profile?.id,
+        }
+      });
+
+      if (error) throw error;
+      
+      setEligibilityResult(data);
+      
+      // Generate cost estimate based on eligibility
+      const estimate = {
+        service_fee: specialist!.consultation_fee_min,
+        insurance_coverage: data.is_eligible ? (specialist!.consultation_fee_min * 0.8) : 0,
+        copay: data.copay_amount || 0,
+        patient_responsibility: data.is_eligible 
+          ? (specialist!.consultation_fee_min * 0.2 + (data.copay_amount || 0))
+          : specialist!.consultation_fee_min,
+      };
+      
+      setCostEstimate(estimate);
+      
+      toast({
+        title: data.is_eligible ? 'Insurance verified' : 'Insurance not verified',
+        description: data.is_eligible ? 'Your insurance is active' : 'Proceeding as self-pay',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Verification failed',
+        description: 'Proceeding as self-pay',
+        variant: 'destructive',
+      });
+      
+      // Set self-pay estimate
+      setCostEstimate({
+        service_fee: specialist!.consultation_fee_min,
+        insurance_coverage: 0,
+        copay: 0,
+        patient_responsibility: specialist!.consultation_fee_min,
+      });
+    } finally {
+      setCheckingEligibility(false);
+    }
   };
 
   const handleSubmit = async () => {
@@ -121,8 +179,9 @@ function BookAppointmentContent() {
       chief_complaint: chiefComplaint,
       urgency_level: urgencyLevel,
       status: 'pending',
-      fee: specialist!.consultation_fee_min,
+      fee: costEstimate?.patient_responsibility || specialist!.consultation_fee_min,
       currency: specialist!.currency,
+      modality: consultationType === 'video' ? 'telehealth' : 'in_person',
     });
 
     if (error) {
@@ -211,7 +270,7 @@ function BookAppointmentContent() {
 
           {/* Progress Steps */}
           <div className="flex items-center justify-center gap-4">
-            {[1, 2, 3].map((s) => (
+            {[1, 2, 3, 4].map((s) => (
               <div key={s} className="flex items-center gap-2">
                 <div
                   className={cn(
@@ -221,7 +280,7 @@ function BookAppointmentContent() {
                 >
                   {step > s ? <Check className="h-5 w-5" /> : s}
                 </div>
-                {s < 3 && (
+                {s < 4 && (
                   <div
                     className={cn(
                       'h-0.5 w-12 transition-all',
@@ -333,7 +392,7 @@ function BookAppointmentContent() {
                     Back
                   </Button>
                   <Button onClick={() => setStep(3)} disabled={!chiefComplaint}>
-                    Next
+                    Next: Insurance & Cost
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
@@ -341,8 +400,125 @@ function BookAppointmentContent() {
             </div>
           )}
 
-          {/* Step 3: Confirmation */}
+          {/* Step 3: Insurance & Cost */}
           {step === 3 && (
+            <div className="card-modern">
+              <div className="p-8 space-y-6">
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold">Insurance & Cost</h3>
+                  <p className="text-muted-foreground">Check your insurance and get a cost estimate</p>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="hasInsurance"
+                      checked={hasInsurance}
+                      onChange={(e) => setHasInsurance(e.target.checked)}
+                      className="h-4 w-4"
+                    />
+                    <Label htmlFor="hasInsurance">I have insurance</Label>
+                  </div>
+
+                  {hasInsurance && (
+                    <>
+                      <div className="space-y-2">
+                        <Label>Insurance Payer ID</Label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 12345"
+                          value={insurancePayerId}
+                          onChange={(e) => setInsurancePayerId(e.target.value)}
+                          className="w-full px-3 py-2 border rounded-md"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Member ID</Label>
+                        <input
+                          type="text"
+                          placeholder="Your insurance member ID"
+                          value={insuranceMemberId}
+                          onChange={(e) => setInsuranceMemberId(e.target.value)}
+                          className="w-full px-3 py-2 border rounded-md"
+                        />
+                      </div>
+                      <Button
+                        onClick={checkEligibility}
+                        disabled={!insurancePayerId || !insuranceMemberId || checkingEligibility}
+                        className="w-full"
+                      >
+                        {checkingEligibility ? 'Checking...' : 'Check Eligibility & Get Estimate'}
+                      </Button>
+                    </>
+                  )}
+
+                  {!hasInsurance && (
+                    <Button
+                      onClick={() => {
+                        setCostEstimate({
+                          service_fee: specialist!.consultation_fee_min,
+                          insurance_coverage: 0,
+                          copay: 0,
+                          patient_responsibility: specialist!.consultation_fee_min,
+                        });
+                      }}
+                      className="w-full"
+                    >
+                      Continue as Self-Pay
+                    </Button>
+                  )}
+
+                  {costEstimate && (
+                    <Card className="bg-muted">
+                      <CardHeader>
+                        <CardTitle className="text-lg">Cost Estimate</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Service Fee:</span>
+                          <span className="font-medium">{costEstimate.service_fee} {specialist!.currency}</span>
+                        </div>
+                        {hasInsurance && eligibilityResult?.is_eligible && (
+                          <>
+                            <div className="flex justify-between text-green-600">
+                              <span>Insurance Coverage:</span>
+                              <span className="font-medium">-{costEstimate.insurance_coverage} {specialist!.currency}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Copay:</span>
+                              <span className="font-medium">{costEstimate.copay} {specialist!.currency}</span>
+                            </div>
+                          </>
+                        )}
+                        <div className="flex justify-between pt-3 border-t">
+                          <span className="font-semibold">Your Responsibility:</span>
+                          <span className="font-bold text-lg">{costEstimate.patient_responsibility} {specialist!.currency}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+
+                <div className="flex justify-between">
+                  <Button variant="outline" onClick={() => setStep(2)}>
+                    <ChevronLeft className="mr-2 h-4 w-4" />
+                    Back
+                  </Button>
+                  <Button
+                    onClick={() => setStep(4)}
+                    disabled={!costEstimate}
+                  >
+                    Next: Review
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Confirmation */}
+          {step === 4 && (
             <div className="card-modern">
               <div className="p-8 space-y-6">
                 <div className="space-y-2">
@@ -373,9 +549,15 @@ function BookAppointmentContent() {
                     <span className="font-medium capitalize">{urgencyLevel}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Fee:</span>
+                    <span className="text-muted-foreground">Insurance:</span>
                     <span className="font-medium">
-                      {specialist.consultation_fee_min} {specialist.currency}
+                      {hasInsurance && eligibilityResult?.is_eligible ? 'Verified' : 'Self-Pay'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Your Cost:</span>
+                    <span className="font-medium text-lg">
+                      {costEstimate?.patient_responsibility || specialist.consultation_fee_min} {specialist.currency}
                     </span>
                   </div>
                 </div>
@@ -386,7 +568,7 @@ function BookAppointmentContent() {
                 </div>
 
                 <div className="flex justify-between">
-                  <Button variant="outline" onClick={() => setStep(2)}>
+                  <Button variant="outline" onClick={() => setStep(3)}>
                     <ChevronLeft className="mr-2 h-4 w-4" />
                     Back
                   </Button>
