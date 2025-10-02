@@ -19,7 +19,41 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Simulate API call to payer eligibility service (270/271 transaction)
+    // Real implementation with Change Healthcare / Optum API:
+    // const clearinghouseApiKey = Deno.env.get("CLEARINGHOUSE_API_KEY");
+    // const clearinghouseUrl = "https://api.changehealthcare.com/medicalnetwork/eligibility/v3";
+    // 
+    // const eligibilityRequest = {
+    //   controlNumber: `${Date.now()}`,
+    //   tradingPartnerServiceId: payerId,
+    //   provider: {
+    //     npi: "YOUR_PROVIDER_NPI",
+    //   },
+    //   subscriber: {
+    //     memberId: memberId,
+    //     firstName: "Patient",
+    //     lastName: "Name",
+    //     dateOfBirth: "1990-01-01",
+    //   },
+    //   encounter: {
+    //     serviceTypeCodes: ["30"], // Health benefit plan coverage
+    //   },
+    // };
+    //
+    // const response = await fetch(clearinghouseUrl, {
+    //   method: "POST",
+    //   headers: {
+    //     "Authorization": `Bearer ${clearinghouseApiKey}`,
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(eligibilityRequest),
+    // });
+    //
+    // const eligibilityData = await response.json();
+
+    console.log("Checking eligibility for:", { patientId, payerId, memberId });
+
+    // Simulated API response (X12 270/271 transaction converted to JSON)
     const eligibilityResponse = {
       isEligible: Math.random() > 0.2,
       coverageDetails: {
