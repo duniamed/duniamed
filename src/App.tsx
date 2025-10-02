@@ -81,6 +81,10 @@ import TeamChat from "./pages/TeamChat";
 import EmergencyProtocols from "./pages/EmergencyProtocols";
 import SpecialistForums from "./pages/SpecialistForums";
 import CalendarSync from "./pages/CalendarSync";
+import CostEstimator from "./pages/CostEstimator";
+import DocumentSharing from "./pages/DocumentSharing";
+import DataExport from "./pages/DataExport";
+import PatientInsuranceCheck from "./pages/PatientInsuranceCheck";
 
 const queryClient = new QueryClient();
 
@@ -193,6 +197,10 @@ const App = () => (
             <Route path="/emergency-protocols" element={<EmergencyProtocols />} />
             <Route path="/forums" element={<SpecialistForums />} />
             <Route path="/calendar-sync" element={<CalendarSync />} />
+            <Route path="/cost-estimator" element={<CostEstimator />} />
+            <Route path="/document-sharing" element={<DocumentSharing />} />
+            <Route path="/data-export" element={<DataExport />} />
+            <Route path="/patient/insurance-check" element={<PatientInsuranceCheck />} />
             
             {/* SHARED FEATURES */}
             <Route path="/instant-consultation" element={<InstantConsultation />} />

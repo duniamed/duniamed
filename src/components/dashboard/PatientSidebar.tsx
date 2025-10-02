@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Calendar, FileText, CreditCard, MessageSquare, Users, Heart, Bell, Settings, User, Upload, Search, Pill, Stethoscope } from 'lucide-react';
+import { Home, Calendar, FileText, CreditCard, MessageSquare, Users, Heart, Bell, Settings, User, Upload, Search, Pill, Stethoscope, Shield, DollarSign, Share2, Download } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -20,10 +20,14 @@ const patientMenuItems = [
   { title: 'Prescriptions', url: '/patient/prescriptions', icon: Pill },
   { title: 'Medical Records', url: '/patient/medical-records', icon: FileText },
   { title: 'Upload Records', url: '/patient/medical-records/upload', icon: Upload },
+  { title: 'Document Sharing', url: '/document-sharing', icon: Share2 },
   { title: 'Messages', url: '/patient/messages', icon: MessageSquare },
   { title: 'Payments', url: '/patient/payments', icon: CreditCard },
+  { title: 'Insurance Check', url: '/patient/insurance-check', icon: Shield },
+  { title: 'Cost Estimator', url: '/cost-estimator', icon: DollarSign },
   { title: 'Family Members', url: '/patient/family-members', icon: Users },
   { title: 'Favorites', url: '/patient/favorites', icon: Heart },
+  { title: 'Data Export', url: '/data-export', icon: Download },
   { title: 'Notifications', url: '/patient/notifications', icon: Bell },
   { title: 'Profile', url: '/patient/profile', icon: User },
   { title: 'Settings', url: '/profile/edit', icon: Settings },
