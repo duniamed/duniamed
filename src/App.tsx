@@ -64,6 +64,12 @@ import VirtualClinicQueue from "./pages/VirtualClinicQueue";
 import ClinicBranding from "./pages/ClinicBranding";
 import ClinicIntegrations from "./pages/ClinicIntegrations";
 import ClinicRevenueSplits from "./pages/ClinicRevenueSplits";
+import Referrals from "./pages/Referrals";
+import LabOrders from "./pages/LabOrders";
+import CarePathways from "./pages/CarePathways";
+import RPMDashboard from "./pages/RPMDashboard";
+import ProxyAccess from "./pages/ProxyAccess";
+import CommunityQA from "./pages/CommunityQA";
 import AIFinance from "./pages/AIFinance";
 import PublicClinicPage from "./pages/PublicClinicPage";
 import EHDSCompliance from "./pages/EHDSCompliance";
@@ -163,6 +169,14 @@ const App = () => (
             <Route path="/clinic/analytics" element={<Analytics />} />
             <Route path="/clinic/integrations" element={<ClinicIntegrations />} />
             <Route path="/clinic/:slug" element={<PublicClinicPage />} />
+            
+            {/* CLINICAL WORKFLOWS */}
+            <Route path="/referrals" element={<Referrals />} />
+            <Route path="/lab-orders" element={<LabOrders />} />
+            <Route path="/care-pathways" element={<CarePathways />} />
+            <Route path="/rpm-dashboard" element={<RPMDashboard />} />
+            <Route path="/proxy-access" element={<ProxyAccess />} />
+            <Route path="/community" element={<CommunityQA />} />
             
             {/* FINANCIAL */}
             <Route path="/ai-finance" element={<AIFinance />} />
