@@ -65,3 +65,6 @@ verify_jwt = true
 
 [functions.send-notification]
 verify_jwt = false
+
+[functions.insurance-reminder]
+verify_jwt = false

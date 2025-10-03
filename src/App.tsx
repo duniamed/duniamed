@@ -85,6 +85,11 @@ import CostEstimator from "./pages/CostEstimator";
 import DocumentSharing from "./pages/DocumentSharing";
 import DataExport from "./pages/DataExport";
 import PatientInsuranceCheck from "./pages/PatientInsuranceCheck";
+import BrowseReviews from "./pages/BrowseReviews";
+import InsuranceManagement from "./pages/InsuranceManagement";
+import MediationChat from "./pages/MediationChat";
+import ReviewResponse from "./pages/ReviewResponse";
+import ReviewAppeals from "./pages/ReviewAppeals";
 
 const queryClient = new QueryClient();
 
@@ -190,8 +195,13 @@ const App = () => (
             
             {/* REVIEW & COMPLAINT MANAGEMENT */}
             <Route path="/reviews/moderation" element={<ReviewModeration />} />
+            <Route path="/reviews/browse" element={<BrowseReviews />} />
+            <Route path="/reviews/appeals" element={<ReviewAppeals />} />
+            <Route path="/reviews/:reviewId/respond" element={<ReviewResponse />} />
             <Route path="/complaints" element={<Complaints />} />
+            <Route path="/complaints/:complaintId/mediation" element={<MediationChat />} />
             <Route path="/insurance/verification" element={<InsuranceVerification />} />
+            <Route path="/insurance/management" element={<InsuranceManagement />} />
             <Route path="/claims" element={<ClaimsManagement />} />
             <Route path="/team-chat" element={<TeamChat />} />
             <Route path="/emergency-protocols" element={<EmergencyProtocols />} />

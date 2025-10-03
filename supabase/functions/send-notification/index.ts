@@ -1,13 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
-import { Resend } from "npm:resend@4.0.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -52,19 +49,36 @@ serve(async (req) => {
 
     // Send email if enabled
     if (!prefs || prefs.email_enabled) {
-      await resend.emails.send({
-        from: "DuniaMed <notifications@resend.dev>",
-        to: [profile.email],
-        subject: title,
-        html: `
-          <h2>${title}</h2>
-          <p>Hi ${profile.first_name || 'there'},</p>
-          <p>${message}</p>
-          ${data?.link ? `<p><a href="${data.link}">View Details</a></p>` : ''}
-          <br>
-          <p>Best regards,<br>The DuniaMed Team</p>
-        `,
-      });
+      const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
+      if (!RESEND_API_KEY) {
+        console.warn('RESEND_API_KEY not configured, skipping email');
+      } else {
+        const emailResponse = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: 'DuniaMed <notifications@resend.dev>',
+            to: [profile.email],
+            subject: title,
+            html: `
+              <h2>${title}</h2>
+              <p>Hi ${profile.first_name || 'there'},</p>
+              <p>${message}</p>
+              ${data?.link ? `<p><a href="${data.link}">View Details</a></p>` : ''}
+              <br>
+              <p>Best regards,<br>The DuniaMed Team</p>
+            `,
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          const errorData = await emailResponse.json();
+          console.error('Email send failed:', errorData);
+        }
+      }
     }
 
     // TODO: Add SMS via Twilio if prefs.sms_enabled

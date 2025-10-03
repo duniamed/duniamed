@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Star, MapPin, Calendar, DollarSign, Award, Languages, Clock, Phone, Mail } from 'lucide-react';
+import { InsuranceVerificationBadge } from '@/components/InsuranceVerificationBadge';
 
 interface Specialist {
   id: string;
@@ -272,6 +273,16 @@ function SpecialistProfileContent() {
                       <p className="text-2xl font-bold">
                         {specialist.consultation_fee_min}-{specialist.consultation_fee_max} {specialist.currency}
                       </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <span className="font-semibold">Insurance</span>
+                      </div>
+                      <InsuranceVerificationBadge 
+                        specialistId={specialist.id}
+                        showFlagOption={true}
+                      />
                     </div>
                   </div>
 
