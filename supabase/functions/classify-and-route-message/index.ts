@@ -177,30 +177,82 @@ Consider these red flags requiring urgent attention:
       .single();
 
     if (batchUntil && classification.urgency !== 'urgent') {
-      // Add to batch for deferred processing
-      const { data: batch } = await supabase
-        .from('message_batches')
-        .insert({
-          clinic_id: clinicId,
-          batch_type: classification.urgency === 'low' ? 'routine' : 'follow_up',
-          scheduled_process_at: batchUntil,
-          message_ids: [messageId],
-          assigned_to_pool: routeTo
-        })
-        .select()
-        .single();
+      // Add to batch for deferred processing with retry logic
+      let batch = null;
+      let retryCount = 0;
+      const maxRetries = 3;
+
+      while (retryCount < maxRetries && !batch) {
+        try {
+          const { data, error } = await supabase
+            .from('message_batches')
+            .insert({
+              clinic_id: clinicId,
+              batch_type: classification.urgency === 'low' ? 'routine' : 'follow_up',
+              scheduled_process_at: batchUntil,
+              message_ids: [messageId],
+              assigned_to_pool: routeTo,
+              status: 'pending'
+            })
+            .select()
+            .single();
+
+          if (error) throw error;
+          batch = data;
+        } catch (error) {
+          retryCount++;
+          console.error(`Batch insert retry ${retryCount}/${maxRetries}:`, error);
+          if (retryCount >= maxRetries) {
+            // Fallback: add to queue immediately
+            console.log('Batch failed, routing to queue as fallback');
+            break;
+          }
+          await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+        }
+      }
 
       // Send auto-response if configured
       if (autoRespondMacroId) {
-        const { data: macro } = await supabase
-          .from('response_macros')
-          .select('body_template')
-          .eq('id', autoRespondMacroId)
+        try {
+          const { data: macro } = await supabase
+            .from('response_macros')
+            .select('body_template')
+            .eq('id', autoRespondMacroId)
+            .single();
+
+          if (macro) {
+            await supabase.from('user_notifications').insert({
+              user_id: user.id,
+              notification_type: 'auto_response',
+              title: 'Automatic Response',
+              message: macro.body_template,
+              metadata: { message_id: messageId, batch_id: batch?.id }
+            });
+          }
+        } catch (macroError) {
+          console.error('Auto-response failed:', macroError);
+          // Don't fail the whole operation
+        }
+      }
+
+      if (!batch) {
+        // Fallback to immediate queue routing
+        const { data: fallbackQueue } = await supabase
+          .from('work_queues')
+          .select('id')
+          .eq('clinic_id', clinicId)
+          .eq('queue_type', routeTo)
+          .eq('is_active', true)
           .single();
 
-        if (macro) {
-          // TODO: Send auto-response using the macro template
-          console.log('Auto-response:', macro.body_template);
+        if (fallbackQueue) {
+          await supabase.from('work_queue_items').insert({
+            queue_id: fallbackQueue.id,
+            item_type: 'message',
+            item_id: messageId,
+            priority: classification.urgency === 'urgent' ? 'high' : 'medium',
+            metadata: { classification, fallback: true }
+          });
         }
       }
 
