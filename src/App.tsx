@@ -113,6 +113,12 @@ import IntegrationConnectors from './pages/IntegrationConnectors';
 import RoleManagement from './pages/RoleManagement';
 import EngagementCampaigns from './pages/EngagementCampaigns';
 import PaymentProcessing from './pages/PaymentProcessing';
+import LocaleSettings from './pages/LocaleSettings';
+import ReviewResponses from './pages/ReviewResponses';
+import SecureDelivery from './pages/SecureDelivery';
+import TeamCare from './pages/TeamCare';
+import ProviderAbsences from './pages/ProviderAbsences';
+import DataExports from './pages/DataExports';
 
 const queryClient = new QueryClient();
 
