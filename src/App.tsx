@@ -108,6 +108,11 @@ import NotificationPreferences from "./pages/NotificationPreferences";
 import PrivacyCenter from './pages/PrivacyCenter';
 import SubscriptionPlans from './pages/SubscriptionPlans';
 import FeatureRoadmap from './pages/FeatureRoadmap';
+import SupportTicketsDashboard from './pages/SupportTicketsDashboard';
+import IntegrationConnectors from './pages/IntegrationConnectors';
+import RoleManagement from './pages/RoleManagement';
+import EngagementCampaigns from './pages/EngagementCampaigns';
+import PaymentProcessing from './pages/PaymentProcessing';
 
 const queryClient = new QueryClient();
 
