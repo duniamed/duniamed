@@ -121,6 +121,49 @@ function SearchContent() {
   const fetchSpecialists = async () => {
     setLoading(true);
     
+    // Try to use cache first for better performance
+    try {
+      const { data: cacheData } = await supabase.functions.invoke('warm-search-cache', {
+        body: {
+          specialty: selectedSpecialty !== 'all' ? selectedSpecialty : undefined,
+          language: selectedLanguage !== 'all' ? selectedLanguage : undefined,
+          condition: selectedCondition !== 'all' ? selectedCondition : undefined,
+          timezone: selectedTimezone !== 'all' ? selectedTimezone : undefined,
+          consultation_type: consultationType !== 'all' ? consultationType : undefined,
+          min_fee: minFee || undefined,
+          max_fee: maxFee || undefined,
+          accepts_insurance: acceptsInsurance || undefined,
+          verified_only: verifiedOnly
+        }
+      });
+
+      if (cacheData?.success && cacheData.specialist_ids?.length > 0) {
+        // Fetch full specialist data using cached IDs
+        const { data: fullData } = await supabase
+          .from('specialists')
+          .select(`
+            *,
+            profiles:user_id (
+              first_name,
+              last_name,
+              avatar_url,
+              country,
+              city
+            )
+          `)
+          .in('id', cacheData.specialist_ids);
+
+        if (fullData) {
+          setSpecialists(fullData as any);
+          setLoading(false);
+          return;
+        }
+      }
+    } catch (error) {
+      console.log('Cache lookup failed, falling back to direct query');
+    }
+
+    // Fallback to direct query if cache fails
     let query = supabase
       .from('specialists')
       .select(`

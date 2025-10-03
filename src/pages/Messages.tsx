@@ -78,37 +78,24 @@ function MessagesContent() {
   const fetchConversations = async () => {
     if (!user) return;
 
-    // This is a simplified version - in production, you'd need a proper conversations view
+    // Use optimized view to avoid N+1 queries
     const { data, error } = await supabase
-      .from('messages')
-      .select('*, sender:sender_id(first_name, last_name), recipient:recipient_id(first_name, last_name)')
+      .from('message_conversations')
+      .select('*')
       .or(`sender_id.eq.${user.id},recipient_id.eq.${user.id}`)
-      .order('created_at', { ascending: false })
-      .limit(50);
+      .order('last_message_at', { ascending: false });
 
     if (!error && data) {
-      // Group by conversation partner
-      const convMap = new Map<string, Conversation>();
-      
-      data.forEach((msg: any) => {
-        const partnerId = msg.sender_id === user.id ? msg.recipient_id : msg.sender_id;
-        const partnerName = msg.sender_id === user.id 
-          ? `${msg.recipient?.first_name} ${msg.recipient?.last_name}`
-          : `${msg.sender?.first_name} ${msg.sender?.last_name}`;
+      const conversations = data.map((conv: any) => ({
+        id: conv.sender_id === user.id ? conv.recipient_id : conv.sender_id,
+        other_user_id: conv.sender_id === user.id ? conv.recipient_id : conv.sender_id,
+        other_user_name: conv.sender_id === user.id ? conv.recipient_name : conv.sender_name,
+        last_message: conv.last_message || '',
+        last_message_at: conv.last_message_at || new Date().toISOString(),
+        unread_count: 0, // Will be calculated separately if needed
+      }));
 
-        if (!convMap.has(partnerId)) {
-          convMap.set(partnerId, {
-            id: partnerId,
-            other_user_id: partnerId,
-            other_user_name: partnerName,
-            last_message: msg.content,
-            last_message_at: msg.created_at,
-            unread_count: msg.recipient_id === user.id && !msg.read_at ? 1 : 0,
-          });
-        }
-      });
-
-      setConversations(Array.from(convMap.values()));
+      setConversations(conversations);
     }
 
     setLoading(false);

@@ -182,3 +182,6 @@ verify_jwt = true
 
 [functions.check-compliance-rules]
 verify_jwt = true
+
+[functions.warm-search-cache]
+verify_jwt = false

@@ -6995,6 +6995,53 @@ export type Database = {
           },
         ]
       }
+      specialist_availability_cache: {
+        Row: {
+          available_slots: Json
+          booked_slots: number
+          cached_at: string
+          created_at: string | null
+          date: string
+          expires_at: string
+          id: string
+          specialist_id: string
+          total_slots: number
+          utilization_pct: number
+        }
+        Insert: {
+          available_slots: Json
+          booked_slots: number
+          cached_at?: string
+          created_at?: string | null
+          date: string
+          expires_at: string
+          id?: string
+          specialist_id: string
+          total_slots: number
+          utilization_pct: number
+        }
+        Update: {
+          available_slots?: Json
+          booked_slots?: number
+          cached_at?: string
+          created_at?: string | null
+          date?: string
+          expires_at?: string
+          id?: string
+          specialist_id?: string
+          total_slots?: number
+          utilization_pct?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "specialist_availability_cache_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       specialist_clinics: {
         Row: {
           clinic_id: string
@@ -7167,6 +7214,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      specialist_search_cache: {
+        Row: {
+          cached_at: string
+          created_at: string | null
+          expires_at: string
+          hit_count: number | null
+          id: string
+          result_count: number
+          search_filters: Json
+          search_key: string
+          specialist_ids: string[]
+        }
+        Insert: {
+          cached_at?: string
+          created_at?: string | null
+          expires_at: string
+          hit_count?: number | null
+          id?: string
+          result_count: number
+          search_filters: Json
+          search_key: string
+          specialist_ids: string[]
+        }
+        Update: {
+          cached_at?: string
+          created_at?: string | null
+          expires_at?: string
+          hit_count?: number | null
+          id?: string
+          result_count?: number
+          search_filters?: Json
+          search_key?: string
+          specialist_ids?: string[]
+        }
+        Relationships: []
       }
       specialist_sponsorships: {
         Row: {
@@ -8892,6 +8975,35 @@ export type Database = {
         }
         Relationships: []
       }
+      message_conversations: {
+        Row: {
+          conversation_id: string | null
+          last_message: string | null
+          last_message_at: string | null
+          recipient_avatar: string | null
+          recipient_id: string | null
+          recipient_name: string | null
+          sender_avatar: string | null
+          sender_id: string | null
+          sender_name: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       get_user_clinic_ids: {
@@ -8912,6 +9024,14 @@ export type Database = {
       is_clinic_staff: {
         Args: { _clinic_id: string; _user_id: string }
         Returns: boolean
+      }
+      refresh_availability_cache: {
+        Args: {
+          p_end_date: string
+          p_specialist_id: string
+          p_start_date: string
+        }
+        Returns: number
       }
     }
     Enums: {

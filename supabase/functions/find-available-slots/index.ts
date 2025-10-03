@@ -18,6 +18,7 @@ serve(async (req) => {
       endDate,
       durationMinutes = 30,
       resourceRequirements = [],
+      use_cache = true,
     } = await req.json();
 
     const supabase = createClient(
@@ -25,7 +26,65 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const availableSlots = [];
+    const availableSlots: Array<{
+      start_time: string;
+      end_time: string;
+      specialist_ids: string[];
+      duration_minutes: number;
+    }> = [];
+
+    // Try to use cache first
+    if (use_cache) {
+      const startDateObj = new Date(startDate);
+      const endDateObj = new Date(endDate);
+      
+      const { data: cachedData } = await supabase
+        .from('specialist_availability_cache')
+        .select('*')
+        .in('specialist_id', specialistIds)
+        .gte('date', startDateObj.toISOString().split('T')[0])
+        .lte('date', endDateObj.toISOString().split('T')[0])
+        .gt('expires_at', new Date().toISOString());
+
+      if (cachedData && cachedData.length > 0) {
+        console.log(`Cache hit: ${cachedData.length} cached availability records`);
+        
+        // Convert cached data to slot format
+        cachedData.forEach((cache: any) => {
+          const slots = cache.available_slots as any[];
+          slots?.filter((s: any) => s.available).forEach((slot: any) => {
+            const slotDate = new Date(cache.date);
+            const [hour, minute] = slot.start_time.split(':');
+            slotDate.setHours(parseInt(hour), parseInt(minute), 0, 0);
+            
+            const [endHour, endMinute] = slot.end_time.split(':');
+            const slotEndDate = new Date(cache.date);
+            slotEndDate.setHours(parseInt(endHour), parseInt(endMinute), 0, 0);
+
+            availableSlots.push({
+              start_time: slotDate.toISOString(),
+              end_time: slotEndDate.toISOString(),
+              specialist_ids: [cache.specialist_id],
+              duration_minutes: durationMinutes,
+            });
+          });
+        });
+
+        if (availableSlots.length > 0) {
+          return new Response(
+            JSON.stringify({
+              success: true,
+              source: 'cache',
+              slots: availableSlots.slice(0, 50),
+              total_found: availableSlots.length,
+            }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+      }
+
+      console.log('Cache miss or expired, calculating availability...');
+    }
 
     // Get specialist availability schedules
     const { data: schedules } = await supabase
