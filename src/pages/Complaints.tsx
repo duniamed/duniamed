@@ -119,18 +119,44 @@ export default function Complaints() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { error } = await supabase
+      const { data: newComplaintData, error } = await supabase
         .from('complaints')
         .insert({
           ...newComplaint,
           filed_by: user.id,
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
 
+      // Send notification to the specialist about the complaint
+      if (newComplaint.against_type === 'specialist' && newComplaint.filed_against) {
+        const { data: specialist } = await supabase
+          .from('specialists')
+          .select('user_id')
+          .eq('id', newComplaint.filed_against)
+          .single();
+
+        if (specialist) {
+          await supabase.functions.invoke('send-notification', {
+            body: {
+              userId: specialist.user_id,
+              type: 'complaint_filed',
+              title: 'New Complaint Filed',
+              message: `A complaint has been filed against you: ${newComplaint.title}`,
+              data: { 
+                complaintId: newComplaintData.id, 
+                ticketNumber: newComplaintData.ticket_number 
+              },
+            },
+          });
+        }
+      }
+
       toast({
         title: 'Complaint filed successfully',
-        description: 'Your complaint has been submitted and assigned a ticket number',
+        description: 'Your complaint has been submitted and the specialist has been notified',
       });
 
       setIsDialogOpen(false);

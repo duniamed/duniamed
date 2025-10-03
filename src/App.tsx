@@ -75,6 +75,7 @@ import PublicClinicPage from "./pages/PublicClinicPage";
 import EHDSCompliance from "./pages/EHDSCompliance";
 import ReviewModeration from "./pages/ReviewModeration";
 import Complaints from "./pages/Complaints";
+import ComplaintManagement from "./pages/ComplaintManagement";
 import InsuranceVerification from "./pages/InsuranceVerification";
 import ClaimsManagement from "./pages/ClaimsManagement";
 import TeamChat from "./pages/TeamChat";
@@ -200,6 +201,7 @@ const App = () => (
             <Route path="/reviews/:reviewId/respond" element={<ReviewResponse />} />
             <Route path="/complaints" element={<Complaints />} />
             <Route path="/complaints/:complaintId/mediation" element={<MediationChat />} />
+            <Route path="/complaint-management" element={<ComplaintManagement />} />
             <Route path="/insurance/verification" element={<InsuranceVerification />} />
             <Route path="/insurance/management" element={<InsuranceManagement />} />
             <Route path="/claims" element={<ClaimsManagement />} />
