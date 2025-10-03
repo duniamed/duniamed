@@ -79,12 +79,12 @@ export default function ReviewResponses() {
 
       const { error } = await supabase
         .from('review_responses')
-        .upsert({
+        .insert([{
           review_id: reviewId,
-          specialist_id: specialist.id,
+          responder_id: user.id,
           response_text: responseText,
           is_public: isPublic
-        });
+        }]);
 
       if (error) throw error;
 

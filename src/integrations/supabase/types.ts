@@ -416,6 +416,51 @@ export type Database = {
         }
         Relationships: []
       }
+      calendar_providers: {
+        Row: {
+          access_token: string | null
+          calendar_id: string | null
+          created_at: string | null
+          id: string
+          last_sync_at: string | null
+          provider: string
+          refresh_token: string | null
+          sync_enabled: boolean | null
+          sync_errors: Json | null
+          token_expires_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_token?: string | null
+          calendar_id?: string | null
+          created_at?: string | null
+          id?: string
+          last_sync_at?: string | null
+          provider: string
+          refresh_token?: string | null
+          sync_enabled?: boolean | null
+          sync_errors?: Json | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_token?: string | null
+          calendar_id?: string | null
+          created_at?: string | null
+          id?: string
+          last_sync_at?: string | null
+          provider?: string
+          refresh_token?: string | null
+          sync_enabled?: boolean | null
+          sync_errors?: Json | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       calendar_sync_tokens: {
         Row: {
           access_token: string
@@ -570,6 +615,99 @@ export type Database = {
             columns: ["care_plan_id"]
             isOneToOne: false
             referencedRelation: "patient_care_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      care_team_members: {
+        Row: {
+          id: string
+          joined_at: string | null
+          permissions: Json | null
+          role: string
+          specialist_id: string | null
+          team_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string | null
+          permissions?: Json | null
+          role: string
+          specialist_id?: string | null
+          team_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string | null
+          permissions?: Json | null
+          role?: string
+          specialist_id?: string | null
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_team_members_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "care_team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "care_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      care_teams: {
+        Row: {
+          clinic_id: string | null
+          created_at: string | null
+          created_by: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          team_type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          clinic_id?: string | null
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          team_type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          clinic_id?: string | null
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          team_type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_teams_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "care_teams_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
             referencedColumns: ["id"]
           },
         ]
@@ -2375,6 +2513,57 @@ export type Database = {
           },
         ]
       }
+      group_appointment_slots: {
+        Row: {
+          clinic_id: string | null
+          created_at: string | null
+          duration_minutes: number
+          id: string
+          is_available: boolean | null
+          required_specialists: string[]
+          room_id: string | null
+          slot_datetime: string
+          slot_type: string | null
+        }
+        Insert: {
+          clinic_id?: string | null
+          created_at?: string | null
+          duration_minutes: number
+          id?: string
+          is_available?: boolean | null
+          required_specialists: string[]
+          room_id?: string | null
+          slot_datetime: string
+          slot_type?: string | null
+        }
+        Update: {
+          clinic_id?: string | null
+          created_at?: string | null
+          duration_minutes?: number
+          id?: string
+          is_available?: boolean | null
+          required_specialists?: string[]
+          room_id?: string | null
+          slot_datetime?: string
+          slot_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_appointment_slots_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_appointment_slots_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       insurance_claims: {
         Row: {
           adjudication_date: string | null
@@ -3597,6 +3786,39 @@ export type Database = {
           },
         ]
       }
+      professional_connections: {
+        Row: {
+          connection_type: string | null
+          created_at: string | null
+          id: string
+          message: string | null
+          recipient_id: string
+          requester_id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          connection_type?: string | null
+          created_at?: string | null
+          id?: string
+          message?: string | null
+          recipient_id: string
+          requester_id: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          connection_type?: string | null
+          created_at?: string | null
+          id?: string
+          message?: string | null
+          recipient_id?: string
+          requester_id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profile_analytics: {
         Row: {
           created_at: string | null
@@ -3891,6 +4113,63 @@ export type Database = {
         }
         Relationships: []
       }
+      provider_absences: {
+        Row: {
+          absence_type: string
+          auto_redirect: boolean | null
+          coverage_specialist_id: string | null
+          created_at: string | null
+          end_date: string
+          id: string
+          notification_sent: boolean | null
+          reason: string | null
+          specialist_id: string
+          start_date: string
+          updated_at: string | null
+        }
+        Insert: {
+          absence_type: string
+          auto_redirect?: boolean | null
+          coverage_specialist_id?: string | null
+          created_at?: string | null
+          end_date: string
+          id?: string
+          notification_sent?: boolean | null
+          reason?: string | null
+          specialist_id: string
+          start_date: string
+          updated_at?: string | null
+        }
+        Update: {
+          absence_type?: string
+          auto_redirect?: boolean | null
+          coverage_specialist_id?: string | null
+          created_at?: string | null
+          end_date?: string
+          id?: string
+          notification_sent?: boolean | null
+          reason?: string | null
+          specialist_id?: string
+          start_date?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_absences_coverage_specialist_id_fkey"
+            columns: ["coverage_specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_absences_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       provider_activity: {
         Row: {
           activity_score: number | null
@@ -4058,6 +4337,57 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      referral_networks: {
+        Row: {
+          active_referrals: number | null
+          created_at: string | null
+          id: string
+          last_referral_at: string | null
+          recipient_specialist_id: string
+          referral_count: number | null
+          sender_specialist_id: string
+          specialties_referred: string[] | null
+          trust_score: number | null
+        }
+        Insert: {
+          active_referrals?: number | null
+          created_at?: string | null
+          id?: string
+          last_referral_at?: string | null
+          recipient_specialist_id: string
+          referral_count?: number | null
+          sender_specialist_id: string
+          specialties_referred?: string[] | null
+          trust_score?: number | null
+        }
+        Update: {
+          active_referrals?: number | null
+          created_at?: string | null
+          id?: string
+          last_referral_at?: string | null
+          recipient_specialist_id?: string
+          referral_count?: number | null
+          sender_specialist_id?: string
+          specialties_referred?: string[] | null
+          trust_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_networks_recipient_specialist_id_fkey"
+            columns: ["recipient_specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_networks_sender_specialist_id_fkey"
+            columns: ["sender_specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       referrals: {
         Row: {
@@ -4310,6 +4640,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      review_responses: {
+        Row: {
+          created_at: string | null
+          evidence_urls: Json | null
+          id: string
+          is_public: boolean | null
+          moderation_status: string | null
+          responder_id: string
+          response_text: string
+          review_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          evidence_urls?: Json | null
+          id?: string
+          is_public?: boolean | null
+          moderation_status?: string | null
+          responder_id: string
+          response_text: string
+          review_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          evidence_urls?: Json | null
+          id?: string
+          is_public?: boolean | null
+          moderation_status?: string | null
+          responder_id?: string
+          response_text?: string
+          review_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       reviews: {
         Row: {
@@ -4573,6 +4939,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      secure_deliveries: {
+        Row: {
+          created_at: string | null
+          delivered_at: string | null
+          delivery_confirmation: boolean | null
+          delivery_method: string | null
+          download_count: number | null
+          encrypted_content: string
+          expires_at: string | null
+          id: string
+          max_downloads: number | null
+          message_type: string
+          read_at: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          delivered_at?: string | null
+          delivery_confirmation?: boolean | null
+          delivery_method?: string | null
+          download_count?: number | null
+          encrypted_content: string
+          expires_at?: string | null
+          id?: string
+          max_downloads?: number | null
+          message_type: string
+          read_at?: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string | null
+          delivered_at?: string | null
+          delivery_confirmation?: boolean | null
+          delivery_method?: string | null
+          download_count?: number | null
+          encrypted_content?: string
+          expires_at?: string | null
+          id?: string
+          max_downloads?: number | null
+          message_type?: string
+          read_at?: string | null
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: []
       }
       sensitive_access_alerts: {
         Row: {

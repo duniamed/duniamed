@@ -68,16 +68,15 @@ export default function SecureDelivery() {
 
       const { error } = await supabase
         .from('secure_deliveries')
-        .insert({
+        .insert([{
           sender_id: user.id,
           recipient_id: recipientId,
-          file_url: '/storage/secure/' + fileName,
-          file_name: fileName,
-          encryption_key: encryptionKey,
-          secure_link: secureLink,
+          message_type: 'document',
+          encrypted_content: JSON.stringify({ fileName, secureLink, encryptionKey }),
+          delivery_method: 'encrypted',
           expires_at: expiresAt.toISOString(),
           max_downloads: parseInt(maxDownloads)
-        });
+        }]);
 
       if (error) throw error;
 
@@ -103,10 +102,20 @@ export default function SecureDelivery() {
 
   const downloadFile = async (deliveryId: string) => {
     try {
+      // First get current count
+      const { data: delivery } = await supabase
+        .from('secure_deliveries')
+        .select('download_count')
+        .eq('id', deliveryId)
+        .single();
+
+      if (!delivery) return;
+
       const { error } = await supabase
         .from('secure_deliveries')
         .update({
-          download_count: supabase.rpc('increment', { x: 1 })
+          download_count: (delivery.download_count || 0) + 1,
+          read_at: new Date().toISOString()
         })
         .eq('id', deliveryId);
 
