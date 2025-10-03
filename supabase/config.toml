@@ -24,6 +24,12 @@ verify_jwt = true
 [functions.whatsapp-webhook]
 verify_jwt = false
 
+[functions.classify-and-route-message]
+verify_jwt = true
+
+[functions.manage-work-queue]
+verify_jwt = true
+
 [functions.legal-archive]
 verify_jwt = true
 

@@ -146,6 +146,8 @@ import AIFinance from './pages/AIFinance';
 import VirtualClinicQueuePage from './pages/VirtualClinicQueue';
 import AITriage from './pages/AITriage';
 import GoogleBusinessProfile from './pages/GoogleBusinessProfile';
+import ClinicalFocus from './pages/ClinicalFocus';
+import WorkQueue from './pages/WorkQueue';
 
 const queryClient = new QueryClient();
 
@@ -316,6 +318,8 @@ const App = () => (
             <Route path="/shifts/marketplace" element={<ShiftMarketplace />} />
             <Route path="/credentials/verification" element={<CredentialVerification />} />
             <Route path="/google-business" element={<GoogleBusinessProfile />} />
+            <Route path="/clinical-focus" element={<ClinicalFocus />} />
+            <Route path="/work-queue" element={<WorkQueue />} />
           
           {/* Shift Marketplace & Credentials */}
           <Route path="/shifts/marketplace" element={<ShiftMarketplace />} />

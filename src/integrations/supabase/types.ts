@@ -2589,6 +2589,72 @@ export type Database = {
         }
         Relationships: []
       }
+      evening_load_metrics: {
+        Row: {
+          after_hours_minutes: number | null
+          charts_reviewed: number | null
+          clinic_id: string | null
+          created_at: string | null
+          documentation_time_minutes: number | null
+          id: string
+          inbox_half_life_hours: number | null
+          inbox_time_minutes: number | null
+          items_closed: number | null
+          items_deferred: number | null
+          messages_handled: number | null
+          metric_date: string
+          orders_placed: number | null
+          user_id: string
+        }
+        Insert: {
+          after_hours_minutes?: number | null
+          charts_reviewed?: number | null
+          clinic_id?: string | null
+          created_at?: string | null
+          documentation_time_minutes?: number | null
+          id?: string
+          inbox_half_life_hours?: number | null
+          inbox_time_minutes?: number | null
+          items_closed?: number | null
+          items_deferred?: number | null
+          messages_handled?: number | null
+          metric_date: string
+          orders_placed?: number | null
+          user_id: string
+        }
+        Update: {
+          after_hours_minutes?: number | null
+          charts_reviewed?: number | null
+          clinic_id?: string | null
+          created_at?: string | null
+          documentation_time_minutes?: number | null
+          id?: string
+          inbox_half_life_hours?: number | null
+          inbox_time_minutes?: number | null
+          items_closed?: number | null
+          items_deferred?: number | null
+          messages_handled?: number | null
+          metric_date?: string
+          orders_placed?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evening_load_metrics_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evening_load_metrics_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       family_members: {
         Row: {
           created_at: string | null
@@ -2758,6 +2824,122 @@ export type Database = {
             columns: ["payment_id"]
             isOneToOne: false
             referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      focus_mode_preferences: {
+        Row: {
+          created_at: string | null
+          enabled: boolean | null
+          favorite_panels: Json | null
+          hidden_panels: Json | null
+          id: string
+          keyboard_shortcuts: Json | null
+          panel_order: Json | null
+          quick_actions: Json | null
+          show_active_medications: boolean | null
+          show_allergies: boolean | null
+          show_billing_info: boolean | null
+          show_problem_list: boolean | null
+          show_recent_labs: boolean | null
+          show_vitals_summary: boolean | null
+          updated_at: string | null
+          user_id: string
+          user_role: string
+        }
+        Insert: {
+          created_at?: string | null
+          enabled?: boolean | null
+          favorite_panels?: Json | null
+          hidden_panels?: Json | null
+          id?: string
+          keyboard_shortcuts?: Json | null
+          panel_order?: Json | null
+          quick_actions?: Json | null
+          show_active_medications?: boolean | null
+          show_allergies?: boolean | null
+          show_billing_info?: boolean | null
+          show_problem_list?: boolean | null
+          show_recent_labs?: boolean | null
+          show_vitals_summary?: boolean | null
+          updated_at?: string | null
+          user_id: string
+          user_role: string
+        }
+        Update: {
+          created_at?: string | null
+          enabled?: boolean | null
+          favorite_panels?: Json | null
+          hidden_panels?: Json | null
+          id?: string
+          keyboard_shortcuts?: Json | null
+          panel_order?: Json | null
+          quick_actions?: Json | null
+          show_active_medications?: boolean | null
+          show_allergies?: boolean | null
+          show_billing_info?: boolean | null
+          show_problem_list?: boolean | null
+          show_recent_labs?: boolean | null
+          show_vitals_summary?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+          user_role?: string
+        }
+        Relationships: []
+      }
+      focus_sessions: {
+        Row: {
+          active_panels: Json | null
+          appointment_id: string | null
+          click_count: number | null
+          created_at: string | null
+          ended_at: string | null
+          focus_enabled: boolean | null
+          hidden_elements: Json | null
+          id: string
+          navigation_events: Json | null
+          session_type: string | null
+          started_at: string | null
+          time_in_session_seconds: number | null
+          user_id: string
+        }
+        Insert: {
+          active_panels?: Json | null
+          appointment_id?: string | null
+          click_count?: number | null
+          created_at?: string | null
+          ended_at?: string | null
+          focus_enabled?: boolean | null
+          hidden_elements?: Json | null
+          id?: string
+          navigation_events?: Json | null
+          session_type?: string | null
+          started_at?: string | null
+          time_in_session_seconds?: number | null
+          user_id: string
+        }
+        Update: {
+          active_panels?: Json | null
+          appointment_id?: string | null
+          click_count?: number | null
+          created_at?: string | null
+          ended_at?: string | null
+          focus_enabled?: boolean | null
+          hidden_elements?: Json | null
+          id?: string
+          navigation_events?: Json | null
+          session_type?: string | null
+          started_at?: string | null
+          time_in_session_seconds?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "focus_sessions_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
             referencedColumns: ["id"]
           },
         ]
@@ -3601,6 +3783,60 @@ export type Database = {
           },
         ]
       }
+      message_batches: {
+        Row: {
+          assigned_to_pool: string | null
+          assigned_to_user_id: string | null
+          batch_type: string
+          clinic_id: string | null
+          created_at: string | null
+          id: string
+          message_ids: Json | null
+          processed_at: string | null
+          scheduled_process_at: string
+          status: string | null
+        }
+        Insert: {
+          assigned_to_pool?: string | null
+          assigned_to_user_id?: string | null
+          batch_type: string
+          clinic_id?: string | null
+          created_at?: string | null
+          id?: string
+          message_ids?: Json | null
+          processed_at?: string | null
+          scheduled_process_at: string
+          status?: string | null
+        }
+        Update: {
+          assigned_to_pool?: string | null
+          assigned_to_user_id?: string | null
+          batch_type?: string
+          clinic_id?: string | null
+          created_at?: string | null
+          id?: string
+          message_ids?: Json | null
+          processed_at?: string | null
+          scheduled_process_at?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_batches_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_batches_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       message_deliveries: {
         Row: {
           channel: string
@@ -3651,6 +3887,81 @@ export type Database = {
           status?: string | null
         }
         Relationships: []
+      }
+      message_routing_rules: {
+        Row: {
+          assign_to_role: string | null
+          auto_respond_macro_id: string | null
+          batch_until: string | null
+          clinic_id: string | null
+          conditions: Json
+          created_at: string | null
+          enforce_quiet_hours: boolean | null
+          escalation_threshold_minutes: number | null
+          id: string
+          is_active: boolean | null
+          priority: number | null
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
+          route_to_pool: string | null
+          rule_name: string
+          rule_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          assign_to_role?: string | null
+          auto_respond_macro_id?: string | null
+          batch_until?: string | null
+          clinic_id?: string | null
+          conditions: Json
+          created_at?: string | null
+          enforce_quiet_hours?: boolean | null
+          escalation_threshold_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          priority?: number | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          route_to_pool?: string | null
+          rule_name: string
+          rule_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          assign_to_role?: string | null
+          auto_respond_macro_id?: string | null
+          batch_until?: string | null
+          clinic_id?: string | null
+          conditions?: Json
+          created_at?: string | null
+          enforce_quiet_hours?: boolean | null
+          escalation_threshold_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          priority?: number | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          route_to_pool?: string | null
+          rule_name?: string
+          rule_type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_routing_rules_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_routing_rules_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       messages: {
         Row: {
@@ -5521,6 +5832,72 @@ export type Database = {
             columns: ["resource_id"]
             isOneToOne: false
             referencedRelation: "clinic_resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      response_macros: {
+        Row: {
+          available_variables: Json | null
+          body_template: string
+          category: string
+          clinic_id: string | null
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_active: boolean | null
+          last_used_at: string | null
+          macro_name: string
+          requires_customization: boolean | null
+          subject_template: string | null
+          updated_at: string | null
+          usage_count: number | null
+        }
+        Insert: {
+          available_variables?: Json | null
+          body_template: string
+          category: string
+          clinic_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          macro_name: string
+          requires_customization?: boolean | null
+          subject_template?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Update: {
+          available_variables?: Json | null
+          body_template?: string
+          category?: string
+          clinic_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          macro_name?: string
+          requires_customization?: boolean | null
+          subject_template?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "response_macros_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "response_macros_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
             referencedColumns: ["id"]
           },
         ]
@@ -7900,6 +8277,137 @@ export type Database = {
           webhook_data?: Json | null
         }
         Relationships: []
+      }
+      work_queue_items: {
+        Row: {
+          assigned_at: string | null
+          assigned_to: string | null
+          completed_at: string | null
+          created_at: string | null
+          first_viewed_at: string | null
+          id: string
+          item_id: string
+          item_type: string
+          queue_id: string
+          requires_md_review: boolean | null
+          status: string | null
+          time_to_completion_minutes: number | null
+          time_to_first_view_minutes: number | null
+          topic: string | null
+          updated_at: string | null
+          urgency: string | null
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_to?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          first_viewed_at?: string | null
+          id?: string
+          item_id: string
+          item_type: string
+          queue_id: string
+          requires_md_review?: boolean | null
+          status?: string | null
+          time_to_completion_minutes?: number | null
+          time_to_first_view_minutes?: number | null
+          topic?: string | null
+          updated_at?: string | null
+          urgency?: string | null
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_to?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          first_viewed_at?: string | null
+          id?: string
+          item_id?: string
+          item_type?: string
+          queue_id?: string
+          requires_md_review?: boolean | null
+          status?: string | null
+          time_to_completion_minutes?: number | null
+          time_to_first_view_minutes?: number | null
+          topic?: string | null
+          updated_at?: string | null
+          urgency?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_queue_items_queue_id_fkey"
+            columns: ["queue_id"]
+            isOneToOne: false
+            referencedRelation: "work_queues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      work_queues: {
+        Row: {
+          assign_by_skill: boolean | null
+          auto_assign_enabled: boolean | null
+          clinic_id: string | null
+          created_at: string | null
+          current_item_count: number | null
+          eligible_user_ids: Json | null
+          id: string
+          is_active: boolean | null
+          max_concurrent_items: number | null
+          queue_name: string
+          queue_type: string
+          target_closure_minutes: number | null
+          target_response_minutes: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          assign_by_skill?: boolean | null
+          auto_assign_enabled?: boolean | null
+          clinic_id?: string | null
+          created_at?: string | null
+          current_item_count?: number | null
+          eligible_user_ids?: Json | null
+          id?: string
+          is_active?: boolean | null
+          max_concurrent_items?: number | null
+          queue_name: string
+          queue_type: string
+          target_closure_minutes?: number | null
+          target_response_minutes?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          assign_by_skill?: boolean | null
+          auto_assign_enabled?: boolean | null
+          clinic_id?: string | null
+          created_at?: string | null
+          current_item_count?: number | null
+          eligible_user_ids?: Json | null
+          id?: string
+          is_active?: boolean | null
+          max_concurrent_items?: number | null
+          queue_name?: string
+          queue_type?: string
+          target_closure_minutes?: number | null
+          target_response_minutes?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_queues_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_queues_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
