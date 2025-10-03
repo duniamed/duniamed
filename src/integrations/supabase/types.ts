@@ -2249,6 +2249,56 @@ export type Database = {
         }
         Relationships: []
       }
+      ehds_compliance_logs: {
+        Row: {
+          access_purpose: string | null
+          action_type: string
+          created_at: string | null
+          granted: boolean | null
+          id: string
+          ip_address: string | null
+          legal_basis: string | null
+          resource_id: string | null
+          resource_type: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          access_purpose?: string | null
+          action_type: string
+          created_at?: string | null
+          granted?: boolean | null
+          id?: string
+          ip_address?: string | null
+          legal_basis?: string | null
+          resource_id?: string | null
+          resource_type?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          access_purpose?: string | null
+          action_type?: string
+          created_at?: string | null
+          granted?: boolean | null
+          id?: string
+          ip_address?: string | null
+          legal_basis?: string | null
+          resource_id?: string | null
+          resource_type?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ehds_compliance_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ehds_consents: {
         Row: {
           consent_document_url: string | null
@@ -3783,6 +3833,111 @@ export type Database = {
           },
         ]
       }
+      medicare_medicaid_claims: {
+        Row: {
+          appointment_id: string | null
+          billing_provider: string | null
+          claim_number: string | null
+          claim_type: string
+          clinic_id: string | null
+          created_at: string | null
+          denial_reason: string | null
+          diagnosis_codes: Json | null
+          id: string
+          medicare_paid: number | null
+          patient_id: string
+          patient_responsibility: number | null
+          procedure_codes: Json | null
+          processed_date: string | null
+          rendering_provider: string | null
+          service_date: string
+          status: string | null
+          submission_date: string | null
+          total_charge: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          appointment_id?: string | null
+          billing_provider?: string | null
+          claim_number?: string | null
+          claim_type: string
+          clinic_id?: string | null
+          created_at?: string | null
+          denial_reason?: string | null
+          diagnosis_codes?: Json | null
+          id?: string
+          medicare_paid?: number | null
+          patient_id: string
+          patient_responsibility?: number | null
+          procedure_codes?: Json | null
+          processed_date?: string | null
+          rendering_provider?: string | null
+          service_date: string
+          status?: string | null
+          submission_date?: string | null
+          total_charge?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          appointment_id?: string | null
+          billing_provider?: string | null
+          claim_number?: string | null
+          claim_type?: string
+          clinic_id?: string | null
+          created_at?: string | null
+          denial_reason?: string | null
+          diagnosis_codes?: Json | null
+          id?: string
+          medicare_paid?: number | null
+          patient_id?: string
+          patient_responsibility?: number | null
+          procedure_codes?: Json | null
+          processed_date?: string | null
+          rendering_provider?: string | null
+          service_date?: string
+          status?: string | null
+          submission_date?: string | null
+          total_charge?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medicare_medicaid_claims_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "medicare_medicaid_claims_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "medicare_medicaid_claims_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "medicare_medicaid_claims_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "medicare_medicaid_claims_rendering_provider_fkey"
+            columns: ["rendering_provider"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       message_batches: {
         Row: {
           assigned_to_pool: string | null
@@ -4465,6 +4620,132 @@ export type Database = {
             columns: ["clinic_id"]
             isOneToOne: false
             referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pdmp_queries: {
+        Row: {
+          expires_at: string | null
+          id: string
+          patient_id: string
+          prescription_history: Json | null
+          queried_at: string | null
+          query_reason: string
+          red_flags: Json | null
+          specialist_id: string
+          state_queried: string
+        }
+        Insert: {
+          expires_at?: string | null
+          id?: string
+          patient_id: string
+          prescription_history?: Json | null
+          queried_at?: string | null
+          query_reason: string
+          red_flags?: Json | null
+          specialist_id: string
+          state_queried: string
+        }
+        Update: {
+          expires_at?: string | null
+          id?: string
+          patient_id?: string
+          prescription_history?: Json | null
+          queried_at?: string | null
+          query_reason?: string
+          red_flags?: Json | null
+          specialist_id?: string
+          state_queried?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pdmp_queries_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pdmp_queries_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pix_transactions: {
+        Row: {
+          amount: number
+          appointment_id: string | null
+          created_at: string | null
+          currency: string | null
+          expires_at: string | null
+          id: string
+          paid_at: string | null
+          payer_document: string | null
+          payer_name: string | null
+          payment_method: string | null
+          pix_key: string
+          pix_key_type: string
+          qr_code: string | null
+          qr_code_image_url: string | null
+          status: string | null
+          transaction_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          appointment_id?: string | null
+          created_at?: string | null
+          currency?: string | null
+          expires_at?: string | null
+          id?: string
+          paid_at?: string | null
+          payer_document?: string | null
+          payer_name?: string | null
+          payment_method?: string | null
+          pix_key: string
+          pix_key_type: string
+          qr_code?: string | null
+          qr_code_image_url?: string | null
+          status?: string | null
+          transaction_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          appointment_id?: string | null
+          created_at?: string | null
+          currency?: string | null
+          expires_at?: string | null
+          id?: string
+          paid_at?: string | null
+          payer_document?: string | null
+          payer_name?: string | null
+          payment_method?: string | null
+          pix_key?: string
+          pix_key_type?: string
+          qr_code?: string | null
+          qr_code_image_url?: string | null
+          status?: string | null
+          transaction_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pix_transactions_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pix_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -6468,6 +6749,82 @@ export type Database = {
         }
         Relationships: []
       }
+      sepa_mandates: {
+        Row: {
+          activation_date: string | null
+          cancellation_date: string | null
+          clinic_id: string | null
+          created_at: string | null
+          creditor_identifier: string
+          debtor_bic: string | null
+          debtor_iban: string
+          debtor_name: string
+          id: string
+          mandate_reference: string
+          mandate_type: string | null
+          signature_date: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          activation_date?: string | null
+          cancellation_date?: string | null
+          clinic_id?: string | null
+          created_at?: string | null
+          creditor_identifier: string
+          debtor_bic?: string | null
+          debtor_iban: string
+          debtor_name: string
+          id?: string
+          mandate_reference: string
+          mandate_type?: string | null
+          signature_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          activation_date?: string | null
+          cancellation_date?: string | null
+          clinic_id?: string | null
+          created_at?: string | null
+          creditor_identifier?: string
+          debtor_bic?: string | null
+          debtor_iban?: string
+          debtor_name?: string
+          id?: string
+          mandate_reference?: string
+          mandate_type?: string | null
+          signature_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sepa_mandates_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sepa_mandates_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sepa_mandates_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       service_fees: {
         Row: {
           base_fee: number
@@ -7685,6 +8042,101 @@ export type Database = {
             columns: ["specialist_id"]
             isOneToOne: false
             referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tiss_submissions: {
+        Row: {
+          amount_approved: number | null
+          amount_requested: number | null
+          ans_code: string | null
+          appointment_id: string | null
+          batch_number: string | null
+          clinic_id: string
+          created_at: string | null
+          id: string
+          insurance_provider: string
+          patient_id: string
+          processed_at: string | null
+          rejection_reason: string | null
+          status: string | null
+          submission_number: string | null
+          submission_type: string
+          submitted_at: string | null
+          tiss_version: string | null
+          updated_at: string | null
+          xml_payload: string | null
+        }
+        Insert: {
+          amount_approved?: number | null
+          amount_requested?: number | null
+          ans_code?: string | null
+          appointment_id?: string | null
+          batch_number?: string | null
+          clinic_id: string
+          created_at?: string | null
+          id?: string
+          insurance_provider: string
+          patient_id: string
+          processed_at?: string | null
+          rejection_reason?: string | null
+          status?: string | null
+          submission_number?: string | null
+          submission_type: string
+          submitted_at?: string | null
+          tiss_version?: string | null
+          updated_at?: string | null
+          xml_payload?: string | null
+        }
+        Update: {
+          amount_approved?: number | null
+          amount_requested?: number | null
+          ans_code?: string | null
+          appointment_id?: string | null
+          batch_number?: string | null
+          clinic_id?: string
+          created_at?: string | null
+          id?: string
+          insurance_provider?: string
+          patient_id?: string
+          processed_at?: string | null
+          rejection_reason?: string | null
+          status?: string | null
+          submission_number?: string | null
+          submission_type?: string
+          submitted_at?: string | null
+          tiss_version?: string | null
+          updated_at?: string | null
+          xml_payload?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tiss_submissions_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tiss_submissions_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tiss_submissions_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tiss_submissions_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

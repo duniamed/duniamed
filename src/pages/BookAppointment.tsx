@@ -493,6 +493,12 @@ function BookAppointmentContent() {
                     onChange={(e) => setChiefComplaint(e.target.value)}
                     rows={4}
                   />
+                  {profile?.role === 'patient' && (
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Shield className="w-3 h-3" />
+                      Insurance verification will be checked automatically
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">

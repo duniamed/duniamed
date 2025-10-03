@@ -66,7 +66,7 @@ function CreateSOAPNoteContent() {
         throw new Error('Specialist profile not found');
       }
 
-      const { error } = await supabase.from('soap_notes').insert({
+      const { data: soapNote, error } = await supabase.from('soap_notes').insert({
         patient_id: appointment.patient_id,
         specialist_id: specialist.id,
         appointment_id: appointmentId,
@@ -74,13 +74,33 @@ function CreateSOAPNoteContent() {
         objective: formData.objective || null,
         assessment: formData.assessment || null,
         plan: formData.plan || null,
-      });
+      }).select().single();
 
       if (error) throw error;
 
+      // Extract billing codes using AI
+      try {
+        const { data: billingData } = await supabase.functions.invoke('extract-soap-billing-codes', {
+          body: {
+            soap_note_id: soapNote.id,
+            subjective: formData.subjective,
+            objective: formData.objective,
+            assessment: formData.assessment,
+            plan: formData.plan
+          }
+        });
+        
+        if (billingData) {
+          console.log('Billing codes extracted:', billingData);
+        }
+      } catch (billingError) {
+        console.error('Billing code extraction failed:', billingError);
+        // Don't fail the whole operation if billing extraction fails
+      }
+
       toast({
         title: 'Success',
-        description: 'SOAP note created successfully',
+        description: 'SOAP note created successfully with billing codes extracted',
       });
 
       navigate(`/appointments/${appointmentId}`);
