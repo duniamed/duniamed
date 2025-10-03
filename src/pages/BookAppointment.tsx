@@ -12,7 +12,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
-import { ChevronLeft, ChevronRight, Check, Clock, AlertCircle, Users, Shield } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Clock, AlertCircle, Users, Shield, CheckCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import { useFormAutosave } from '@/hooks/useFormAutosave';
 import { GuidedRecovery } from '@/components/GuidedRecovery';
@@ -64,6 +65,7 @@ function BookAppointmentContent() {
   const [eligibilityResult, setEligibilityResult] = useState<any>(null);
   const [checkingEligibility, setCheckingEligibility] = useState(false);
   const [costEstimate, setCostEstimate] = useState<any>(null);
+  const [insuranceVerified, setInsuranceVerified] = useState(false);
   
   // Step 4: Confirmation
   const [submitting, setSubmitting] = useState(false);
@@ -131,6 +133,7 @@ function BookAppointmentContent() {
       if (error) throw error;
       
       setEligibilityResult(data);
+      setInsuranceVerified(data.is_eligible);
       
       // Generate cost estimate based on eligibility
       const estimate = {
@@ -145,8 +148,9 @@ function BookAppointmentContent() {
       setCostEstimate(estimate);
       
       toast({
-        title: data.is_eligible ? 'Insurance verified' : 'Insurance not verified',
-        description: data.is_eligible ? 'Your insurance is active' : 'Proceeding as self-pay',
+        title: data.is_eligible ? '✅ Insurance verified' : '⚠️ Insurance not verified',
+        description: data.is_eligible ? 'Your insurance is active and covers this visit' : 'Proceeding as self-pay',
+        variant: data.is_eligible ? 'default' : 'destructive',
       });
     } catch (error: unknown) {
       toast({
