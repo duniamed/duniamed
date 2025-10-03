@@ -53,8 +53,9 @@ function BrowseReviewsContent() {
         .from('reviews')
         .select(`
           *,
-          specialists:specialist_id (
-            profiles:user_id (
+          specialists!reviews_specialist_id_fkey (
+            user_id,
+            profiles!specialists_user_id_fkey (
               first_name,
               last_name
             )
@@ -65,15 +66,15 @@ function BrowseReviewsContent() {
 
       if (error) throw error;
       
-      // Map the data to match interface
-      const mappedData: Review[] = (data || []).map(item => ({
+      // Map the data to match interface, handling missing fields
+      const mappedData: Review[] = (data || []).map((item: any) => ({
         id: item.id,
         rating: item.rating,
         comment: item.comment,
         moderation_status: item.moderation_status,
-        moderation_reason: item.moderation_reason,
-        censored_content: item.censored_content,
-        published_at: item.published_at,
+        moderation_reason: item.moderation_reason || null,
+        censored_content: item.censored_content || null,
+        published_at: item.published_at || null,
         created_at: item.created_at,
         is_anonymous: item.is_anonymous,
         patient_id: item.patient_id,

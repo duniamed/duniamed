@@ -81,7 +81,28 @@ export default function Complaints() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setComplaints(data || []);
+      
+      // Map data to include new fields with defaults
+      const mappedData: Complaint[] = (data || []).map((item: any) => ({
+        id: item.id,
+        complaint_type: item.complaint_type,
+        title: item.title,
+        description: item.description,
+        severity: item.severity,
+        status: item.status,
+        ticket_number: item.ticket_number,
+        filed_by: item.filed_by,
+        filed_against: item.filed_against,
+        against_type: item.against_type,
+        escalated_to_board: item.escalated_to_board,
+        created_at: item.created_at,
+        resolved_at: item.resolved_at,
+        dispute_opened_at: item.dispute_opened_at || null,
+        dispute_reason: item.dispute_reason || null,
+        mediation_status: item.mediation_status || 'none'
+      }));
+      
+      setComplaints(mappedData);
     } catch (error: any) {
       toast({
         title: 'Error loading complaints',
