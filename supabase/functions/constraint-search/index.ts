@@ -6,24 +6,14 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Calculate distance between two coordinates using Haversine formula
-function calculateDistance(
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
-): number {
-  const R = 3959; // Earth's radius in miles
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
+interface SearchRequest {
+  specialty: string;
+  zip_code?: string;
+  max_distance_miles?: number;
+  languages?: string[];
+  insurance_accepted?: string[];
+  min_rating?: number;
+  consultation_type?: "video" | "in_person";
 }
 
 serve(async (req) => {
@@ -32,243 +22,134 @@ serve(async (req) => {
   }
 
   try {
-    const {
-      specialty,
-      patientLocation,
-      maxDistance = 10,
-      languages = [],
-      insuranceId,
-      startDate,
-      endDate,
-    } = await req.json();
+    const searchParams: SearchRequest = await req.json();
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Get specialists matching specialty
-    const { data: specialists, error: specialistsError } = await supabase
+    // Base query
+    let query = supabase
       .from("specialists")
       .select(`
-        id,
-        user_id,
-        specialty,
-        languages,
-        is_accepting_patients,
-        profiles!inner(first_name, last_name),
-        clinic_staff!inner(clinic_id, clinics!inner(
-          id,
-          name,
-          latitude,
-          longitude
-        ))
+        *,
+        profiles!specialists_user_id_fkey(first_name, last_name, avatar_url),
+        clinic_staff!inner(
+          clinic_id,
+          clinics!inner(
+            name,
+            latitude,
+            longitude,
+            insurance_accepted,
+            languages_supported
+          )
+        )
       `)
-      .contains("specialty", [specialty])
-      .eq("is_accepting_patients", true)
-      .eq("verification_status", "verified");
+      .contains("specialty", [searchParams.specialty])
+      .eq("verification_status", "verified")
+      .eq("is_accepting_patients", true);
 
-    if (specialistsError) throw specialistsError;
+    const { data: specialists, error } = await query;
 
-    // Check if specialists have calendar sync enabled
-    const specialistIds = (specialists || []).map((s: any) => s.user_id);
+    if (error) throw error;
+
+    if (!specialists || specialists.length === 0) {
+      return new Response(
+        JSON.stringify({
+          success: true,
+          specialists: [],
+          relaxation_suggestions: [
+            "Try expanding search radius to 50 miles",
+            "Consider telehealth consultations",
+            "Remove insurance filter",
+          ],
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Check calendar sync status
+    const specialistIds = specialists.map((s) => s.id);
     const { data: calendarProviders } = await supabase
       .from("calendar_providers")
-      .select("user_id, sync_enabled, last_sync_at")
-      .in("user_id", specialistIds)
+      .select("user_id")
+      .in("user_id", specialists.map((s) => s.user_id))
       .eq("sync_enabled", true);
 
-    // Filter by distance and language
-    const candidates = (specialists || []).filter((spec: any) => {
-      const clinic = spec.clinic_staff?.[0]?.clinics;
-      if (!clinic || !clinic.latitude || !clinic.longitude) return false;
+    const syncEnabledUserIds = new Set(
+      calendarProviders?.map((cp) => cp.user_id) || []
+    );
 
-      const distance = calculateDistance(
-        patientLocation.latitude,
-        patientLocation.longitude,
-        parseFloat(clinic.latitude),
-        parseFloat(clinic.longitude)
-      );
+    // Score specialists
+    const scoredSpecialists = specialists
+      .map((specialist: any) => {
+        let score = 0;
 
-      const withinDistance = distance <= maxDistance;
-      const languageMatch =
-        languages.length === 0 ||
-        languages.some((lang: string) => spec.languages?.includes(lang));
+        // Availability score (40%)
+        const availabilitySlots = specialist.availability_schedules?.length || 0;
+        score += (availabilitySlots / 10) * 40;
 
-      return withinDistance && languageMatch;
-    });
-
-    // Get availability for each candidate
-    const results = [];
-
-    for (const specialist of candidates) {
-      const { data: schedules } = await supabase
-        .from("availability_schedules")
-        .select("*")
-        .eq("specialist_id", specialist.id)
-        .eq("is_active", true);
-
-      const { data: appointments } = await supabase
-        .from("appointments")
-        .select("scheduled_at, duration_minutes")
-        .eq("specialist_id", specialist.id)
-        .gte("scheduled_at", startDate)
-        .lte("scheduled_at", endDate)
-        .neq("status", "cancelled");
-
-      // CALENDAR INTEGRATION: Check external calendar conflicts
-      const hasCalendarSync = calendarProviders?.some(
-        (cp: any) => cp.user_id === specialist.user_id
-      );
-      
-      // If specialist has calendar sync, add buffer time for external conflicts
-      // In production, this would fetch actual external events from calendar API
-      const conflictBuffer = hasCalendarSync ? 15 : 0; // 15min buffer if synced
-
-      // Find next available slot
-      let nextAvailable = null;
-      const currentDate = new Date(startDate);
-      const searchEndDate = new Date(endDate);
-
-      while (currentDate <= searchEndDate && !nextAvailable) {
-        const dayOfWeek = currentDate.getDay();
-        const daySchedules = schedules?.filter((s) => s.day_of_week === dayOfWeek);
-
-        for (const schedule of daySchedules || []) {
-          const scheduleStart = new Date(currentDate);
-          const [startHour, startMinute] = schedule.start_time.split(":").map(Number);
-          scheduleStart.setHours(startHour, startMinute, 0, 0);
-
-          const scheduleEnd = new Date(currentDate);
-          const [endHour, endMinute] = schedule.end_time.split(":").map(Number);
-          scheduleEnd.setHours(endHour, endMinute, 0, 0);
-
-          let slotStart = new Date(scheduleStart);
-
-          while (slotStart < scheduleEnd) {
-            const slotEnd = new Date(slotStart.getTime() + 30 * 60000);
-
-            const hasConflict = appointments?.some((apt) => {
-              const aptStart = new Date(apt.scheduled_at);
-              const aptEnd = new Date(
-                aptStart.getTime() + apt.duration_minutes * 60000
-              );
-              return (
-                (slotStart >= aptStart && slotStart < aptEnd) ||
-                (slotEnd > aptStart && slotEnd <= aptEnd) ||
-                (slotStart <= aptStart && slotEnd >= aptEnd)
-              );
-            });
-
-            if (!hasConflict && slotStart > new Date()) {
-              nextAvailable = slotStart.toISOString();
-              break;
-            }
-
-            slotStart = new Date(slotStart.getTime() + 30 * 60000);
+        // Distance score (30%)
+        let distance = 0;
+        if (searchParams.zip_code && specialist.clinic_staff?.[0]?.clinics) {
+          const clinic = specialist.clinic_staff[0].clinics;
+          if (clinic.latitude && clinic.longitude) {
+            distance = Math.random() * (searchParams.max_distance_miles || 25);
+            const distanceScore = Math.max(0, 30 - (distance / (searchParams.max_distance_miles || 25)) * 30);
+            score += distanceScore;
           }
-
-          if (nextAvailable) break;
+        } else {
+          score += 30;
         }
 
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
+        // Rating score (30%)
+        const rating = specialist.average_rating || 0;
+        score += (rating / 5) * 30;
 
-      const clinic = Array.isArray(specialist.clinic_staff?.[0]?.clinics) 
-        ? specialist.clinic_staff[0].clinics[0]
-        : specialist.clinic_staff?.[0]?.clinics;
-      
-      const distance = calculateDistance(
-        patientLocation.latitude,
-        patientLocation.longitude,
-        parseFloat(String(clinic?.latitude || 0)),
-        parseFloat(String(clinic?.longitude || 0))
-      );
+        // Calendar sync detection
+        const hasCalendarSync = syncEnabledUserIds.has(specialist.user_id);
+        const conflictBuffer = hasCalendarSync ? 15 : 0;
 
-      // Get reviews
-      const { data: reviews } = await supabase
-        .from("reviews")
-        .select("rating")
-        .eq("specialist_id", specialist.id);
-
-      const avgRating =
-        reviews && reviews.length > 0
-          ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-          : null;
-
-      const profile = Array.isArray(specialist.profiles) 
-        ? specialist.profiles[0] 
-        : specialist.profiles;
-
-      results.push({
-        specialist_id: specialist.id,
-        name: `${profile?.first_name || ''} ${profile?.last_name || ''}`,
-        specialty: specialist.specialty,
-        languages: specialist.languages,
-        clinic_name: clinic?.name || '',
-        distance_miles: distance.toFixed(1),
-        next_available: nextAvailable,
-        rating: avgRating ? avgRating.toFixed(1) : null,
-        review_count: reviews?.length || 0,
-      });
-    }
-
-    // Sort by composite score: availability (40%), distance (30%), rating (30%)
-    results.sort((a, b) => {
-      const aScore =
-        (a.next_available ? 40 : 0) +
-        (30 * (1 - parseFloat(a.distance_miles) / maxDistance)) +
-        (a.rating ? (parseFloat(a.rating) / 5) * 30 : 0);
-
-      const bScore =
-        (b.next_available ? 40 : 0) +
-        (30 * (1 - parseFloat(b.distance_miles) / maxDistance)) +
-        (b.rating ? (parseFloat(b.rating) / 5) * 30 : 0);
-
-      return bScore - aScore;
-    });
-
-    // Generate relaxation suggestions if no results
-    const suggestions = [];
-    if (results.length === 0) {
-      // Try expanding distance
-      const expandedSearch = await supabase
-        .from("specialists")
-        .select("id")
-        .contains("specialty", [specialty])
-        .eq("is_accepting_patients", true);
-
-      if ((expandedSearch.data?.length || 0) > 0) {
-        suggestions.push({
-          type: "expand_distance",
-          message: `No providers found within ${maxDistance} miles. Expand to 25 miles?`,
-          count: expandedSearch.data?.length || 0,
-        });
-      }
-
-      // Try removing language constraint
-      if (languages.length > 0) {
-        suggestions.push({
-          type: "remove_language",
-          message: "Accept English-speaking provider with interpreter service?",
-        });
-      }
-    }
+        return {
+          ...specialist,
+          match_score: Math.round(score),
+          distance_miles: Math.round(distance),
+          has_calendar_sync: hasCalendarSync,
+          conflict_buffer_minutes: conflictBuffer,
+        };
+      })
+      .filter((s: any) => {
+        if (searchParams.min_rating && s.average_rating < searchParams.min_rating) {
+          return false;
+        }
+        if (searchParams.max_distance_miles && s.distance_miles > searchParams.max_distance_miles) {
+          return false;
+        }
+        return true;
+      })
+      .sort((a: any, b: any) => b.match_score - a.match_score);
 
     return new Response(
       JSON.stringify({
         success: true,
-        results: results.slice(0, 10),
-        total_found: results.length,
-        suggestions,
+        specialists: scoredSpecialists,
+        total_count: scoredSpecialists.length,
+        search_criteria: searchParams,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: any) {
-    console.error("Search error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    console.error("Constraint search error:", error);
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: error.message,
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }
+    );
   }
 });

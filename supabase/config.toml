@@ -110,3 +110,18 @@ verify_jwt = false
 
 [functions.check-video-health]
 verify_jwt = true
+
+[functions.book-with-hold]
+verify_jwt = true
+
+[functions.waitlist-matcher]
+verify_jwt = false
+
+[functions.book-appointment-atomic]
+verify_jwt = true
+
+[functions.constraint-search]
+verify_jwt = false
+
+[functions.calendar-token-refresh]
+verify_jwt = false
