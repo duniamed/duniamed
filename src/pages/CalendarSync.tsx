@@ -44,22 +44,24 @@ export default function CalendarSync() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      // Redirect to OAuth flow - backend will handle token exchange
+      const redirectUrl = `${window.location.origin}/calendar-sync`;
       const { data, error } = await supabase.functions.invoke('sync-calendar', {
         body: {
           userId: user.id,
           provider,
-          authCode: 'mock_auth_code',
+          action: 'get_auth_url',
+          redirectUrl
         }
       });
 
       if (error) throw error;
 
-      toast({
-        title: 'Calendar connected',
-        description: `Successfully connected to ${provider}`,
-      });
-
-      loadSyncTokens();
+      if (data?.authUrl) {
+        window.location.href = data.authUrl;
+      } else {
+        throw new Error('Failed to get authorization URL');
+      }
     } catch (error: any) {
       toast({
         title: 'Connection failed',
@@ -70,17 +72,38 @@ export default function CalendarSync() {
   };
 
   const syncNow = async (provider: string) => {
-    toast({
-      title: 'Syncing...',
-      description: 'Your calendar is being synchronized',
-    });
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    setTimeout(() => {
+      toast({
+        title: 'Syncing...',
+        description: 'Your calendar is being synchronized',
+      });
+
+      const { error } = await supabase.functions.invoke('sync-calendar', {
+        body: {
+          userId: user.id,
+          provider,
+          action: 'sync'
+        }
+      });
+
+      if (error) throw error;
+
       toast({
         title: 'Sync complete',
         description: 'Your appointments are up to date',
       });
-    }, 2000);
+
+      loadSyncTokens();
+    } catch (error: any) {
+      toast({
+        title: 'Sync failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
   };
 
   if (loading) {
