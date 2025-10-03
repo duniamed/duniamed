@@ -1,5 +1,17 @@
 project_id = "knybxihimqrqwzkdeaio"
 
+[functions.moderate-review-ai]
+verify_jwt = true
+
+[functions.support-chatbot]
+verify_jwt = true
+
+[functions.check-eligibility-ai]
+verify_jwt = true
+
+[functions.generate-export]
+verify_jwt = true
+
 [functions.ai-symptom-checker]
 verify_jwt = false
 
