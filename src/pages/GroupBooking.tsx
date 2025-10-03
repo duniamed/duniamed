@@ -55,35 +55,69 @@ export default function GroupBooking() {
     }
 
     setSearching(true);
-    toast({
-      title: "Searching...",
-      description: `Finding ${members.length} consecutive slots for your family`,
-    });
 
     try {
+      // Create group booking session first
+      const { data: sessionData, error: sessionError } = await supabase
+        .from('group_booking_sessions')
+        .insert({
+          organizer_id: (await supabase.auth.getUser()).data.user?.id,
+          specialist_ids: [], // Will be populated after search
+          preferred_date: preferredDay || new Date().toISOString().split('T')[0],
+          duration_minutes: 30 * members.length,
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (sessionError) throw sessionError;
+
+      // Find available slots using the coordinator
       const { data, error } = await supabase.functions.invoke('coordinate-group-booking', {
         body: {
-          action: 'find_consecutive_slots',
-          session_data: {
-            specialty,
-            preferred_date: preferredDay,
-            member_count: members.length
-          }
+          session_id: sessionData.id,
+          action: 'find_slots'
         }
       });
 
       if (error) throw error;
 
-      if (data.success && data.consecutive_slots) {
-        setResults(data.consecutive_slots.map((slot: any) => ({
-          practitioner: `Specialist ${slot.specialist_id.substring(0, 8)}`,
-          date: new Date(slot.date).toLocaleDateString(),
-          slots: slot.available_slots.slice(0, members.length),
-          location: "Available",
-          specialist_id: slot.specialist_id
-        })));
+      if (data?.success) {
+        const perfectMatches = data.perfect_matches || [];
+        const partialMatches = data.partial_matches || [];
+        
+        if (perfectMatches.length > 0) {
+          setResults(perfectMatches.map((slot: any) => ({
+            ...slot,
+            session_id: sessionData.id,
+            match_type: 'perfect',
+            available_count: slot.specialists.length
+          })));
+          toast({
+            title: "Slots Found!",
+            description: `Found ${perfectMatches.length} time slots where all specialists are available`,
+          });
+        } else if (partialMatches.length > 0) {
+          setResults(partialMatches.map((slot: any) => ({
+            ...slot,
+            session_id: sessionData.id,
+            match_type: 'partial',
+            available_count: slot.specialists.length
+          })));
+          toast({
+            title: "Partial Matches",
+            description: data.suggestion || "Some specialists available. Consider booking sequentially.",
+          });
+        } else {
+          toast({
+            title: "No Slots Available",
+            description: "Try different dates or book appointments sequentially",
+            variant: "destructive",
+          });
+        }
       }
     } catch (error: any) {
+      console.error('Group booking search error:', error);
       toast({
         title: "Search Failed",
         description: error.message,

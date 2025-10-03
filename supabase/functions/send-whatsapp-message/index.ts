@@ -78,7 +78,7 @@ serve(async (req) => {
     const twilioData = await response.json();
 
     // Log to database
-    const { error: dbError } = await supabase
+    const { data: storedMessage, error: dbError } = await supabase
       .from('whatsapp_messages')
       .insert({
         user_id: user.id,
@@ -86,17 +86,30 @@ serve(async (req) => {
         direction: 'outbound',
         status: twilioData.status,
         message_body: message,
-        media_urls: media_url ? [media_url] : null,
-        twilio_sid: twilioData.sid,
-      });
+        message_type: media_url ? 'media' : 'text',
+        media_urls: media_url ? [{ url: media_url }] : null,
+        message_sid: twilioData.sid,
+      })
+      .select()
+      .single();
 
     if (dbError) {
       console.error('Database error:', dbError);
     }
 
+    // Track delivery status with initial state
+    await supabase.from('message_delivery_status').insert({
+      message_id: twilioData.sid,
+      status: 'queued',
+      created_at: new Date().toISOString()
+    });
+
+    console.log(`WhatsApp message queued: ${twilioData.sid} to ${to}`);
+
     return new Response(JSON.stringify({
       success: true,
       message_sid: twilioData.sid,
+      message_id: storedMessage?.id,
       status: twilioData.status,
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

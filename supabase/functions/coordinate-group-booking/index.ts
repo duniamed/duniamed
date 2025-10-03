@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.58.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,254 +12,171 @@ serve(async (req) => {
   }
 
   try {
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) throw new Error('No authorization header');
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser(
-      authHeader.replace('Bearer ', '')
+    const { session_id, action } = await req.json();
+    
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
-    if (authError || !user) throw new Error('Unauthorized');
 
-    const { action, session_id, session_data, slot_selection } = await req.json();
+    const authHeader = req.headers.get('Authorization')!;
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user } } = await supabase.auth.getUser(token);
 
-    if (action === 'create_session') {
-      // Create a new group booking session
-      const { data: session, error: sessionError } = await supabase
-        .from('group_booking_sessions')
-        .insert({
-          created_by: user.id,
-          session_name: session_data.session_name,
-          specialty: session_data.specialty,
-          preferred_date: session_data.preferred_date,
-          preferred_time: session_data.preferred_time,
-          members: session_data.members,
-          status: 'pending'
-        })
-        .select()
-        .single();
+    if (!user) throw new Error('Unauthorized');
 
-      if (sessionError) throw sessionError;
+    // Fetch session
+    const { data: session, error: sessionError } = await supabase
+      .from('group_booking_sessions')
+      .select('*')
+      .eq('id', session_id)
+      .single();
 
-      return new Response(JSON.stringify({
-        success: true,
-        session
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    if (sessionError || !session) {
+      throw new Error('Session not found');
     }
 
-    if (action === 'find_consecutive_slots') {
-      // Find consecutive available slots for all members
-      const { specialty, preferred_date, member_count } = session_data;
+    if (action === 'find_slots') {
+      // Find common available slots for all specialists
+      const { data: slotsData, error: slotsError } = await supabase.functions.invoke(
+        'find-available-slots',
+        {
+          body: {
+            specialistIds: session.specialist_ids,
+            startDate: session.preferred_date,
+            endDate: session.preferred_date,
+            durationMinutes: session.duration_minutes,
+            use_cache: true
+          }
+        }
+      );
 
-      // Query specialists with the required specialty
-      const { data: specialists } = await supabase
-        .from('specialists')
-        .select('id, specialty')
-        .contains('specialty', [specialty])
-        .eq('is_accepting_patients', true);
+      if (slotsError) throw slotsError;
 
-      if (!specialists || specialists.length === 0) {
-        throw new Error('No specialists available for this specialty');
+      // Group slots by time to find overlapping availability
+      const timeSlots = new Map<string, any[]>();
+      
+      for (const slot of slotsData.slots || []) {
+        const timeKey = `${slot.start_time}-${slot.end_time}`;
+        if (!timeSlots.has(timeKey)) {
+          timeSlots.set(timeKey, []);
+        }
+        timeSlots.get(timeKey)!.push(slot);
       }
 
-      // Find consecutive slots
-      const consecutiveSlots = [];
+      // Find slots where ALL specialists are available
+      const perfectMatches = [];
+      const partialMatches = [];
 
-      for (const specialist of specialists) {
-        // Get availability
-        const targetDate = new Date(preferred_date);
-        const dayOfWeek = targetDate.getDay();
-
-        const { data: schedules } = await supabase
-          .from('availability_schedules')
-          .select('*')
-          .eq('specialist_id', specialist.id)
-          .eq('day_of_week', dayOfWeek)
-          .eq('is_active', true);
-
-        if (!schedules || schedules.length === 0) continue;
-
-        // Get existing appointments
-        const { data: appointments } = await supabase
-          .from('appointments')
-          .select('scheduled_at, duration_minutes')
-          .eq('specialist_id', specialist.id)
-          .gte('scheduled_at', preferred_date)
-          .lt('scheduled_at', preferred_date + ' 23:59:59');
-
-        // Generate 30-minute slots and check for consecutive availability
-        for (const schedule of schedules) {
-          const slots = generateConsecutiveSlots(
-            schedule.start_time,
-            schedule.end_time,
-            member_count,
-            appointments || []
-          );
-
-          if (slots.length > 0) {
-            consecutiveSlots.push({
-              specialist_id: specialist.id,
-              date: preferred_date,
-              available_slots: slots
-            });
-          }
+      for (const [timeKey, slots] of timeSlots.entries()) {
+        const uniqueSpecialists = new Set(slots.map(s => s.specialist_id));
+        
+        if (uniqueSpecialists.size === session.specialist_ids.length) {
+          perfectMatches.push({
+            time_key: timeKey,
+            start_time: slots[0].start_time,
+            end_time: slots[0].end_time,
+            specialists: Array.from(uniqueSpecialists)
+          });
+        } else if (uniqueSpecialists.size >= session.specialist_ids.length * 0.7) {
+          // At least 70% of specialists available
+          partialMatches.push({
+            time_key: timeKey,
+            start_time: slots[0].start_time,
+            end_time: slots[0].end_time,
+            specialists: Array.from(uniqueSpecialists),
+            missing_count: session.specialist_ids.length - uniqueSpecialists.size
+          });
         }
       }
 
-      return new Response(JSON.stringify({
-        success: true,
-        consecutive_slots: consecutiveSlots
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      console.log(`Group booking: ${perfectMatches.length} perfect matches, ${partialMatches.length} partial`);
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          perfect_matches: perfectMatches,
+          partial_matches: partialMatches,
+          suggestion: perfectMatches.length === 0 ? 
+            'Consider booking specialists sequentially or on different dates' : null
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     if (action === 'confirm_booking') {
-      // Confirm and create all appointments atomically
-      const { data: session } = await supabase
-        .from('group_booking_sessions')
-        .select('*')
-        .eq('id', session_id)
-        .eq('created_by', user.id)
-        .single();
-
-      if (!session) throw new Error('Session not found');
-
-      // Create appointments for each member
-      const appointmentIds = [];
-      const members = session.members as any[];
-
-      for (let i = 0; i < members.length; i++) {
-        const member = members[i];
-        const slotTime = slot_selection.times[i];
-        const scheduledAt = `${slot_selection.date}T${slotTime}:00`;
-
-        const appointmentData: any = {
-          patient_id: member.patient_id || user.id,
-          specialist_id: slot_selection.specialist_id,
-          scheduled_at: scheduledAt,
-          consultation_type: 'in_person',
-          chief_complaint: `Group booking - ${session.specialty}`,
-          status: 'pending',
-          duration_minutes: 30
-        };
-
-        // If booking for family member
-        if (member.family_member_id) {
-          appointmentData.booked_for_member_id = member.family_member_id;
-          appointmentData.proxy_booked_by = user.id;
-        }
-
+      const { confirmed_slots } = await req.json();
+      
+      // Create appointments atomically
+      const appointments = [];
+      
+      for (const slot of confirmed_slots) {
         const { data: appointment, error: aptError } = await supabase
           .from('appointments')
-          .insert(appointmentData)
+          .insert({
+            patient_id: user.id,
+            specialist_id: slot.specialist_id,
+            scheduled_at: slot.start_time,
+            duration_minutes: session.duration_minutes,
+            status: 'confirmed',
+            consultation_type: 'in_person',
+            fee: 0, // To be set based on specialist rates
+            notes: `Group booking session ${session_id}`
+          })
           .select()
           .single();
 
         if (aptError) {
-          // Rollback - delete previously created appointments
-          if (appointmentIds.length > 0) {
+          // Rollback - cancel all created appointments
+          if (appointments.length > 0) {
             await supabase
               .from('appointments')
-              .delete()
-              .in('id', appointmentIds);
+              .update({ status: 'cancelled', cancellation_reason: 'Group booking failed' })
+              .in('id', appointments.map(a => a.id));
           }
-          throw new Error(`Failed to create appointment for ${member.name}: ${aptError.message}`);
+          throw new Error(`Failed to create appointment: ${aptError.message}`);
         }
 
-        appointmentIds.push(appointment.id);
+        appointments.push(appointment);
       }
 
-      // Update session as booked
+      // Update session status
       await supabase
         .from('group_booking_sessions')
         .update({
-          status: 'booked',
-          booked_at: new Date().toISOString(),
-          appointment_ids: appointmentIds,
-          selected_slot: slot_selection
+          status: 'confirmed',
+          confirmed_slots: confirmed_slots
         })
         .eq('id', session_id);
 
-      console.log('Group booking completed:', {
-        session_id,
-        appointments: appointmentIds.length
+      // Send confirmation notifications
+      await supabase.functions.invoke('send-multi-channel-notification', {
+        body: {
+          user_id: user.id,
+          title: 'Group Booking Confirmed',
+          message: `Your group booking with ${appointments.length} specialists is confirmed for ${session.preferred_date}`,
+          channels: ['email', 'push']
+        }
       });
 
-      return new Response(JSON.stringify({
-        success: true,
-        appointment_ids: appointmentIds,
-        message: `Successfully booked ${appointmentIds.length} consecutive appointments`
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      console.log(`Created ${appointments.length} appointments for group session ${session_id}`);
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          appointments,
+          session_id
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     throw new Error('Invalid action');
-
-  } catch (error) {
-    console.error('Error in coordinate-group-booking:', error);
-    return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : 'Internal server error',
-      success: false
-    }), {
+  } catch (error: any) {
+    console.error('Group booking error:', error);
+    return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });
-
-// Helper function to generate consecutive available slots
-function generateConsecutiveSlots(
-  startTime: string,
-  endTime: string,
-  count: number,
-  existingAppointments: any[]
-): string[] {
-  const slots: string[] = [];
-  const start = parseTime(startTime);
-  const end = parseTime(endTime);
-  
-  for (let time = start; time < end; time += 30) {
-    const timeStr = formatTime(time);
-    
-    // Check if this slot and next (count-1) slots are available
-    let allAvailable = true;
-    for (let i = 0; i < count; i++) {
-      const checkTime = time + (i * 30);
-      if (checkTime >= end || isSlotBooked(formatTime(checkTime), existingAppointments)) {
-        allAvailable = false;
-        break;
-      }
-    }
-    
-    if (allAvailable) {
-      slots.push(timeStr);
-    }
-  }
-  
-  return slots;
-}
-
-function parseTime(timeStr: string): number {
-  const [hours, minutes] = timeStr.split(':').map(Number);
-  return hours * 60 + minutes;
-}
-
-function formatTime(minutes: number): string {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-}
-
-function isSlotBooked(slotTime: string, appointments: any[]): boolean {
-  return appointments.some(apt => {
-    const aptTime = new Date(apt.scheduled_at).toTimeString().substring(0, 5);
-    return aptTime === slotTime;
-  });
-}

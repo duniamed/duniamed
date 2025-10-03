@@ -13,22 +13,50 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
+    console.log('WhatsApp webhook:', JSON.stringify(body, null, 2));
     
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Handle Twilio WhatsApp webhook
+    // Handle status updates (delivery receipts)
+    if (body.MessageStatus) {
+      const messageSid = body.MessageSid || body.SmsSid;
+      const status = body.MessageStatus; // queued, sent, delivered, read, failed
+      
+      await supabase.from('message_delivery_status').upsert({
+        message_id: messageSid,
+        status,
+        error_code: body.ErrorCode,
+        error_message: body.ErrorMessage,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'message_id'
+      });
+
+      console.log(`Status update: ${messageSid} -> ${status}`);
+      
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Handle incoming messages
     const messageSid = body.MessageSid || body.SmsSid;
     const from = body.From || body.WaId;
+    const profileName = body.ProfileName;
+    const waId = from.replace('whatsapp:', '');
     const messageBody = body.Body;
+    const messageType = body.MessageType || 'text';
+    
     const mediaUrls = [];
-
-    // Extract media if present
     const numMedia = parseInt(body.NumMedia || '0');
     for (let i = 0; i < numMedia; i++) {
-      mediaUrls.push(body[`MediaUrl${i}`]);
+      mediaUrls.push({
+        url: body[`MediaUrl${i}`],
+        content_type: body[`MediaContentType${i}`]
+      });
     }
 
     // Find user by phone number
@@ -40,21 +68,28 @@ serve(async (req) => {
       .single();
 
     if (profile) {
-      // Log incoming message
-      const { error } = await supabase
-        .from('whatsapp_messages')
-        .insert({
-          user_id: profile.id,
-          phone_number: phoneNumber,
-          message_sid: messageSid,
-          direction: 'inbound',
-          status: 'received',
-          message_body: messageBody,
-          media_urls: mediaUrls,
-          webhook_data: body
-        });
+      // Log incoming message with extended metadata
+      await supabase.from('whatsapp_messages').insert({
+        user_id: profile.id,
+        phone_number: phoneNumber,
+        message_sid: messageSid,
+        direction: 'inbound',
+        status: 'received',
+        message_body: messageBody,
+        message_type: messageType,
+        media_urls: mediaUrls,
+        profile_name: profileName,
+        wa_id: waId,
+        webhook_data: body
+      });
 
-      if (error) console.error('Log message error:', error);
+      // Track in delivery status
+      await supabase.from('message_delivery_status').insert({
+        message_id: messageSid,
+        status: 'received',
+        profile_name: profileName,
+        wa_id: waId
+      });
 
       // Auto-respond for appointment reminders
       if (messageBody?.toLowerCase().includes('confirm')) {
@@ -73,7 +108,8 @@ serve(async (req) => {
             body: new URLSearchParams({
               From: 'whatsapp:' + Deno.env.get('TWILIO_PHONE_NUMBER'),
               To: from,
-              Body: '✅ Your appointment is confirmed! We look forward to seeing you.'
+              Body: '✅ Your appointment is confirmed! We look forward to seeing you.',
+              StatusCallback: `${Deno.env.get('SUPABASE_URL')}/functions/v1/whatsapp-webhook`
             })
           }
         );

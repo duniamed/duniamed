@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { MessageCircle, Send, ArrowDown, ArrowUp } from 'lucide-react';
+import { MessageCircle, Send, ArrowDown, ArrowUp, CheckCheck, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface WhatsAppMessage {
@@ -14,20 +14,31 @@ interface WhatsAppMessage {
   direction: string;
   status: string;
   message_body: string;
+  message_sid: string;
   media_urls: any;
   created_at: string;
 }
 
+interface MessageStatus {
+  message_id: string;
+  status: string;
+  error_code?: string;
+  error_message?: string;
+  updated_at: string;
+}
+
 export default function WhatsAppManager() {
   const [messages, setMessages] = useState<WhatsAppMessage[]>([]);
+  const [messageStatuses, setMessageStatuses] = useState<Map<string, MessageStatus>>(new Map());
   const [loading, setLoading] = useState(true);
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
     fetchMessages();
+    fetchMessageStatuses();
     
-    // Subscribe to real-time updates
-    const channel = supabase
+    // Subscribe to real-time message updates
+    const messageChannel = supabase
       .channel('whatsapp-messages')
       .on('postgres_changes', {
         event: 'INSERT',
@@ -38,8 +49,31 @@ export default function WhatsAppManager() {
       })
       .subscribe();
 
+    // Subscribe to delivery status updates
+    const statusChannel = supabase
+      .channel('message-delivery-status')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'message_delivery_status'
+      }, (payload) => {
+        const status = payload.new as MessageStatus;
+        setMessageStatuses(prev => new Map(prev).set(status.message_id, status));
+        
+        // Show toast for status changes
+        if (status.status === 'delivered') {
+          toast.success('Message delivered');
+        } else if (status.status === 'read') {
+          toast.success('Message read');
+        } else if (status.status === 'failed') {
+          toast.error('Message failed: ' + status.error_message);
+        }
+      })
+      .subscribe();
+
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(messageChannel);
+      supabase.removeChannel(statusChannel);
     };
   }, []);
 
@@ -57,6 +91,46 @@ export default function WhatsAppManager() {
       toast.error('Failed to load WhatsApp messages');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMessageStatuses = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('message_delivery_status')
+        .select('*')
+        .order('updated_at', { ascending: false })
+        .limit(100);
+
+      if (error) throw error;
+      
+      const statusMap = new Map<string, MessageStatus>();
+      data?.forEach(status => {
+        statusMap.set(status.message_id, status);
+      });
+      setMessageStatuses(statusMap);
+    } catch (error: any) {
+      console.error('Failed to load message statuses:', error);
+    }
+  };
+
+  const getStatusBadge = (message: WhatsAppMessage) => {
+    const status = messageStatuses.get(message.message_sid || message.id);
+    const currentStatus = status?.status || message.status;
+    
+    switch (currentStatus) {
+      case 'queued':
+        return <Badge variant="outline" className="gap-1"><Clock className="w-3 h-3" /> Queued</Badge>;
+      case 'sent':
+        return <Badge variant="outline" className="gap-1"><CheckCheck className="w-3 h-3" /> Sent</Badge>;
+      case 'delivered':
+        return <Badge variant="default" className="gap-1"><CheckCheck className="w-3 h-3" /> Delivered</Badge>;
+      case 'read':
+        return <Badge variant="default" className="gap-1"><CheckCheck className="w-3 h-3 text-blue-500" /> Read</Badge>;
+      case 'failed':
+        return <Badge variant="destructive">Failed</Badge>;
+      default:
+        return <Badge variant="outline">{currentStatus}</Badge>;
     }
   };
 

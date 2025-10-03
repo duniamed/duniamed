@@ -195,6 +195,15 @@ verify_jwt = true
 [functions.ai-moderate-review]
 verify_jwt = true
 
+[functions.coordinate-group-booking]
+verify_jwt = true
+
+[functions.lock-cost-estimate]
+verify_jwt = true
+
+[functions.whatsapp-webhook]
+verify_jwt = false
+
 [functions.import-ehr-data]
 verify_jwt = true
 

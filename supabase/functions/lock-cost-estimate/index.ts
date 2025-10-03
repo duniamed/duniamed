@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.58.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,89 +12,99 @@ serve(async (req) => {
   }
 
   try {
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) throw new Error('No authorization header');
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser(
-      authHeader.replace('Bearer ', '')
+    const { estimate_id, lock_duration_minutes = 30 } = await req.json();
+    
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
-    if (authError || !user) throw new Error('Unauthorized');
 
-    const { estimate_id, lock_duration_hours = 24 } = await req.json();
+    const authHeader = req.headers.get('Authorization')!;
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user } } = await supabase.auth.getUser(token);
 
-    if (!estimate_id) {
-      throw new Error('estimate_id is required');
-    }
+    if (!user) throw new Error('Unauthorized');
 
-    // Get the estimate
-    const { data: estimate, error: fetchError } = await supabase
+    // Fetch estimate details
+    const { data: estimate, error: estimateError } = await supabase
       .from('cost_estimates')
       .select('*')
       .eq('id', estimate_id)
-      .eq('patient_id', user.id)
       .single();
 
-    if (fetchError || !estimate) {
-      throw new Error('Estimate not found or access denied');
+    if (estimateError || !estimate) {
+      throw new Error('Cost estimate not found');
     }
 
-    // Check if already locked
-    if (estimate.is_locked && estimate.lock_expires_at) {
-      const expiresAt = new Date(estimate.lock_expires_at);
-      if (expiresAt > new Date()) {
-        return new Response(JSON.stringify({
-          success: false,
-          error: 'Price already locked',
-          locked_until: estimate.lock_expires_at
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
+    // Check for existing valid locks
+    const { data: existingLock } = await supabase
+      .from('cost_estimate_locks')
+      .select('*')
+      .eq('estimate_id', estimate_id)
+      .eq('patient_id', user.id)
+      .gt('expires_at', new Date().toISOString())
+      .single();
+
+    if (existingLock) {
+      console.log(`Existing lock found: ${existingLock.id}`);
+      return new Response(
+        JSON.stringify({
+          success: true,
+          lock: existingLock,
+          message: 'Price already locked for this estimate'
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    // Lock the price
-    const lockExpiresAt = new Date();
-    lockExpiresAt.setHours(lockExpiresAt.getHours() + lock_duration_hours);
+    // Create new lock
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + lock_duration_minutes);
 
-    const { data: lockedEstimate, error: updateError } = await supabase
-      .from('cost_estimates')
-      .update({
-        is_locked: true,
-        locked_at: new Date().toISOString(),
-        locked_by: user.id,
-        lock_expires_at: lockExpiresAt.toISOString()
+    const { data: lock, error: lockError } = await supabase
+      .from('cost_estimate_locks')
+      .insert({
+        estimate_id,
+        patient_id: user.id,
+        locked_amount: estimate.estimated_cost,
+        currency: estimate.currency || 'USD',
+        expires_at: expiresAt.toISOString()
       })
-      .eq('id', estimate_id)
       .select()
       .single();
 
-    if (updateError) throw updateError;
+    if (lockError) throw lockError;
 
-    console.log('Price locked:', {
-      estimate_id,
+    // Log the lock event
+    await supabase.from('audit_logs').insert({
       user_id: user.id,
-      expires_at: lockExpiresAt
+      action: 'price_locked',
+      resource_type: 'cost_estimate',
+      resource_id: estimate_id,
+      changes: {
+        locked_amount: estimate.estimated_cost,
+        expires_at: expiresAt.toISOString(),
+        lock_id: lock.id
+      }
     });
 
-    return new Response(JSON.stringify({
-      success: true,
-      estimate: lockedEstimate,
-      locked_until: lockExpiresAt.toISOString(),
-      message: `Price locked for ${lock_duration_hours} hours`
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    console.log(`Created price lock ${lock.id} for estimate ${estimate_id}, expires ${expiresAt.toISOString()}`);
 
-  } catch (error) {
-    console.error('Error in lock-cost-estimate:', error);
-    return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : 'Internal server error',
-      success: false
-    }), {
+    return new Response(
+      JSON.stringify({
+        success: true,
+        lock,
+        locked_amount: estimate.estimated_cost,
+        currency: estimate.currency || 'USD',
+        expires_at: expiresAt.toISOString(),
+        minutes_remaining: lock_duration_minutes,
+        message: `Price locked for ${lock_duration_minutes} minutes`
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error: any) {
+    console.error('Price lock error:', error);
+    return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

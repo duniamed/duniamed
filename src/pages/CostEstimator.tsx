@@ -75,27 +75,43 @@ export default function CostEstimator() {
 
   const lockPrice = async () => {
     if (!estimate) return;
+    setLoading(true);
     
     try {
       const { data, error } = await supabase.functions.invoke('lock-cost-estimate', {
-        body: { estimate_id: estimate.id, lock_duration_hours: 24 }
+        body: { 
+          estimate_id: estimate.id, 
+          lock_duration_minutes: 30 
+        }
       });
 
       if (error) throw error;
 
-      if (data.success) {
-        setEstimate({ ...estimate, is_locked: true, lock_expires_at: data.locked_until });
+      if (data?.success) {
+        const updatedEstimate = {
+          ...estimate,
+          is_locked: true,
+          lock_expires_at: data.expires_at,
+          locked_amount: data.locked_amount
+        };
+        setEstimate(updatedEstimate);
+        
         toast({
-          title: 'Price Locked',
-          description: 'Price guaranteed for 24 hours when you book',
+          title: 'Price Locked ✓',
+          description: `Price of $${data.locked_amount} locked for ${data.minutes_remaining} minutes`,
         });
+      } else {
+        throw new Error(data?.error || 'Failed to lock price');
       }
     } catch (error: any) {
+      console.error('Price lock error:', error);
       toast({
         title: 'Failed to lock price',
         description: error.message,
         variant: 'destructive',
       });
+    } finally {
+      setLoading(false);
     }
   };
 
