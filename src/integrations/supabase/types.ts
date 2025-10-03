@@ -8438,58 +8438,6 @@ export type Database = {
           tagline: string | null
           website: string | null
         }
-        Insert: {
-          address_line1?: string | null
-          average_rating?: never
-          city?: string | null
-          clinic_type?: Database["public"]["Enums"]["clinic_type"] | null
-          country?: string | null
-          cover_image_url?: string | null
-          created_at?: string | null
-          description?: string | null
-          email?: string | null
-          id?: string | null
-          is_active?: boolean | null
-          languages_supported?: string[] | null
-          logo_url?: string | null
-          mission_statement?: string | null
-          name?: string | null
-          operating_hours?: Json | null
-          phone?: string | null
-          postal_code?: string | null
-          slug?: never
-          specialties?: string[] | null
-          staff_count?: never
-          state?: string | null
-          tagline?: string | null
-          website?: string | null
-        }
-        Update: {
-          address_line1?: string | null
-          average_rating?: never
-          city?: string | null
-          clinic_type?: Database["public"]["Enums"]["clinic_type"] | null
-          country?: string | null
-          cover_image_url?: string | null
-          created_at?: string | null
-          description?: string | null
-          email?: string | null
-          id?: string | null
-          is_active?: boolean | null
-          languages_supported?: string[] | null
-          logo_url?: string | null
-          mission_statement?: string | null
-          name?: string | null
-          operating_hours?: Json | null
-          phone?: string | null
-          postal_code?: string | null
-          slug?: never
-          specialties?: string[] | null
-          staff_count?: never
-          state?: string | null
-          tagline?: string | null
-          website?: string | null
-        }
         Relationships: []
       }
     }
