@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export default function AdminReviewVisibility() {
   const { toast } = useToast();
   const [reviews, setReviews] = useState<any[]>([]);
+  const [flags, setFlags] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [flagFilter, setFlagFilter] = useState('all');
@@ -23,23 +24,40 @@ export default function AdminReviewVisibility() {
 
   const loadReviews = async () => {
     try {
-      const query = supabase
+      const { data: allReviews, error: reviewError } = await supabase
         .from('reviews')
         .select('*')
-        .order('created_at', { ascending: false })
-        .eq('is_hidden', showAll ? undefined : false);
+        .order('created_at', { ascending: false });
+      
+      if (reviewError) throw reviewError;
 
-      const { data, error } = await query;
+      // Filter by visibility  
+      const reviewData = allReviews;
 
-      if (error) throw error;
 
-      let filtered = data || [];
+      // Load flags separately
+      const { data: flagData } = await supabase
+        .from('review_flags')
+        .select('*');
+
+      // Group flags by review_id
+      const flagsByReview: Record<string, any[]> = {};
+      flagData?.forEach((flag) => {
+        if (!flagsByReview[flag.review_id]) {
+          flagsByReview[flag.review_id] = [];
+        }
+        flagsByReview[flag.review_id].push(flag);
+      });
+
+      setFlags(flagsByReview);
+
+      let filtered = reviewData || [];
 
       if (flagFilter === 'flagged') {
-        filtered = filtered.filter(r => r.flags && r.flags.length > 0);
+        filtered = filtered.filter(r => flagsByReview[r.id]?.length > 0);
       } else if (flagFilter === 'pending') {
         filtered = filtered.filter(r =>
-          r.flags && r.flags.some((f: any) => f.status === 'pending')
+          flagsByReview[r.id]?.some((f: any) => f.status === 'pending')
         );
       }
 
@@ -56,9 +74,7 @@ export default function AdminReviewVisibility() {
   };
 
   const filteredReviews = reviews.filter(review =>
-    review.comment?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    review.patient?.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    review.specialist?.user?.first_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    review.comment?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const flagReview = async (reviewId: string, reason: string) => {
@@ -141,69 +157,70 @@ export default function AdminReviewVisibility() {
         </div>
 
         <div className="space-y-4">
-          {filteredReviews.map((review) => (
-            <Card key={review.id} className={review.is_hidden ? 'opacity-60' : ''}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-lg">
-                      {review.patient?.first_name} {review.patient?.last_name}
-                      <Badge variant="outline" className="ml-2">
-                        {review.rating} ⭐
-                      </Badge>
-                      {review.is_hidden && (
-                        <Badge variant="destructive" className="ml-2">
-                          Hidden
+          {filteredReviews.map((review) => {
+            const reviewFlags = flags[review.id] || [];
+            return (
+              <Card key={review.id}>
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <CardTitle className="text-lg">
+                        Review ID: {review.id.slice(0, 8)}
+                        <Badge variant="outline" className="ml-2">
+                          {review.rating} ⭐
                         </Badge>
-                      )}
-                      {review.flags && review.flags.length > 0 && (
-                        <Badge variant="secondary" className="ml-2">
-                          <Flag className="h-3 w-3 mr-1" />
-                          {review.flags.length} flags
-                        </Badge>
-                      )}
-                    </CardTitle>
-                    <CardDescription>
-                      For: {review.specialist?.user?.first_name} {review.specialist?.user?.last_name}
-                      {' • '}
-                      {new Date(review.created_at).toLocaleDateString()}
-                    </CardDescription>
+                        {review.moderation_status === 'flagged' && (
+                          <Badge variant="destructive" className="ml-2">
+                            Flagged
+                          </Badge>
+                        )}
+                        {reviewFlags.length > 0 && (
+                          <Badge variant="secondary" className="ml-2">
+                            <Flag className="h-3 w-3 mr-1" />
+                            {reviewFlags.length} flags
+                          </Badge>
+                        )}
+                      </CardTitle>
+                      <CardDescription>
+                        {new Date(review.created_at).toLocaleDateString()}
+                      </CardDescription>
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm mb-4">{review.comment}</p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm mb-4">{review.comment}</p>
 
-                {review.flags && review.flags.length > 0 && (
-                  <div className="bg-muted p-4 rounded-lg mb-4">
-                    <p className="font-medium mb-2">Moderation Flags:</p>
-                    {review.flags.map((flag: any) => (
-                      <div key={flag.id} className="text-sm mb-2">
-                        <Badge variant="outline" className="mr-2">
-                          {flag.flag_type}
-                        </Badge>
-                        {flag.flag_reason}
-                        <span className="text-muted-foreground ml-2">
-                          • {flag.status}
-                        </span>
-                      </div>
-                    ))}
+                  {reviewFlags.length > 0 && (
+                    <div className="bg-muted p-4 rounded-lg mb-4">
+                      <p className="font-medium mb-2">Moderation Flags:</p>
+                      {reviewFlags.map((flag: any) => (
+                        <div key={flag.id} className="text-sm mb-2">
+                          <Badge variant="outline" className="mr-2">
+                            {flag.flag_type}
+                          </Badge>
+                          {flag.flag_reason}
+                          <span className="text-muted-foreground ml-2">
+                            • {flag.status}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => flagReview(review.id, 'Requires moderation review')}
+                    >
+                      <Flag className="h-4 w-4 mr-2" />
+                      Flag Review
+                    </Button>
                   </div>
-                )}
-
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => flagReview(review.id, 'Requires moderation review')}
-                  >
-                    <Flag className="h-4 w-4 mr-2" />
-                    Flag Review
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
 
           {filteredReviews.length === 0 && (
             <Card>

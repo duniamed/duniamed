@@ -76,6 +76,14 @@ import EHDSCompliance from "./pages/EHDSCompliance";
 import ReviewModeration from "./pages/ReviewModeration";
 import Complaints from "./pages/Complaints";
 import ComplaintManagement from "./pages/ComplaintManagement";
+import ReviewAppeals from "./pages/ReviewAppeals";
+import BugReport from "./pages/BugReport";
+import AccessibilitySettings from "./pages/AccessibilitySettings";
+import AdminReviewVisibility from "./pages/AdminReviewVisibility";
+import ProviderActivity from "./pages/ProviderActivity";
+import VoiceAssist from "./pages/VoiceAssist";
+import TutorialSystem from "./pages/TutorialSystem";
+import LiveChat from "./pages/LiveChat";
 import InsuranceVerification from "./pages/InsuranceVerification";
 import ClaimsManagement from "./pages/ClaimsManagement";
 import TeamChat from "./pages/TeamChat";
@@ -90,7 +98,6 @@ import BrowseReviews from "./pages/BrowseReviews";
 import InsuranceManagement from "./pages/InsuranceManagement";
 import MediationChat from "./pages/MediationChat";
 import ReviewResponse from "./pages/ReviewResponse";
-import ReviewAppeals from "./pages/ReviewAppeals";
 import VisitConfirmation from "./pages/VisitConfirmation";
 import SupportTickets from "./pages/SupportTickets";
 import ProcedureCatalog from "./pages/ProcedureCatalog";
@@ -219,6 +226,13 @@ const App = () => (
             <Route path="/visit-confirmation/:appointmentId" element={<VisitConfirmation />} />
             <Route path="/support/tickets" element={<SupportTickets />} />
             <Route path="/procedures" element={<ProcedureCatalog />} />
+            <Route path="/bug-report" element={<BugReport />} />
+            <Route path="/accessibility" element={<AccessibilitySettings />} />
+            <Route path="/reviews/visibility" element={<AdminReviewVisibility />} />
+            <Route path="/activity" element={<ProviderActivity />} />
+            <Route path="/voice" element={<VoiceAssist />} />
+            <Route path="/learn" element={<TutorialSystem />} />
+            <Route path="/chat" element={<LiveChat />} />
             
             {/* SHARED FEATURES */}
             <Route path="/instant-consultation" element={<InstantConsultation />} />
