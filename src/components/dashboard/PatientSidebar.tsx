@@ -15,9 +15,11 @@ import {
 const patientMenuItems = [
   { title: 'Dashboard', url: '/patient/dashboard', icon: Home },
   { title: 'Symptom Checker', url: '/patient/symptom-checker', icon: Stethoscope },
-  { title: 'Procedures', url: '/procedures', icon: FileText },
+  { title: 'Advanced Search', url: '/specialist/advanced-search', icon: Search },
   { title: 'Find Specialists', url: '/search/specialists', icon: Search },
   { title: 'Appointments', url: '/patient/appointments', icon: Calendar },
+  { title: 'Waitlist', url: '/patient/waitlist', icon: Bell },
+  { title: 'Group Booking', url: '/patient/group-booking', icon: Users },
   { title: 'Multi-Practitioner', url: '/multi-practitioner-scheduling', icon: Users },
   { title: 'Calendar Sync', url: '/calendar-sync-settings', icon: CalendarSync },
   { title: 'Prescriptions', url: '/patient/prescriptions', icon: Pill },

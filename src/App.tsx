@@ -131,6 +131,7 @@ import AppointmentTemplates from './pages/AppointmentTemplates';
 import CapacityAnalytics from './pages/CapacityAnalytics';
 import ComplianceRules from './pages/ComplianceRules';
 import AdvancedSpecialistSearch from './pages/AdvancedSpecialistSearch';
+import GroupBooking from './pages/GroupBooking';
 
 const queryClient = new QueryClient();
 
@@ -183,6 +184,8 @@ const App = () => (
             <Route path="/patient/favorites" element={<Favorites />} />
             <Route path="/patient/notifications" element={<Notifications />} />
             <Route path="/patient/symptom-checker" element={<AISymptomChecker />} />
+            <Route path="/patient/waitlist" element={<WaitlistManagement />} />
+            <Route path="/patient/group-booking" element={<GroupBooking />} />
             
             {/* SPECIALIST PORTAL */}
             <Route path="/specialist/dashboard" element={<SpecialistDashboard />} />
@@ -203,6 +206,7 @@ const App = () => (
             <Route path="/specialist/waitlist" element={<WaitlistManagement />} />
             <Route path="/specialist/virtual-clinic-queue" element={<VirtualClinicQueue />} />
             <Route path="/specialist/analytics" element={<Analytics />} />
+            <Route path="/specialist/advanced-search" element={<AdvancedSpecialistSearch />} />
             
             {/* CLINIC PORTAL */}
             <Route path="/clinic/dashboard" element={<ClinicDashboard />} />

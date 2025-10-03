@@ -1,196 +1,209 @@
-import { useState, useEffect } from 'react';
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
-import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
-import { Calendar, Clock, Mail, Phone, User } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { Calendar, Clock, Bell, X } from "lucide-react";
+import { format } from "date-fns";
+
+interface WaitlistEntry {
+  id: string;
+  specialist_id: string;
+  preferred_date: string | null;
+  preferred_time_slot: string | null;
+  notes: string | null;
+  status: string;
+  created_at: string;
+  notified_at: string | null;
+  specialists: {
+    profiles: {
+      first_name: string;
+      last_name: string;
+    };
+    specialty: string[];
+  };
+}
 
 export default function WaitlistManagement() {
-  const [waitlist, setWaitlist] = useState<any[]>([]);
+  const [entries, setEntries] = useState<WaitlistEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const { profile } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
     fetchWaitlist();
-  }, []);
+  }, [profile]);
 
   const fetchWaitlist = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('appointment_waitlist')
-        .select(`
-          *,
-          profiles!appointment_waitlist_patient_id_fkey(first_name, last_name, email, phone),
-          specialists!inner(
-            user_id,
-            specialty,
-            profiles!specialists_user_id_fkey(first_name, last_name)
-          )
-        `)
-        .order('created_at', { ascending: true });
+    if (!profile) return;
 
-      if (error) throw error;
-      setWaitlist(data || []);
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: error.message,
-      });
-    } finally {
-      setLoading(false);
+    const { data, error } = await supabase
+      .from("appointment_waitlist")
+      .select(`
+        *,
+        specialists!inner(
+          specialty,
+          profiles:user_id(first_name, last_name)
+        )
+      `)
+      .eq("patient_id", profile.id)
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setEntries(data as any);
     }
+    setLoading(false);
   };
 
-  const notifyPatient = async (entry: any) => {
-    try {
-      // Update waitlist status
-      const { error } = await supabase
-        .from('appointment_waitlist')
-        .update({ 
-          status: 'notified',
-          notified_at: new Date().toISOString()
-        })
-        .eq('id', entry.id);
+  const removeFromWaitlist = async (entryId: string) => {
+    const { error } = await supabase
+      .from("appointment_waitlist")
+      .delete()
+      .eq("id", entryId);
 
-      if (error) throw error;
-
-      // In a real implementation, send email/SMS here
+    if (error) {
       toast({
-        title: 'Patient Notified',
-        description: `${entry.profiles.first_name} ${entry.profiles.last_name} has been notified`,
+        title: "Error",
+        description: "Failed to remove from waitlist",
+        variant: "destructive",
       });
-
+    } else {
+      toast({
+        title: "Removed",
+        description: "You've been removed from the waitlist",
+      });
       fetchWaitlist();
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: error.message,
-      });
     }
   };
 
-  const removeFromWaitlist = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('appointment_waitlist')
-        .update({ status: 'cancelled' })
-        .eq('id', id);
-
-      if (error) throw error;
-
-      toast({
-        title: 'Removed',
-        description: 'Patient removed from waitlist',
-      });
-
-      fetchWaitlist();
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: error.message,
-      });
-    }
-  };
-
-  return (
-    <ProtectedRoute>
-      <DashboardLayout
-        title="Waitlist Management"
-        description="Manage patient appointment waitlist"
-      >
-        <div className="space-y-6">
-          {loading ? (
-            <div className="text-center py-12">Loading waitlist...</div>
-          ) : waitlist.length === 0 ? (
-            <Card className="p-12 text-center">
-              <p className="text-muted-foreground">No patients on the waitlist</p>
-            </Card>
-          ) : (
-            <div className="grid gap-4">
-              {waitlist.map((entry) => (
-                <Card key={entry.id} className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-3 flex-1">
-                      <div className="flex items-center gap-3">
-                        <User className="h-5 w-5 text-muted-foreground" />
-                        <div>
-                          <p className="font-semibold">
-                            {entry.profiles.first_name} {entry.profiles.last_name}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            For: Dr. {entry.specialists.profiles.first_name} {entry.specialists.profiles.last_name}
-                          </p>
-                        </div>
-                        <Badge variant={entry.status === 'waiting' ? 'default' : 'secondary'}>
-                          {entry.status}
-                        </Badge>
-                      </div>
-
-                      {entry.preferred_date && (
-                        <div className="flex items-center gap-2 text-sm">
-                          <Calendar className="h-4 w-4" />
-                          <span>Preferred: {new Date(entry.preferred_date).toLocaleDateString()}</span>
-                          {entry.preferred_time_slot && (
-                            <>
-                              <Clock className="h-4 w-4 ml-2" />
-                              <span>{entry.preferred_time_slot}</span>
-                            </>
-                          )}
-                        </div>
-                      )}
-
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Mail className="h-4 w-4" />
-                          {entry.profiles.email}
-                        </div>
-                        {entry.profiles.phone && (
-                          <div className="flex items-center gap-1">
-                            <Phone className="h-4 w-4" />
-                            {entry.profiles.phone}
-                          </div>
-                        )}
-                      </div>
-
-                      {entry.notes && (
-                        <p className="text-sm text-muted-foreground bg-muted p-2 rounded">
-                          {entry.notes}
-                        </p>
-                      )}
-
-                      <p className="text-xs text-muted-foreground">
-                        Added: {new Date(entry.created_at).toLocaleString()}
-                      </p>
-                    </div>
-
-                    <div className="flex gap-2">
-                      {entry.status === 'waiting' && (
-                        <>
-                          <Button onClick={() => notifyPatient(entry)}>
-                            Notify
-                          </Button>
-                          <Button
-                            variant="outline"
-                            onClick={() => removeFromWaitlist(entry.id)}
-                          >
-                            Remove
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          )}
+  if (loading) {
+    return (
+      <DashboardLayout title="My Waitlist">
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </DashboardLayout>
-    </ProtectedRoute>
+    );
+  }
+
+  return (
+    <DashboardLayout title="My Waitlist">
+      <div className="max-w-4xl mx-auto space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Active Waitlist Entries</CardTitle>
+            <CardDescription>
+              You'll be notified when appointments become available
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {entries.length === 0 ? (
+              <div className="text-center py-12">
+                <Bell className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">No active waitlist entries</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {entries.map((entry) => (
+                  <Card key={entry.id} className="border-l-4 border-l-primary">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 space-y-3">
+                          <div>
+                            <h3 className="font-semibold text-lg">
+                              Dr. {entry.specialists?.profiles?.first_name}{" "}
+                              {entry.specialists?.profiles?.last_name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              {entry.specialists?.specialty?.join(", ")}
+                            </p>
+                          </div>
+
+                          <div className="space-y-2 text-sm">
+                            {entry.preferred_date && (
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <Calendar className="w-4 h-4" />
+                                <span>
+                                  Preferred: {format(new Date(entry.preferred_date), "PPP")}
+                                </span>
+                              </div>
+                            )}
+
+                            {entry.preferred_time_slot && (
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <Clock className="w-4 h-4" />
+                                <span>Time: {entry.preferred_time_slot}</span>
+                              </div>
+                            )}
+
+                            {entry.notes && (
+                              <p className="text-muted-foreground italic">
+                                Note: {entry.notes}
+                              </p>
+                            )}
+
+                            <div className="flex items-center gap-2">
+                              <Badge
+                                variant={
+                                  entry.status === "waiting" ? "secondary" : "default"
+                                }
+                              >
+                                {entry.status}
+                              </Badge>
+                              {entry.notified_at && (
+                                <Badge variant="outline" className="text-green-600">
+                                  <Bell className="w-3 h-3 mr-1" />
+                                  Notified{" "}
+                                  {format(new Date(entry.notified_at), "MMM d, h:mm a")}
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+
+                          <p className="text-xs text-muted-foreground">
+                            Added {format(new Date(entry.created_at), "PPP 'at' h:mm a")}
+                          </p>
+                        </div>
+
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeFromWaitlist(entry.id)}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="bg-blue-50 border-blue-200">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <Bell className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="font-semibold text-blue-900">How Waitlist Works</p>
+                <p className="text-sm text-blue-700">
+                  When a matching appointment becomes available (cancellation or new slot), you'll receive:
+                </p>
+                <ul className="text-sm text-blue-700 list-disc list-inside space-y-1 mt-2">
+                  <li>Email notification</li>
+                  <li>SMS alert (if phone number on file)</li>
+                  <li>15-minute window to book before offered to next person</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </DashboardLayout>
   );
 }
