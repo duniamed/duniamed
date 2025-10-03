@@ -6,11 +6,16 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { Activity, Wifi, Phone, Video, AlertTriangle, CheckCircle } from 'lucide-react';
+import { InfoTooltip } from '@/components/ui/info-tooltip';
+import { Activity, Wifi, Phone, Video, AlertTriangle, CheckCircle, RefreshCw } from 'lucide-react';
 
 /**
  * C19 TELEHEALTH - Video Health Monitor
- * Pre-session checks, real-time quality monitoring, automatic fallbacks
+ * Integration: Daily.co video API (https://daily.co)
+ * You need to: 1. Create account at https://daily.co
+ *              2. Get API key from dashboard
+ *              3. Add DAILY_API_KEY secret (already configured)
+ * Monitors video call quality and connection health in real-time
  */
 
 interface HealthCheck {
@@ -183,6 +188,7 @@ export function VideoHealthMonitor({
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5" />
               Pre-Session Health Check
+              <InfoTooltip content="Run this test before your video call to make sure everything works properly. We'll check your internet speed, camera, and microphone to prevent issues during your appointment." />
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -211,6 +217,7 @@ export function VideoHealthMonitor({
                 <AlertTriangle className="h-5 w-5 text-amber-600" />
               )}
               Connection Status
+              <InfoTooltip content="We continuously monitor your video call quality. If issues are detected, we'll automatically suggest alternatives like phone backup or rescheduling to ensure you don't miss your appointment." />
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">

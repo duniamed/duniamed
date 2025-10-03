@@ -1,7 +1,7 @@
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { SubscriptionManager } from '@/components/SubscriptionManager';
-import { SubscriptionCheckout } from '@/components/SubscriptionCheckout';
+import { StripeSubscriptionCheckout } from '@/components/StripeSubscriptionCheckout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 /**
@@ -28,9 +28,9 @@ function SubscriptionPlansContent() {
         <TabsContent value="explore">
           <div className="space-y-6">
             <p className="text-sm text-muted-foreground">
-              Compare our plans and choose the one that fits your needs
+              Compare our plans and choose the one that fits your needs. All plans include secure payment processing via Stripe.
             </p>
-            <SubscriptionManager />
+            <StripeSubscriptionCheckout />
           </div>
         </TabsContent>
       </Tabs>

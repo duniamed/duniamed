@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
+import { InfoTooltip } from '@/components/ui/info-tooltip';
 import { DollarSign, TrendingUp, Bell, CheckCircle, XCircle } from 'lucide-react';
 
 /**
@@ -138,6 +139,7 @@ export function SubscriptionManager() {
             <CardTitle className="flex items-center gap-2">
               <Bell className="h-5 w-5 text-amber-600" />
               Price Change Notice
+              <InfoTooltip content="We're legally required to notify you 30 days before any price changes. This gives you time to decide if you want to keep your current plan or switch to a different one." />
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -167,7 +169,10 @@ export function SubscriptionManager() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Current Plan: {currentTier.tier_name}</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  Current Plan: {currentTier.tier_name}
+                  <InfoTooltip content="Your current plan determines which features you can access. You can upgrade or downgrade at any time, and changes take effect immediately." />
+                </CardTitle>
                 <CardDescription>
                   ${currentTier.monthly_price}/month • {subscription.status}
                 </CardDescription>
@@ -180,7 +185,10 @@ export function SubscriptionManager() {
           <CardContent className="space-y-4">
             {/* Usage Meters */}
             <div className="space-y-3">
-              <h4 className="text-sm font-medium">Usage This Month</h4>
+              <h4 className="text-sm font-medium flex items-center">
+                Usage This Month
+                <InfoTooltip content="See how many appointments, messages, and other features you've used. We'll notify you when you're getting close to your limits so you can upgrade if needed." />
+              </h4>
               {Object.entries(currentTier.usage_limits || {}).map(([key, limit]: [string, any]) => {
                 const current = subscription.usage_current?.[key] || 0;
                 const percentage = calculateUsagePercentage(current, limit);
