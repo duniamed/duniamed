@@ -1196,6 +1196,151 @@ export type Database = {
         }
         Relationships: []
       }
+      connector_configurations: {
+        Row: {
+          clinic_id: string | null
+          config: Json
+          connector_name: string
+          connector_type: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          last_sync_at: string | null
+          scopes: string[]
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          clinic_id?: string | null
+          config?: Json
+          connector_name: string
+          connector_type: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          scopes?: string[]
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          clinic_id?: string | null
+          config?: Json
+          connector_name?: string
+          connector_type?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          scopes?: string[]
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connector_configurations_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connector_configurations_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connector_consents: {
+        Row: {
+          connector_id: string
+          data_types: string[]
+          expires_at: string | null
+          granted: boolean
+          granted_at: string | null
+          id: string
+          purpose: string
+          revoked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          connector_id: string
+          data_types: string[]
+          expires_at?: string | null
+          granted: boolean
+          granted_at?: string | null
+          id?: string
+          purpose: string
+          revoked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          connector_id?: string
+          data_types?: string[]
+          expires_at?: string | null
+          granted?: boolean
+          granted_at?: string | null
+          id?: string
+          purpose?: string
+          revoked_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connector_consents_connector_id_fkey"
+            columns: ["connector_id"]
+            isOneToOne: false
+            referencedRelation: "connector_configurations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connector_sync_logs: {
+        Row: {
+          connector_id: string
+          created_at: string | null
+          error_message: string | null
+          id: string
+          records_synced: number | null
+          status: string
+          sync_completed_at: string | null
+          sync_started_at: string | null
+          sync_type: string
+        }
+        Insert: {
+          connector_id: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          records_synced?: number | null
+          status: string
+          sync_completed_at?: string | null
+          sync_started_at?: string | null
+          sync_type: string
+        }
+        Update: {
+          connector_id?: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          records_synced?: number | null
+          status?: string
+          sync_completed_at?: string | null
+          sync_started_at?: string | null
+          sync_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connector_sync_logs_connector_id_fkey"
+            columns: ["connector_id"]
+            isOneToOne: false
+            referencedRelation: "connector_configurations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       consent_records: {
         Row: {
           consent_text: string
@@ -1736,6 +1881,143 @@ export type Database = {
           },
         ]
       }
+      engagement_analytics: {
+        Row: {
+          campaign_id: string | null
+          created_at: string | null
+          event_data: Json | null
+          event_type: string
+          id: string
+          patient_id: string | null
+        }
+        Insert: {
+          campaign_id?: string | null
+          created_at?: string | null
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          patient_id?: string | null
+        }
+        Update: {
+          campaign_id?: string | null
+          created_at?: string | null
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          patient_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "engagement_analytics_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "engagement_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      engagement_campaigns: {
+        Row: {
+          analytics: Json | null
+          campaign_name: string
+          campaign_type: string
+          channels: string[]
+          clinic_id: string | null
+          created_at: string | null
+          created_by: string
+          id: string
+          message_template: string
+          schedule: Json
+          status: string
+          target_audience: Json
+          updated_at: string | null
+        }
+        Insert: {
+          analytics?: Json | null
+          campaign_name: string
+          campaign_type: string
+          channels?: string[]
+          clinic_id?: string | null
+          created_at?: string | null
+          created_by: string
+          id?: string
+          message_template: string
+          schedule?: Json
+          status?: string
+          target_audience?: Json
+          updated_at?: string | null
+        }
+        Update: {
+          analytics?: Json | null
+          campaign_name?: string
+          campaign_type?: string
+          channels?: string[]
+          clinic_id?: string | null
+          created_at?: string | null
+          created_by?: string
+          id?: string
+          message_template?: string
+          schedule?: Json
+          status?: string
+          target_audience?: Json
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "engagement_campaigns_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "engagement_campaigns_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      engagement_tasks: {
+        Row: {
+          assigned_by: string | null
+          completed_at: string | null
+          created_at: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          patient_id: string
+          reminder_sent: boolean | null
+          task_type: string
+          title: string
+        }
+        Insert: {
+          assigned_by?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          patient_id: string
+          reminder_sent?: boolean | null
+          task_type: string
+          title: string
+        }
+        Update: {
+          assigned_by?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          patient_id?: string
+          reminder_sent?: boolean | null
+          task_type?: string
+          title?: string
+        }
+        Relationships: []
+      }
       family_members: {
         Row: {
           created_at: string | null
@@ -2261,6 +2543,85 @@ export type Database = {
           },
         ]
       }
+      invoices: {
+        Row: {
+          appointment_id: string
+          clinic_id: string | null
+          created_at: string | null
+          currency: string
+          due_date: string | null
+          id: string
+          invoice_number: string
+          line_items: Json
+          paid_at: string | null
+          patient_id: string
+          specialist_id: string
+          status: string
+          subtotal: number
+          tax: number | null
+          total: number
+          updated_at: string | null
+        }
+        Insert: {
+          appointment_id: string
+          clinic_id?: string | null
+          created_at?: string | null
+          currency?: string
+          due_date?: string | null
+          id?: string
+          invoice_number?: string
+          line_items?: Json
+          paid_at?: string | null
+          patient_id: string
+          specialist_id: string
+          status?: string
+          subtotal: number
+          tax?: number | null
+          total: number
+          updated_at?: string | null
+        }
+        Update: {
+          appointment_id?: string
+          clinic_id?: string | null
+          created_at?: string | null
+          currency?: string
+          due_date?: string | null
+          id?: string
+          invoice_number?: string
+          line_items?: Json
+          paid_at?: string | null
+          patient_id?: string
+          specialist_id?: string
+          status?: string
+          subtotal?: number
+          tax?: number | null
+          total?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lab_orders: {
         Row: {
           appointment_id: string | null
@@ -2719,6 +3080,62 @@ export type Database = {
           },
         ]
       }
+      payment_intents: {
+        Row: {
+          amount: number
+          appointment_id: string
+          captured_at: string | null
+          created_at: string | null
+          currency: string
+          id: string
+          patient_id: string
+          payment_method: string | null
+          refund_eligibility: string | null
+          specialist_id: string
+          status: string
+          stripe_payment_intent_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          appointment_id: string
+          captured_at?: string | null
+          created_at?: string | null
+          currency?: string
+          id?: string
+          patient_id: string
+          payment_method?: string | null
+          refund_eligibility?: string | null
+          specialist_id: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          appointment_id?: string
+          captured_at?: string | null
+          created_at?: string | null
+          currency?: string
+          id?: string
+          patient_id?: string
+          payment_method?: string | null
+          refund_eligibility?: string | null
+          specialist_id?: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_intents_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount: number
@@ -2797,6 +3214,69 @@ export type Database = {
             columns: ["payer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payout_schedules: {
+        Row: {
+          clinic_id: string | null
+          created_at: string | null
+          currency: string
+          id: string
+          net_payout: number
+          paid_at: string | null
+          payout_method: string | null
+          period_end: string
+          period_start: string
+          platform_fee: number
+          specialist_id: string
+          status: string
+          total_earnings: number
+        }
+        Insert: {
+          clinic_id?: string | null
+          created_at?: string | null
+          currency?: string
+          id?: string
+          net_payout: number
+          paid_at?: string | null
+          payout_method?: string | null
+          period_end: string
+          period_start: string
+          platform_fee: number
+          specialist_id: string
+          status?: string
+          total_earnings: number
+        }
+        Update: {
+          clinic_id?: string | null
+          created_at?: string | null
+          currency?: string
+          id?: string
+          net_payout?: number
+          paid_at?: string | null
+          payout_method?: string | null
+          period_end?: string
+          period_start?: string
+          platform_fee?: number
+          specialist_id?: string
+          status?: string
+          total_earnings?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payout_schedules_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payout_schedules_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
             referencedColumns: ["id"]
           },
         ]
@@ -3681,6 +4161,56 @@ export type Database = {
           },
         ]
       }
+      refunds: {
+        Row: {
+          approved_by: string | null
+          created_at: string | null
+          id: string
+          payment_intent_id: string
+          processed_at: string | null
+          refund_amount: number
+          refund_policy_applied: string | null
+          refund_reason: string
+          requested_by: string
+          status: string
+          stripe_refund_id: string | null
+        }
+        Insert: {
+          approved_by?: string | null
+          created_at?: string | null
+          id?: string
+          payment_intent_id: string
+          processed_at?: string | null
+          refund_amount: number
+          refund_policy_applied?: string | null
+          refund_reason: string
+          requested_by: string
+          status?: string
+          stripe_refund_id?: string | null
+        }
+        Update: {
+          approved_by?: string | null
+          created_at?: string | null
+          id?: string
+          payment_intent_id?: string
+          processed_at?: string | null
+          refund_amount?: number
+          refund_policy_applied?: string | null
+          refund_reason?: string
+          requested_by?: string
+          status?: string
+          stripe_refund_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_payment_intent_id_fkey"
+            columns: ["payment_intent_id"]
+            isOneToOne: false
+            referencedRelation: "payment_intents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       review_disputes: {
         Row: {
           assigned_mediator: string | null
@@ -3875,6 +4405,33 @@ export type Database = {
           },
         ]
       }
+      role_permissions: {
+        Row: {
+          action: string
+          conditions: Json | null
+          created_at: string | null
+          id: string
+          resource: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Insert: {
+          action: string
+          conditions?: Json | null
+          created_at?: string | null
+          id?: string
+          resource: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Update: {
+          action?: string
+          conditions?: Json | null
+          created_at?: string | null
+          id?: string
+          resource?: string
+          role?: Database["public"]["Enums"]["app_role"]
+        }
+        Relationships: []
+      }
       rpm_devices: {
         Row: {
           created_at: string | null
@@ -4016,6 +4573,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      sensitive_access_alerts: {
+        Row: {
+          access_type: string
+          accessed_by: string
+          alert_sent: boolean | null
+          alert_sent_at: string | null
+          created_at: string | null
+          id: string
+          patient_id: string
+          resource_id: string
+          resource_type: string
+        }
+        Insert: {
+          access_type: string
+          accessed_by: string
+          alert_sent?: boolean | null
+          alert_sent_at?: string | null
+          created_at?: string | null
+          id?: string
+          patient_id: string
+          resource_id: string
+          resource_type: string
+        }
+        Update: {
+          access_type?: string
+          accessed_by?: string
+          alert_sent?: boolean | null
+          alert_sent_at?: string | null
+          created_at?: string | null
+          id?: string
+          patient_id?: string
+          resource_id?: string
+          resource_type?: string
+        }
+        Relationships: []
       }
       service_fees: {
         Row: {
@@ -4743,6 +5336,88 @@ export type Database = {
         }
         Relationships: []
       }
+      support_escalations: {
+        Row: {
+          created_at: string | null
+          escalated_by: string
+          escalated_to: string
+          id: string
+          reason: string
+          resolved_at: string | null
+          status: string
+          ticket_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          escalated_by: string
+          escalated_to: string
+          id?: string
+          reason: string
+          resolved_at?: string | null
+          status?: string
+          ticket_id: string
+        }
+        Update: {
+          created_at?: string | null
+          escalated_by?: string
+          escalated_to?: string
+          id?: string
+          reason?: string
+          resolved_at?: string | null
+          status?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_escalations_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_interactions: {
+        Row: {
+          attachments: Json | null
+          created_at: string | null
+          id: string
+          is_internal: boolean | null
+          message: string
+          sender_id: string
+          sender_type: string
+          ticket_id: string
+        }
+        Insert: {
+          attachments?: Json | null
+          created_at?: string | null
+          id?: string
+          is_internal?: boolean | null
+          message: string
+          sender_id: string
+          sender_type: string
+          ticket_id: string
+        }
+        Update: {
+          attachments?: Json | null
+          created_at?: string | null
+          id?: string
+          is_internal?: boolean | null
+          message?: string
+          sender_id?: string
+          sender_type?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_interactions_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_ticket_messages: {
         Row: {
           attachments: Json | null
@@ -5200,6 +5875,33 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           voice_assist_enabled?: boolean | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          expires_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          expires_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          expires_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -5668,6 +6370,13 @@ export type Database = {
         Args: { _user_id: string }
         Returns: string[]
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_clinic_owner: {
         Args: { _clinic_id: string; _user_id: string }
         Returns: boolean
@@ -5678,6 +6387,14 @@ export type Database = {
       }
     }
     Enums: {
+      app_role:
+        | "patient"
+        | "specialist"
+        | "clinic_admin"
+        | "clinic_staff"
+        | "support_agent"
+        | "admin"
+        | "moderator"
       appointment_status:
         | "pending"
         | "confirmed"
@@ -5836,6 +6553,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: [
+        "patient",
+        "specialist",
+        "clinic_admin",
+        "clinic_staff",
+        "support_agent",
+        "admin",
+        "moderator",
+      ],
       appointment_status: [
         "pending",
         "confirmed",

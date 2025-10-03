@@ -292,6 +292,11 @@ const App = () => (
             <Route path="/mediation/:disputeId" element={<MediationChat />} />
             <Route path="/clinic/messages" element={<ClinicMessagesInbox />} />
             <Route path="/review-flag-history" element={<ReviewFlagHistory />} />
+            <Route path="/support-tickets" element={<SupportTicketsDashboard />} />
+            <Route path="/integration-connectors" element={<IntegrationConnectors />} />
+            <Route path="/role-management" element={<RoleManagement />} />
+            <Route path="/engagement-campaigns" element={<EngagementCampaigns />} />
+            <Route path="/payment-processing" element={<PaymentProcessing />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
