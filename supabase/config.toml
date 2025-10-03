@@ -86,3 +86,15 @@ verify_jwt = false
 
 [functions.route-procedure-question]
 verify_jwt = false
+
+[functions.generate-data-summary]
+verify_jwt = true
+
+[functions.track-usage]
+verify_jwt = true
+
+[functions.notify-price-change]
+verify_jwt = false
+
+[functions.check-video-health]
+verify_jwt = true

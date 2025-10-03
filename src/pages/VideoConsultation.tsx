@@ -7,6 +7,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Phone, Mic, MicOff, Video, VideoOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { VideoHealthMonitor } from '@/components/VideoHealthMonitor';
+import { AutoReschedule } from '@/components/AutoReschedule';
 
 export default function VideoConsultation() {
   return (
@@ -26,6 +28,8 @@ function VideoConsultationContent() {
   const [isVideoOff, setIsVideoOff] = useState(false);
   const [loading, setLoading] = useState(true);
   const [videoError, setVideoError] = useState<string | null>(null);
+  const [showHealthMonitor, setShowHealthMonitor] = useState(true);
+  const [needsReschedule, setNeedsReschedule] = useState(false);
   const callFrameRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -197,19 +201,31 @@ function VideoConsultationContent() {
 
   if (videoError) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <Card className="max-w-md">
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <Video className="h-16 w-16 text-destructive mx-auto mb-4" />
-              <h2 className="text-xl font-bold mb-2">Connection Error</h2>
-              <p className="text-muted-foreground mb-4">{videoError}</p>
-              <Button onClick={() => navigate(`/appointments/${appointmentId}`)}>
-                Back to Appointment
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen flex items-center justify-center bg-black p-4">
+        <div className="max-w-2xl w-full space-y-6">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <Video className="h-16 w-16 text-destructive mx-auto mb-4" />
+                <h2 className="text-xl font-bold mb-2">Connection Error</h2>
+                <p className="text-muted-foreground mb-4">{videoError}</p>
+                <Button onClick={() => navigate(`/appointments/${appointmentId}`)}>
+                  Back to Appointment
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {needsReschedule && appointment && (
+            <AutoReschedule
+              appointmentId={appointmentId!}
+              originalDateTime={appointment.scheduled_at}
+              specialistId={appointment.specialist_id}
+              reason={videoError}
+              onRescheduled={() => navigate(`/appointments/${appointmentId}`)}
+            />
+          )}
+        </div>
       </div>
     );
   }
@@ -217,6 +233,20 @@ function VideoConsultationContent() {
   return (
     <div className="min-h-screen bg-black flex flex-col">
       <div className="flex-1 relative">
+        {/* Pre-session health monitor */}
+        {showHealthMonitor && appointment && (
+          <div className="absolute top-4 right-4 z-10 w-80">
+            <VideoHealthMonitor
+              appointmentId={appointmentId!}
+              sessionId={appointment.video_room_id}
+              onFallbackNeeded={() => {
+                setVideoError('Poor connection detected - switching to audio only');
+                setNeedsReschedule(true);
+              }}
+            />
+          </div>
+        )}
+
         {/* Daily.co video container */}
         <div ref={containerRef} className="absolute inset-0" />
       </div>

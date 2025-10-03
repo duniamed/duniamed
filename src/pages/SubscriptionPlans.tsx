@@ -1,6 +1,8 @@
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { SubscriptionManager } from '@/components/SubscriptionManager';
+import { SubscriptionCheckout } from '@/components/SubscriptionCheckout';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 /**
  * C16 PRICING - Subscription Plans Page
@@ -13,7 +15,25 @@ function SubscriptionPlansContent() {
       title="Subscription Plans" 
       description="Manage your subscription and view available plans"
     >
-      <SubscriptionManager />
+      <Tabs defaultValue="manage" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsTrigger value="manage">Current Plan</TabsTrigger>
+          <TabsTrigger value="explore">Explore Plans</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="manage">
+          <SubscriptionManager />
+        </TabsContent>
+
+        <TabsContent value="explore">
+          <div className="space-y-6">
+            <p className="text-sm text-muted-foreground">
+              Compare our plans and choose the one that fits your needs
+            </p>
+            <SubscriptionManager />
+          </div>
+        </TabsContent>
+      </Tabs>
     </DashboardLayout>
   );
 }

@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { FileText, Download, Upload, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAutoLogAccess } from '@/hooks/useDataAccessLogger';
+import { ConsentGate } from '@/components/ConsentGate';
 
 interface MedicalRecord {
   id: string;
@@ -34,6 +36,13 @@ function MedicalRecordsContent() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [records, setRecords] = useState<MedicalRecord[]>([]);
+
+  // C15 PRIVACY - Auto-log access
+  useAutoLogAccess({
+    resourceType: 'medical_records',
+    accessType: 'read',
+    purpose: 'Patient viewing own medical records'
+  });
 
   useEffect(() => {
     fetchRecords();
@@ -158,14 +167,21 @@ function MedicalRecordsContent() {
                       <span>•</span>
                       <span>{record.file_type}</span>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => downloadFile(record.file_url, record.title)}
+                    <ConsentGate
+                      operation="download_medical_record"
+                      purpose="Download and view protected health information"
+                      dataTypes={['medical_records']}
+                      onConsent={() => downloadFile(record.file_url, record.title)}
+                      onDeny={() => {}}
                     >
-                      <Download className="h-4 w-4 mr-2" />
-                      Download
-                    </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
+                    </ConsentGate>
                   </div>
                 </CardContent>
               </Card>

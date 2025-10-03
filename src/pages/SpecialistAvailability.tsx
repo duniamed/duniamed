@@ -9,6 +9,9 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { DragDropCalendar } from '@/components/DragDropCalendar';
+import { CalendarWithUndo } from '@/components/CalendarWithUndo';
 
 interface AvailabilitySlot {
   id?: string;
@@ -149,55 +152,73 @@ function AvailabilityContent() {
     <DashboardLayout title="Manage Availability" description="Set your weekly availability for patient consultations">
       <Card className="max-w-4xl">
         <CardHeader>
-          <CardTitle>Weekly Schedule</CardTitle>
+          <CardTitle>Availability Management</CardTitle>
           <CardDescription>
-            Set your weekly availability for patient consultations
+            Manage your schedule with simple toggles or advanced drag-and-drop
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-6">
-              {DAYS.map((day, index) => {
-                const slot = availability.find(s => s.day_of_week === index);
-                const isActive = slot?.is_active || false;
+          <Tabs defaultValue="simple" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mb-6">
+              <TabsTrigger value="simple">Simple View</TabsTrigger>
+              <TabsTrigger value="advanced">Drag & Drop</TabsTrigger>
+              <TabsTrigger value="blocked">Blocked Times</TabsTrigger>
+            </TabsList>
 
-                return (
-                  <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 w-40">
-                      <Switch
-                        checked={isActive}
-                        onCheckedChange={(checked) => handleToggleDay(index, checked)}
-                      />
-                      <Label className="font-medium">{day}</Label>
-                    </div>
-                    
-                    {isActive && slot && (
-                      <div className="flex items-center gap-4 flex-1">
-                        <div className="flex items-center gap-2">
-                          <Label>From:</Label>
-                          <Input
-                            type="time"
-                            value={slot.start_time}
-                            onChange={(e) => handleTimeChange(index, 'start_time', e.target.value)}
-                            className="w-32"
+            <TabsContent value="simple">
+              <div className="space-y-6">
+                  {DAYS.map((day, index) => {
+                    const slot = availability.find(s => s.day_of_week === index);
+                    const isActive = slot?.is_active || false;
+
+                    return (
+                      <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
+                        <div className="flex items-center gap-2 w-40">
+                          <Switch
+                            checked={isActive}
+                            onCheckedChange={(checked) => handleToggleDay(index, checked)}
                           />
+                          <Label className="font-medium">{day}</Label>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Label>To:</Label>
-                          <Input
-                            type="time"
-                            value={slot.end_time}
-                            onChange={(e) => handleTimeChange(index, 'end_time', e.target.value)}
-                            className="w-32"
-                          />
-                        </div>
+                        
+                        {isActive && slot && (
+                          <div className="flex items-center gap-4 flex-1">
+                            <div className="flex items-center gap-2">
+                              <Label>From:</Label>
+                              <Input
+                                type="time"
+                                value={slot.start_time}
+                                onChange={(e) => handleTimeChange(index, 'start_time', e.target.value)}
+                                className="w-32"
+                              />
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Label>To:</Label>
+                              <Input
+                                type="time"
+                                value={slot.end_time}
+                                onChange={(e) => handleTimeChange(index, 'end_time', e.target.value)}
+                                className="w-32"
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+                    );
+                  })}
+                </div>
+            </TabsContent>
+
+            <TabsContent value="advanced">
+              {specialistId && <DragDropCalendar specialistId={specialistId} />}
+            </TabsContent>
+
+            <TabsContent value="blocked">
+              {specialistId && <CalendarWithUndo specialistId={specialistId} />}
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
       </DashboardLayout>
     );
   }
