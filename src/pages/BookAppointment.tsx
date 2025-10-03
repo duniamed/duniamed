@@ -14,6 +14,8 @@ import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
 import { ChevronLeft, ChevronRight, Check, Clock, AlertCircle, Users, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useFormAutosave } from '@/hooks/useFormAutosave';
+import { GuidedRecovery } from '@/components/GuidedRecovery';
 
 interface Specialist {
   id: string;
@@ -63,6 +65,20 @@ function BookAppointmentContent() {
   
   // Step 4: Confirmation
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // C4 RESILIENCE - Form autosave
+  const formData = {
+    selectedDate,
+    selectedTime,
+    consultationType,
+    chiefComplaint,
+    urgencyLevel,
+    hasInsurance,
+    insurancePayerId,
+    insuranceMemberId
+  };
+  useFormAutosave('book-appointment', formData, step > 0);
 
   const timeSlots = [
     '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
@@ -581,6 +597,17 @@ function BookAppointmentContent() {
           )}
         </div>
       </div>
+
+      {submitError && (
+        <GuidedRecovery
+          errorType="booking"
+          errorMessage={submitError}
+          onRetry={async () => {
+            setSubmitError(null);
+            await handleSubmit();
+          }}
+        />
+      )}
     </Layout>
   );
 }

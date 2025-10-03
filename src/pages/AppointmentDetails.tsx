@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Calendar, Clock, Video, MapPin, DollarSign, AlertCircle, XCircle } from 'lucide-react';
+import { VisitConfirmationDialog } from '@/components/VisitConfirmationDialog';
 
 interface Appointment {
   id: string;
@@ -289,6 +290,15 @@ function AppointmentDetailsContent() {
               <Separator />
               
               <div className="flex flex-col gap-2">
+                {appointment.status === 'completed' && (
+                  <VisitConfirmationDialog
+                    appointmentId={id!}
+                    userType={profile?.role === 'patient' ? 'patient' : 'specialist'}
+                    onClose={() => {}}
+                    onConfirmed={() => fetchAppointment()}
+                  />
+                )}
+
                 {appointment.status === 'scheduled' && profile?.role === 'specialist' && (
                   <Button onClick={handleCompleteAppointment}>
                     Mark as Completed

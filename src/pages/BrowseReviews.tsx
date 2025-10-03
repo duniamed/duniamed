@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Star, Filter, Search, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Star, Filter, Search, AlertCircle, Eye, EyeOff, Flag } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { ReviewDisputeDialog } from '@/components/ReviewDisputeDialog';
 
 interface Review {
   id: string;
@@ -39,6 +40,7 @@ function BrowseReviewsContent() {
   const [keywordSearch, setKeywordSearch] = useState('');
   const [showCensored, setShowCensored] = useState(false);
   const [showFlagHistory, setShowFlagHistory] = useState(false);
+  const [disputeReviewId, setDisputeReviewId] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -323,6 +325,14 @@ function BrowseReviewsContent() {
           )}
         </div>
       </div>
+
+      {disputeReviewId && (
+        <ReviewDisputeDialog
+          reviewId={disputeReviewId}
+          open={!!disputeReviewId}
+          onOpenChange={(open) => !open && setDisputeReviewId(null)}
+        />
+      )}
     </Layout>
   );
 }
