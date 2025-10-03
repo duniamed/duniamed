@@ -148,6 +148,7 @@ import AITriage from './pages/AITriage';
 import GoogleBusinessProfile from './pages/GoogleBusinessProfile';
 import ClinicalFocus from './pages/ClinicalFocus';
 import WorkQueue from './pages/WorkQueue';
+import ComplianceDashboard from './pages/ComplianceDashboard';
 
 const queryClient = new QueryClient();
 
@@ -320,6 +321,7 @@ const App = () => (
             <Route path="/google-business" element={<GoogleBusinessProfile />} />
             <Route path="/clinical-focus" element={<ClinicalFocus />} />
             <Route path="/work-queue" element={<WorkQueue />} />
+            <Route path="/compliance-dashboard" element={<ComplianceDashboard />} />
           
           {/* Shift Marketplace & Credentials */}
           <Route path="/shifts/marketplace" element={<ShiftMarketplace />} />
