@@ -30,6 +30,24 @@ export default function CredentialManager() {
     if (user) {
       loadCredentials();
       loadBackgroundChecks();
+      
+      // Real-time subscription for credential status updates
+      const channel = supabase
+        .channel('credential-updates')
+        .on('postgres_changes', {
+          event: '*',
+          schema: 'public',
+          table: 'credential_verifications',
+          filter: `user_id=eq.${user.id}`
+        }, (payload) => {
+          console.log('Credential status updated:', payload);
+          loadCredentials();
+        })
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [user]);
 

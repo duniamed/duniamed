@@ -30,6 +30,7 @@ interface WorkQueueItem {
   time_to_first_view_minutes?: number;
   topic?: string;
   urgency?: string;
+  item_url?: string; // Deep link to the item
 }
 
 export default function WorkQueue() {
@@ -362,7 +363,11 @@ export default function WorkQueue() {
                             <Button 
                               size="sm" 
                               variant="outline"
-                              onClick={() => {/* Navigate to deep link */}}
+                              onClick={() => {
+                                if (item.item_url) {
+                                  window.location.href = item.item_url;
+                                }
+                              }}
                             >
                               View
                             </Button>

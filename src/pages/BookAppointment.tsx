@@ -241,6 +241,51 @@ function BookAppointmentContent() {
       const [hours, minutes] = selectedTime.split(':');
       scheduledAt.setHours(parseInt(hours), parseInt(minutes));
 
+      // CHECK COMPLIANCE RULES BEFORE BOOKING
+      const { data: complianceCheck, error: complianceError } = await supabase.functions.invoke(
+        'check-compliance-rules',
+        {
+          body: {
+            clinic_id: null, // Will be fetched from specialist in edge function
+            appointment_data: {
+              patient_id: profile!.id,
+              specialist_id: specialistId,
+              scheduled_at: scheduledAt.toISOString(),
+              consultation_type: consultationType,
+              urgency_level: urgencyLevel,
+              duration_minutes: 30
+            }
+          }
+        }
+      );
+
+      if (complianceError) {
+        console.error('Compliance check error:', complianceError);
+      }
+
+      // Block booking if compliance violations require it
+      if (complianceCheck && !complianceCheck.can_proceed) {
+        const violations = complianceCheck.violations || [];
+        const message = violations.map((v: any) => `• ${v.message}`).join('\n');
+        
+        toast({
+          title: '⚠️ Compliance Requirements Not Met',
+          description: message || 'Cannot proceed with booking due to compliance rules',
+          variant: 'destructive',
+        });
+        setSubmitting(false);
+        return;
+      }
+
+      // Show warnings but allow booking
+      if (complianceCheck?.warnings && complianceCheck.warnings.length > 0) {
+        toast({
+          title: 'Notice',
+          description: complianceCheck.warnings[0].message,
+          variant: 'default',
+        });
+      }
+
       // STEP 1: Create optimistic hold (60-second reservation)
       const { data: holdData, error: holdError } = await supabase.functions.invoke('book-with-hold', {
         body: {

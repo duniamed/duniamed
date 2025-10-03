@@ -173,3 +173,12 @@ verify_jwt = true
 
 [functions.send-whatsapp-message]
 verify_jwt = true
+
+[functions.lock-cost-estimate]
+verify_jwt = true
+
+[functions.coordinate-group-booking]
+verify_jwt = true
+
+[functions.check-compliance-rules]
+verify_jwt = true

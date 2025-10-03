@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Users, Plus, X, Calendar, Clock } from "lucide-react";
+import { supabase } from '@/integrations/supabase/client';
 
 interface FamilyMember {
   id: string;
@@ -59,24 +60,91 @@ export default function GroupBooking() {
       description: `Finding ${members.length} consecutive slots for your family`,
     });
 
-    // Simulate search (in production, this calls constraint solver)
-    setTimeout(() => {
-      setResults([
-        {
-          practitioner: "Dr. Sarah Johnson",
-          date: "Monday, Oct 14",
-          slots: ["9:00 AM", "9:30 AM", "10:00 AM"],
-          location: "Main Clinic - 2.3 miles",
-        },
-        {
-          practitioner: "Dr. Michael Chen",
-          date: "Friday, Oct 18",
-          slots: ["4:00 PM", "4:30 PM", "5:00 PM"],
-          location: "Downtown Branch - 3.1 miles",
-        },
-      ]);
+    try {
+      const { data, error } = await supabase.functions.invoke('coordinate-group-booking', {
+        body: {
+          action: 'find_consecutive_slots',
+          session_data: {
+            specialty,
+            preferred_date: preferredDay,
+            member_count: members.length
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.success && data.consecutive_slots) {
+        setResults(data.consecutive_slots.map((slot: any) => ({
+          practitioner: `Specialist ${slot.specialist_id.substring(0, 8)}`,
+          date: new Date(slot.date).toLocaleDateString(),
+          slots: slot.available_slots.slice(0, members.length),
+          location: "Available",
+          specialist_id: slot.specialist_id
+        })));
+      }
+    } catch (error: any) {
+      toast({
+        title: "Search Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
       setSearching(false);
-    }, 2000);
+    }
+  };
+
+  const bookGroupAppointments = async (result: any) => {
+    try {
+      // First create session
+      const { data: sessionData, error: sessionError } = await supabase.functions.invoke('coordinate-group-booking', {
+        body: {
+          action: 'create_session',
+          session_data: {
+            session_name: `Group booking for ${members.length} members`,
+            specialty,
+            preferred_date: result.date,
+            members: members.map(m => ({
+              name: m.name,
+              age: m.age,
+              relationship: m.relationship
+            }))
+          }
+        }
+      });
+
+      if (sessionError) throw sessionError;
+
+      // Then confirm booking
+      const { data: bookingData, error: bookingError } = await supabase.functions.invoke('coordinate-group-booking', {
+        body: {
+          action: 'confirm_booking',
+          session_id: sessionData.session.id,
+          slot_selection: {
+            specialist_id: result.specialist_id,
+            date: result.date,
+            times: result.slots
+          }
+        }
+      });
+
+      if (bookingError) throw bookingError;
+
+      toast({
+        title: "Success!",
+        description: `${bookingData.appointment_ids.length} appointments booked`,
+      });
+
+      // Reset form
+      setResults([]);
+      setMembers([{ id: crypto.randomUUID(), name: "", age: 0, relationship: "child" }]);
+    } catch (error: any) {
+      toast({
+        title: "Booking Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -248,7 +316,9 @@ export default function GroupBooking() {
                       </div>
                     </div>
 
-                    <Button>Book All {members.length} Appointments</Button>
+                    <Button onClick={() => bookGroupAppointments(result)}>
+                      Book All {members.length} Appointments
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

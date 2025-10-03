@@ -73,6 +73,32 @@ export default function CostEstimator() {
     }
   };
 
+  const lockPrice = async () => {
+    if (!estimate) return;
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('lock-cost-estimate', {
+        body: { estimate_id: estimate.id, lock_duration_hours: 24 }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        setEstimate({ ...estimate, is_locked: true, lock_expires_at: data.locked_until });
+        toast({
+          title: 'Price Locked',
+          description: 'Price guaranteed for 24 hours when you book',
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Failed to lock price',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -150,6 +176,29 @@ export default function CostEstimator() {
                       <span className="text-2xl font-bold text-primary">${estimate.estimated_patient_responsibility}</span>
                     </div>
                   </>
+                )}
+                
+                {!estimate.is_locked ? (
+                  <div className="pt-4 border-t">
+                    <Button onClick={lockPrice} className="w-full">
+                      🔒 Lock This Price for 24 Hours
+                    </Button>
+                    <p className="text-xs text-muted-foreground mt-2 text-center">
+                      Lock your price now to guarantee this rate when booking
+                    </p>
+                  </div>
+                ) : (
+                  <div className="pt-4 border-t">
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <p className="text-sm font-semibold text-green-800 mb-1">
+                        ✓ Price Locked!
+                      </p>
+                      <p className="text-xs text-green-700">
+                        This price is guaranteed until{' '}
+                        {new Date(estimate.lock_expires_at).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
                 )}
               </div>
             </CardContent>
