@@ -70,7 +70,6 @@ import CarePathways from "./pages/CarePathways";
 import RPMDashboard from "./pages/RPMDashboard";
 import ProxyAccess from "./pages/ProxyAccess";
 import CommunityQA from "./pages/CommunityQA";
-import AIFinance from "./pages/AIFinance";
 import PublicClinicPage from "./pages/PublicClinicPage";
 import EHDSCompliance from "./pages/EHDSCompliance";
 import ReviewModeration from "./pages/ReviewModeration";
@@ -141,6 +140,9 @@ import DocumentSignatures from './pages/DocumentSignatures';
 import WhatsAppMessages from './pages/WhatsAppMessages';
 import LegalArchives from './pages/LegalArchives';
 import APMMonitoring from './pages/APMMonitoring';
+import AIFinance from './pages/AIFinance';
+import VirtualClinicQueuePage from './pages/VirtualClinicQueue';
+import AITriage from './pages/AITriage';
 
 const queryClient = new QueryClient();
 
@@ -313,6 +315,11 @@ const App = () => (
             <Route path="/messages/whatsapp" element={<WhatsAppMessages />} />
             <Route path="/admin/legal-archives" element={<LegalArchives />} />
             <Route path="/admin/apm-monitoring" element={<APMMonitoring />} />
+            
+            {/* AI-NATIVE CORE FEATURES */}
+            <Route path="/finance/ai-insights" element={<AIFinance />} />
+            <Route path="/clinic/queue" element={<VirtualClinicQueuePage />} />
+            <Route path="/triage" element={<AITriage />} />
             
             {/* LEGAL */}
             <Route path="/legal/privacy" element={<PrivacyPolicy />} />
