@@ -32,6 +32,44 @@ export default function ShiftMarketplace() {
     }
   }, [user, specialty, modality, dateFrom]);
 
+  // Real-time subscriptions for shift updates
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('shift-marketplace-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'shift_listings'
+        },
+        (payload) => {
+          console.log('Shift listing changed:', payload);
+          loadShifts(); // Refresh shifts when any change occurs
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'shift_applications'
+        },
+        (payload) => {
+          console.log('Shift application changed:', payload);
+          loadApplications();
+          loadAssignments();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
   const loadShifts = async () => {
     try {
       setLoading(true);
