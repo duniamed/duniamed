@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Calendar, FileText, CreditCard, MessageSquare, Users, Heart, Bell, Settings, User, Upload, Search, Pill, Stethoscope, Shield, DollarSign, Share2, Download, LifeBuoy, FileSignature, CalendarSync, Network, ClipboardList } from 'lucide-react';
+import { Home, Calendar, FileText, CreditCard, MessageSquare, Users, Heart, Bell, Settings, User, Upload, Search, Pill, Stethoscope, Shield, DollarSign, Share2, Download, LifeBuoy, FileSignature, CalendarSync, Network, ClipboardList, Focus } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -36,6 +36,7 @@ const patientMenuItems = [
   { title: 'Cost Estimator', url: '/cost-estimator', icon: DollarSign },
   { title: 'Family Members', url: '/patient/family-members', icon: Users },
   { title: 'Favorites', url: '/patient/favorites', icon: Heart },
+  { title: 'Clinical Focus', url: '/clinical-focus', icon: Focus },
   { title: 'Data Export', url: '/data-export', icon: Download },
   { title: 'Support', url: '/support/tickets', icon: LifeBuoy },
   { title: 'Notifications', url: '/patient/notifications', icon: Bell },

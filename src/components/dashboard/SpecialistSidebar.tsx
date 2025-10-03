@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Calendar, FileText, CreditCard, MessageSquare, Bell, Settings, User, Activity, Clock, BarChart3, Stethoscope, Users, Building2, ListChecks, UsersRound, LifeBuoy, Shield, CalendarSync, Network, Reply, ClipboardList, UserX } from 'lucide-react';
+import { Home, Calendar, FileText, CreditCard, MessageSquare, Bell, Settings, User, Activity, Clock, BarChart3, Stethoscope, Users, Building2, ListChecks, UsersRound, LifeBuoy, Shield, CalendarSync, Network, Reply, ClipboardList, UserX, Focus, Inbox } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +27,8 @@ const specialistMenuItems = [
   { title: 'Review Responses', url: '/review-responses', icon: Reply },
   { title: 'Procedure Tracking', url: '/procedure-tracking', icon: ClipboardList },
   { title: 'Professional Network', url: '/professional-network', icon: Network },
+  { title: 'Clinical Focus', url: '/clinical-focus', icon: Focus },
+  { title: 'Work Queue', url: '/work-queue', icon: Inbox },
   { title: 'Performance Metrics', url: '/specialist/performance', icon: BarChart3 },
   { title: 'Specialist Forums', url: '/forums', icon: MessageSquare },
   { title: 'Messages', url: '/specialist/messages', icon: MessageSquare },

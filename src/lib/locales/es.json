@@ -70,5 +70,29 @@
     "transactions": "Transacciones",
     "analytics": "Análisis de IA",
     "insights": "Perspectivas Financieras"
+  },
+  "clinicalFocus": {
+    "title": "Modo de Enfoque Clínico",
+    "description": "Optimice su flujo de trabajo clínico",
+    "enableMode": "Activar Modo de Enfoque",
+    "activeSession": "Sesión Activa",
+    "panelVisibility": "Visibilidad del Panel",
+    "vitals": "Signos Vitales",
+    "medications": "Medicamentos Activos",
+    "allergies": "Alergias",
+    "labs": "Laboratorios Recientes",
+    "problemList": "Lista de Problemas",
+    "billing": "Información de Facturación"
+  },
+  "workQueue": {
+    "title": "Cola de Trabajo",
+    "description": "Gestione su carga de trabajo clínica",
+    "quietHours": "Horas de Silencio Activas",
+    "metrics": "Métricas de Rendimiento",
+    "afterHours": "Fuera de Horario",
+    "inboxTime": "Tiempo en Bandeja",
+    "itemsClosed": "Elementos Cerrados",
+    "claimItem": "Reclamar",
+    "completeItem": "Completar"
   }
 }

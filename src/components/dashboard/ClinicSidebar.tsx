@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Calendar, Users, Settings, BarChart3, CreditCard, Building2, FileText, ListChecks, UsersRound, Palette, UsersIcon, Package, DollarSign, FileCheck, TrendingUp, Shield } from 'lucide-react';
+import { Home, Calendar, Users, Settings, BarChart3, CreditCard, Building2, FileText, ListChecks, UsersRound, Palette, UsersIcon, Package, DollarSign, FileCheck, TrendingUp, Shield, Focus, Inbox } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +27,8 @@ const clinicMenuItems = [
   { title: 'Templates', url: '/clinic/templates', icon: FileCheck },
   { title: 'Capacity Analytics', url: '/clinic/capacity-analytics', icon: TrendingUp },
   { title: 'Compliance Rules', url: '/clinic/compliance-rules', icon: Shield },
+  { title: 'Clinical Focus Config', url: '/clinical-focus', icon: Focus },
+  { title: 'Work Queue', url: '/work-queue', icon: Inbox },
   { title: 'Profile', url: '/clinic/profile/edit', icon: Building2 },
   { title: 'Settings', url: '/clinic/settings', icon: Settings },
 ];

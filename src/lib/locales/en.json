@@ -70,5 +70,29 @@
     "transactions": "Transactions",
     "analytics": "AI Analytics",
     "insights": "Financial Insights"
+  },
+  "clinicalFocus": {
+    "title": "Clinical Focus Mode",
+    "description": "Optimize your clinical workflow",
+    "enableMode": "Enable Focus Mode",
+    "activeSession": "Active Session",
+    "panelVisibility": "Panel Visibility",
+    "vitals": "Vital Signs",
+    "medications": "Active Medications",
+    "allergies": "Allergies",
+    "labs": "Recent Labs",
+    "problemList": "Problem List",
+    "billing": "Billing Info"
+  },
+  "workQueue": {
+    "title": "Work Queue",
+    "description": "Manage your clinical workload",
+    "quietHours": "Quiet Hours Active",
+    "metrics": "Performance Metrics",
+    "afterHours": "After Hours",
+    "inboxTime": "Inbox Time",
+    "itemsClosed": "Items Closed",
+    "claimItem": "Claim",
+    "completeItem": "Complete"
   }
 }
