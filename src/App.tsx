@@ -101,6 +101,8 @@ import ReviewResponse from "./pages/ReviewResponse";
 import VisitConfirmation from "./pages/VisitConfirmation";
 import SupportTickets from "./pages/SupportTickets";
 import ProcedureCatalog from "./pages/ProcedureCatalog";
+import SupportAnalyticsDashboard from "./pages/SupportAnalyticsDashboard";
+import NotificationPreferences from "./pages/NotificationPreferences";
 
 const queryClient = new QueryClient();
 
