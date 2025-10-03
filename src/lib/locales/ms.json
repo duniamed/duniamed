@@ -1,0 +1,135 @@
+{
+  "common": {
+    "welcome": "Selamat datang",
+    "login": "Log masuk",
+    "logout": "Log keluar",
+    "signup": "Daftar",
+    "submit": "Hantar",
+    "cancel": "Batal",
+    "save": "Simpan",
+    "delete": "Padam",
+    "edit": "Edit",
+    "search": "Cari",
+    "loading": "Memuatkan...",
+    "error": "Ralat",
+    "success": "Berjaya",
+    "back": "Kembali",
+    "next": "Seterusnya",
+    "previous": "Sebelumnya",
+    "confirm": "Sahkan",
+    "close": "Tutup"
+  },
+  "auth": {
+    "email": "E-mel",
+    "password": "Kata laluan",
+    "forgotPassword": "Lupa kata laluan?",
+    "noAccount": "Tiada akaun?",
+    "hasAccount": "Sudah mempunyai akaun?",
+    "signInWithGoogle": "Log masuk dengan Google",
+    "verifyEmail": "Sila sahkan e-mel anda"
+  },
+  "dashboard": {
+    "title": "Papan Pemuka",
+    "appointments": "Temujanji",
+    "messages": "Mesej",
+    "profile": "Profil",
+    "settings": "Tetapan"
+  },
+  "appointments": {
+    "title": "Temujanji",
+    "book": "Tempah Temujanji",
+    "upcoming": "Akan Datang",
+    "past": "Lepas",
+    "cancelled": "Dibatalkan",
+    "status": "Status",
+    "date": "Tarikh",
+    "time": "Masa",
+    "specialist": "Pakar",
+    "patient": "Pesakit",
+    "reason": "Sebab",
+    "notes": "Nota"
+  },
+  "specialists": {
+    "title": "Pakar",
+    "search": "Cari Pakar",
+    "specialty": "Kepakaran",
+    "languages": "Bahasa",
+    "rating": "Penilaian",
+    "availability": "Ketersediaan",
+    "bio": "Biografi",
+    "experience": "Pengalaman",
+    "credentials": "Kelayakan"
+  },
+  "messages": {
+    "title": "Mesej",
+    "compose": "Tulis Mesej",
+    "inbox": "Peti Masuk",
+    "sent": "Dihantar",
+    "archived": "Diarkibkan",
+    "subject": "Subjek",
+    "from": "Dari",
+    "to": "Kepada",
+    "date": "Tarikh",
+    "reply": "Balas",
+    "forward": "Majukan"
+  },
+  "profile": {
+    "title": "Profil",
+    "personalInfo": "Maklumat Peribadi",
+    "firstName": "Nama Pertama",
+    "lastName": "Nama Akhir",
+    "phone": "Telefon",
+    "address": "Alamat",
+    "dateOfBirth": "Tarikh Lahir",
+    "gender": "Jantina",
+    "insuranceInfo": "Maklumat Insurans",
+    "medicalHistory": "Sejarah Perubatan"
+  },
+  "payments": {
+    "title": "Pembayaran",
+    "method": "Kaedah Pembayaran",
+    "amount": "Jumlah",
+    "status": "Status",
+    "invoice": "Invois",
+    "receipt": "Resit",
+    "payNow": "Bayar Sekarang"
+  },
+  "insurance": {
+    "title": "Insurans",
+    "provider": "Pembekal",
+    "policyNumber": "Nombor Polisi",
+    "groupNumber": "Nombor Kumpulan",
+    "verify": "Sahkan Insurans",
+    "verified": "Disahkan",
+    "pending": "Menunggu"
+  },
+  "medical": {
+    "records": "Rekod Perubatan",
+    "prescriptions": "Preskripsi",
+    "labResults": "Keputusan Makmal",
+    "imaging": "Pengimejan",
+    "allergies": "Alahan",
+    "medications": "Ubat-ubatan",
+    "conditions": "Keadaan",
+    "immunizations": "Imunisasi"
+  },
+  "notifications": {
+    "title": "Pemberitahuan",
+    "appointmentReminder": "Peringatan Temujanji",
+    "newMessage": "Mesej Baharu",
+    "prescriptionReady": "Preskripsi Sedia",
+    "insuranceUpdate": "Kemas Kini Insurans",
+    "markAsRead": "Tandakan Dibaca",
+    "clearAll": "Padam Semua"
+  },
+  "telehealth": {
+    "title": "Kesihatan Tele",
+    "startVideo": "Mula Video",
+    "joinCall": "Sertai Panggilan",
+    "waitingRoom": "Bilik Menunggu",
+    "technicalCheck": "Semak Teknikal",
+    "camera": "Kamera",
+    "microphone": "Mikrofon",
+    "settings": "Tetapan Video"
+  }
+}
