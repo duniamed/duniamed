@@ -29,7 +29,9 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Base query
+    console.log('🔍 Starting constraint search with params:', searchParams);
+
+    // Attempt 1: Exact match with all constraints
     let query = supabase
       .from("specialists")
       .select(`
@@ -50,92 +52,118 @@ serve(async (req) => {
       .eq("verification_status", "verified")
       .eq("is_accepting_patients", true);
 
+    if (searchParams.min_rating) {
+      query = query.gte("average_rating", searchParams.min_rating);
+    }
+
+    if (searchParams.languages && searchParams.languages.length > 0) {
+      query = query.overlaps("languages", searchParams.languages);
+    }
+
     const { data: specialists, error } = await query;
 
     if (error) throw error;
 
-    if (!specialists || specialists.length === 0) {
+    if (specialists && specialists.length > 0) {
+      console.log(`✅ Found ${specialists.length} exact matches`);
       return new Response(
         JSON.stringify({
           success: true,
-          specialists: [],
-          relaxation_suggestions: [
-            "Try expanding search radius to 50 miles",
-            "Consider telehealth consultations",
-            "Remove insurance filter",
-          ],
+          specialists,
+          constraint_level: 'exact',
+          relaxations_applied: [],
+          total_count: specialists.length,
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Check calendar sync status
-    const specialistIds = specialists.map((s) => s.id);
-    const { data: calendarProviders } = await supabase
-      .from("calendar_providers")
-      .select("user_id")
-      .in("user_id", specialists.map((s) => s.user_id))
-      .eq("sync_enabled", true);
+    console.log('⚠️ No exact matches. Attempting constraint relaxation...');
 
-    const syncEnabledUserIds = new Set(
-      calendarProviders?.map((cp) => cp.user_id) || []
-    );
+    // Attempt 2: Relax rating constraint
+    let relaxedQuery = supabase
+      .from("specialists")
+      .select(`
+        *,
+        profiles!specialists_user_id_fkey(first_name, last_name, avatar_url),
+        clinic_staff!inner(
+          clinic_id,
+          clinics!inner(name, latitude, longitude, insurance_accepted, languages_supported)
+        )
+      `)
+      .contains("specialty", [searchParams.specialty])
+      .eq("verification_status", "verified")
+      .eq("is_accepting_patients", true);
 
-    // Score specialists
-    const scoredSpecialists = specialists
-      .map((specialist: any) => {
-        let score = 0;
+    if (searchParams.min_rating && searchParams.min_rating > 3.0) {
+      relaxedQuery = relaxedQuery.gte("average_rating", searchParams.min_rating - 0.5);
+    }
 
-        // Availability score (40%)
-        const availabilitySlots = specialist.availability_schedules?.length || 0;
-        score += (availabilitySlots / 10) * 40;
+    const { data: relaxedMatches } = await relaxedQuery;
 
-        // Distance score (30%)
-        let distance = 0;
-        if (searchParams.zip_code && specialist.clinic_staff?.[0]?.clinics) {
-          const clinic = specialist.clinic_staff[0].clinics;
-          if (clinic.latitude && clinic.longitude) {
-            distance = Math.random() * (searchParams.max_distance_miles || 25);
-            const distanceScore = Math.max(0, 30 - (distance / (searchParams.max_distance_miles || 25)) * 30);
-            score += distanceScore;
-          }
-        } else {
-          score += 30;
-        }
+    if (relaxedMatches && relaxedMatches.length > 0) {
+      console.log(`✅ Found ${relaxedMatches.length} matches with relaxed rating`);
+      return new Response(
+        JSON.stringify({
+          success: true,
+          specialists: relaxedMatches,
+          constraint_level: 'relaxed_rating',
+          relaxations_applied: [
+            { type: 'rating', from: searchParams.min_rating, to: (searchParams.min_rating || 4) - 0.5 }
+          ],
+          message: 'Relaxed minimum rating requirement to show more options',
+          total_count: relaxedMatches.length,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
-        // Rating score (30%)
-        const rating = specialist.average_rating || 0;
-        score += (rating / 5) * 30;
+    // Attempt 3: Show specialists without language/insurance filters
+    const { data: maxRelaxed } = await supabase
+      .from("specialists")
+      .select(`
+        *,
+        profiles!specialists_user_id_fkey(first_name, last_name, avatar_url),
+        clinic_staff(
+          clinic_id,
+          clinics(name, latitude, longitude)
+        )
+      `)
+      .contains("specialty", [searchParams.specialty])
+      .eq("verification_status", "verified")
+      .eq("is_accepting_patients", true)
+      .limit(10);
 
-        // Calendar sync detection
-        const hasCalendarSync = syncEnabledUserIds.has(specialist.user_id);
-        const conflictBuffer = hasCalendarSync ? 15 : 0;
+    if (maxRelaxed && maxRelaxed.length > 0) {
+      console.log(`✅ Found ${maxRelaxed.length} matches with all constraints relaxed`);
+      return new Response(
+        JSON.stringify({
+          success: true,
+          specialists: maxRelaxed,
+          constraint_level: 'maximum_relaxation',
+          relaxations_applied: [
+            { type: 'rating', removed: true },
+            { type: 'languages', removed: true },
+            { type: 'insurance', removed: true }
+          ],
+          message: 'Showing all verified specialists in this specialty. Some may not match your original criteria.',
+          total_count: maxRelaxed.length,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
-        return {
-          ...specialist,
-          match_score: Math.round(score),
-          distance_miles: Math.round(distance),
-          has_calendar_sync: hasCalendarSync,
-          conflict_buffer_minutes: conflictBuffer,
-        };
-      })
-      .filter((s: any) => {
-        if (searchParams.min_rating && s.average_rating < searchParams.min_rating) {
-          return false;
-        }
-        if (searchParams.max_distance_miles && s.distance_miles > searchParams.max_distance_miles) {
-          return false;
-        }
-        return true;
-      })
-      .sort((a: any, b: any) => b.match_score - a.match_score);
-
+    // No matches - suggest waitlist
+    console.log('❌ No matches found even with maximum relaxation');
     return new Response(
       JSON.stringify({
-        success: true,
-        specialists: scoredSpecialists,
-        total_count: scoredSpecialists.length,
-        search_criteria: searchParams,
+        success: false,
+        specialists: [],
+        constraint_level: 'none',
+        relaxations_applied: [],
+        waitlist_suggested: true,
+        message: 'No specialists found matching your criteria. Would you like to join the waitlist for notifications when a specialist becomes available?',
+        total_count: 0,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );

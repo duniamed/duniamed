@@ -1,0 +1,110 @@
+{
+  "common": {
+    "welcome": "مرحباً",
+    "loading": "جارٍ التحميل...",
+    "error": "خطأ",
+    "success": "نجح",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "search": "بحث",
+    "filter": "تصفية",
+    "back": "رجوع",
+    "next": "التالي",
+    "submit": "إرسال",
+    "logout": "تسجيل الخروج"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "register": "التسجيل",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "createAccount": "إنشاء حساب",
+    "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
+    "signInWithGoogle": "تسجيل الدخول عبر جوجل"
+  },
+  "appointments": {
+    "title": "المواعيد",
+    "book": "حجز موعد",
+    "upcoming": "القادمة",
+    "past": "السابقة",
+    "canceled": "الملغاة",
+    "selectDate": "اختر التاريخ",
+    "selectTime": "اختر الوقت",
+    "selectSpecialist": "اختر الأخصائي",
+    "confirmBooking": "تأكيد الحجز",
+    "bookingSuccess": "تم حجز الموعد بنجاح!",
+    "cancelAppointment": "إلغاء الموعد",
+    "reschedule": "إعادة الجدولة",
+    "videoConsultation": "استشارة فيديو",
+    "inPerson": "حضوري"
+  },
+  "specialists": {
+    "title": "الأخصائيون",
+    "search": "البحث عن أخصائي",
+    "specialty": "التخصص",
+    "location": "الموقع",
+    "availability": "التوفر",
+    "rating": "التقييم",
+    "experience": "الخبرة",
+    "languages": "اللغات",
+    "insurance": "التأمين المقبول",
+    "viewProfile": "عرض الملف الشخصي",
+    "bookNow": "احجز الآن"
+  },
+  "dashboard": {
+    "home": "الرئيسية",
+    "myAppointments": "مواعيدي",
+    "medicalRecords": "السجلات الطبية",
+    "prescriptions": "الوصفات الطبية",
+    "labResults": "نتائج المختبر",
+    "messages": "الرسائل",
+    "settings": "الإعدادات",
+    "profile": "الملف الشخصي"
+  },
+  "payments": {
+    "title": "المدفوعات",
+    "method": "طريقة الدفع",
+    "creditCard": "بطاقة ائتمان",
+    "amount": "المبلغ",
+    "payNow": "ادفع الآن",
+    "paymentSuccess": "تمت عملية الدفع بنجاح!",
+    "paymentFailed": "فشل الدفع",
+    "total": "المجموع"
+  },
+  "insurance": {
+    "title": "التأمين",
+    "verifying": "جارٍ التحقق من التأمين...",
+    "verified": "تم التحقق من التأمين",
+    "notVerified": "لم يتم التحقق من التأمين",
+    "cardNumber": "رقم البطاقة",
+    "provider": "مقدم الخدمة",
+    "expirationDate": "تاريخ انتهاء الصلاحية",
+    "copay": "المشاركة في الدفع",
+    "coverage": "التغطية"
+  },
+  "clinical": {
+    "chiefComplaint": "الشكوى الرئيسية",
+    "symptoms": "الأعراض",
+    "diagnosis": "التشخيص",
+    "treatment": "العلاج",
+    "prescription": "الوصفة الطبية",
+    "labOrder": "طلب فحص مخبري",
+    "referral": "التحويل",
+    "soapNote": "ملاحظة SOAP",
+    "vitals": "العلامات الحيوية",
+    "allergies": "الحساسية",
+    "medications": "الأدوية"
+  },
+  "compliance": {
+    "dataProtection": "حماية البيانات",
+    "consent": "الموافقة",
+    "privacy": "الخصوصية",
+    "termsOfService": "شروط الخدمة",
+    "privacyPolicy": "سياسة الخصوصية",
+    "islamicCompliance": "الامتثال للشريعة الإسلامية",
+    "halal": "حلال"
+  }
+}

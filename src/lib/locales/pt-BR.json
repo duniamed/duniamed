@@ -1,0 +1,112 @@
+{
+  "common": {
+    "welcome": "Bem-vindo",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "search": "Pesquisar",
+    "filter": "Filtrar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "submit": "Enviar",
+    "logout": "Sair"
+  },
+  "auth": {
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "email": "E-mail",
+    "password": "Senha",
+    "forgotPassword": "Esqueceu a senha?",
+    "createAccount": "Criar conta",
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "signInWithGoogle": "Entrar com Google"
+  },
+  "appointments": {
+    "title": "Consultas",
+    "book": "Agendar Consulta",
+    "upcoming": "Próximas",
+    "past": "Anteriores",
+    "canceled": "Canceladas",
+    "selectDate": "Selecionar Data",
+    "selectTime": "Selecionar Horário",
+    "selectSpecialist": "Selecionar Especialista",
+    "confirmBooking": "Confirmar Agendamento",
+    "bookingSuccess": "Consulta agendada com sucesso!",
+    "cancelAppointment": "Cancelar Consulta",
+    "reschedule": "Reagendar",
+    "videoConsultation": "Videoconsulta",
+    "inPerson": "Presencial"
+  },
+  "specialists": {
+    "title": "Especialistas",
+    "search": "Buscar Especialistas",
+    "specialty": "Especialidade",
+    "location": "Localização",
+    "availability": "Disponibilidade",
+    "rating": "Avaliação",
+    "experience": "Experiência",
+    "languages": "Idiomas",
+    "insurance": "Convênios Aceitos",
+    "viewProfile": "Ver Perfil",
+    "bookNow": "Agendar Agora"
+  },
+  "dashboard": {
+    "home": "Início",
+    "myAppointments": "Minhas Consultas",
+    "medicalRecords": "Prontuários",
+    "prescriptions": "Prescrições",
+    "labResults": "Exames",
+    "messages": "Mensagens",
+    "settings": "Configurações",
+    "profile": "Perfil"
+  },
+  "payments": {
+    "title": "Pagamentos",
+    "method": "Método de Pagamento",
+    "creditCard": "Cartão de Crédito",
+    "pix": "PIX",
+    "amount": "Valor",
+    "payNow": "Pagar Agora",
+    "paymentSuccess": "Pagamento realizado com sucesso!",
+    "paymentFailed": "Falha no pagamento",
+    "installments": "Parcelamento",
+    "total": "Total"
+  },
+  "insurance": {
+    "title": "Convênio",
+    "verifying": "Verificando convênio...",
+    "verified": "Convênio verificado",
+    "notVerified": "Convênio não verificado",
+    "cardNumber": "Número da Carteirinha",
+    "provider": "Operadora",
+    "expirationDate": "Data de Validade",
+    "copay": "Co-participação",
+    "coverage": "Cobertura"
+  },
+  "clinical": {
+    "chiefComplaint": "Queixa Principal",
+    "symptoms": "Sintomas",
+    "diagnosis": "Diagnóstico",
+    "treatment": "Tratamento",
+    "prescription": "Prescrição",
+    "labOrder": "Pedido de Exames",
+    "referral": "Encaminhamento",
+    "soapNote": "Nota SOAP",
+    "vitals": "Sinais Vitais",
+    "allergies": "Alergias",
+    "medications": "Medicações"
+  },
+  "compliance": {
+    "hipaa": "Conformidade HIPAA",
+    "lgpd": "Conformidade LGPD",
+    "dataProtection": "Proteção de Dados",
+    "consent": "Consentimento",
+    "privacy": "Privacidade",
+    "termsOfService": "Termos de Serviço",
+    "privacyPolicy": "Política de Privacidade"
+  }
+}
