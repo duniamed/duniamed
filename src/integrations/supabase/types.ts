@@ -1923,6 +1923,39 @@ export type Database = {
           },
         ]
       }
+      cost_estimate_locks: {
+        Row: {
+          created_at: string | null
+          currency: string
+          estimate_id: string
+          expires_at: string
+          id: string
+          is_active: boolean | null
+          locked_price: number
+          patient_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          currency?: string
+          estimate_id: string
+          expires_at: string
+          id?: string
+          is_active?: boolean | null
+          locked_price: number
+          patient_id: string
+        }
+        Update: {
+          created_at?: string | null
+          currency?: string
+          estimate_id?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean | null
+          locked_price?: number
+          patient_id?: string
+        }
+        Relationships: []
+      }
       cost_estimates: {
         Row: {
           appointment_id: string | null
@@ -3229,6 +3262,42 @@ export type Database = {
           },
         ]
       }
+      group_booking_sessions: {
+        Row: {
+          confirmed_slots: Json | null
+          created_at: string | null
+          duration_minutes: number
+          id: string
+          organizer_id: string
+          preferred_date: string
+          specialist_ids: string[]
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          confirmed_slots?: Json | null
+          created_at?: string | null
+          duration_minutes?: number
+          id?: string
+          organizer_id: string
+          preferred_date: string
+          specialist_ids: string[]
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          confirmed_slots?: Json | null
+          created_at?: string | null
+          duration_minutes?: number
+          id?: string
+          organizer_id?: string
+          preferred_date?: string
+          specialist_ids?: string[]
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       insurance_claims: {
         Row: {
           adjudication_date: string | null
@@ -4040,6 +4109,42 @@ export type Database = {
           retry_count?: number | null
           sent_at?: string | null
           status?: string | null
+        }
+        Relationships: []
+      }
+      message_delivery_status: {
+        Row: {
+          created_at: string | null
+          error_code: string | null
+          error_message: string | null
+          id: string
+          message_id: string
+          profile_name: string | null
+          status: string
+          updated_at: string | null
+          wa_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          message_id: string
+          profile_name?: string | null
+          status: string
+          updated_at?: string | null
+          wa_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          message_id?: string
+          profile_name?: string | null
+          status?: string
+          updated_at?: string | null
+          wa_id?: string | null
         }
         Relationships: []
       }
