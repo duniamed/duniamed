@@ -299,9 +299,15 @@ const App = () => (
             <Route path="/review-flag-history" element={<ReviewFlagHistory />} />
             <Route path="/support-tickets" element={<SupportTicketsDashboard />} />
             <Route path="/integration-connectors" element={<IntegrationConnectors />} />
-            <Route path="/role-management" element={<RoleManagement />} />
-            <Route path="/engagement-campaigns" element={<EngagementCampaigns />} />
-            <Route path="/payment-processing" element={<PaymentProcessing />} />
+          <Route path="/role-management" element={<RoleManagement />} />
+          <Route path="/engagement-campaigns" element={<EngagementCampaigns />} />
+          <Route path="/payment-processing" element={<PaymentProcessing />} />
+          <Route path="/locale-settings" element={<LocaleSettings />} />
+          <Route path="/review-responses" element={<ReviewResponses />} />
+          <Route path="/secure-delivery" element={<SecureDelivery />} />
+          <Route path="/team-care" element={<TeamCare />} />
+          <Route path="/provider-absences" element={<ProviderAbsences />} />
+          <Route path="/data-exports" element={<DataExports />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
