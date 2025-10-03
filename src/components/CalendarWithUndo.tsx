@@ -51,7 +51,7 @@ export function CalendarWithUndo({ specialistId }: { specialistId: string }) {
   const fetchCalendarData = async () => {
     try {
       // Fetch blocked slots
-      const { data: slots } = await supabase
+      const { data: slots } = await (supabase as any)
         .from('blocked_time_slots')
         .select('*')
         .eq('specialist_id', specialistId)
@@ -59,7 +59,7 @@ export function CalendarWithUndo({ specialistId }: { specialistId: string }) {
         .order('start_time', { ascending: true });
 
       // Fetch recent changes
-      const { data: changes } = await supabase
+      const { data: changes } = await (supabase as any)
         .from('availability_changes_log')
         .select('*')
         .eq('specialist_id', specialistId)
@@ -68,8 +68,8 @@ export function CalendarWithUndo({ specialistId }: { specialistId: string }) {
         .order('created_at', { ascending: false })
         .limit(5);
 
-      setBlockedSlots(slots || []);
-      setRecentChanges(changes || []);
+      setBlockedSlots((slots || []) as BlockedSlot[]);
+      setRecentChanges((changes || []) as AvailabilityChange[]);
     } catch (error) {
       console.error('Error fetching calendar data:', error);
     }
@@ -84,7 +84,7 @@ export function CalendarWithUndo({ specialistId }: { specialistId: string }) {
       const endTime = new Date(`${format(selectedDate, 'yyyy-MM-dd')}T${blockEnd}`);
 
       // Insert blocked slot
-      const { data: newSlot, error: blockError } = await supabase
+      const { data: newSlot, error: blockError } = await (supabase as any)
         .from('blocked_time_slots')
         .insert({
           specialist_id: specialistId,
@@ -99,7 +99,7 @@ export function CalendarWithUndo({ specialistId }: { specialistId: string }) {
       if (blockError) throw blockError;
 
       // Log the change for undo
-      await supabase
+      await (supabase as any)
         .from('availability_changes_log')
         .insert({
           specialist_id: specialistId,
@@ -139,7 +139,7 @@ export function CalendarWithUndo({ specialistId }: { specialistId: string }) {
       const slot = blockedSlots.find(s => s.id === slotId);
 
       // Delete blocked slot
-      const { error: deleteError } = await supabase
+      const { error: deleteError } = await (supabase as any)
         .from('blocked_time_slots')
         .delete()
         .eq('id', slotId);
@@ -147,7 +147,7 @@ export function CalendarWithUndo({ specialistId }: { specialistId: string }) {
       if (deleteError) throw deleteError;
 
       // Log the change for undo
-      await supabase
+      await (supabase as any)
         .from('availability_changes_log')
         .insert({
           specialist_id: specialistId,
@@ -179,19 +179,19 @@ export function CalendarWithUndo({ specialistId }: { specialistId: string }) {
 
       if (change.change_type === 'block_time') {
         // Undo block: remove the blocked slot
-        await supabase
+        await (supabase as any)
           .from('blocked_time_slots')
           .delete()
           .eq('id', change.new_value.id);
       } else if (change.change_type === 'unblock_time') {
         // Undo unblock: restore the blocked slot
-        await supabase
+        await (supabase as any)
           .from('blocked_time_slots')
           .insert(change.old_value);
       }
 
       // Mark change as undone
-      await supabase
+      await (supabase as any)
         .from('availability_changes_log')
         .update({ undone_at: new Date().toISOString() })
         .eq('id', changeId);

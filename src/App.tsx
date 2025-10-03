@@ -105,6 +105,9 @@ import SupportTickets from "./pages/SupportTickets";
 import ProcedureCatalog from "./pages/ProcedureCatalog";
 import SupportAnalyticsDashboard from "./pages/SupportAnalyticsDashboard";
 import NotificationPreferences from "./pages/NotificationPreferences";
+import PrivacyCenter from './pages/PrivacyCenter';
+import SubscriptionPlans from './pages/SubscriptionPlans';
+import FeatureRoadmap from './pages/FeatureRoadmap';
 
 const queryClient = new QueryClient();
 
@@ -240,6 +243,11 @@ const App = () => (
             <Route path="/voice" element={<VoiceAssist />} />
             <Route path="/learn" element={<TutorialSystem />} />
             <Route path="/chat" element={<LiveChat />} />
+            
+            {/* C15-C19 FEATURES */}
+            <Route path="/privacy-center" element={<PrivacyCenter />} />
+            <Route path="/subscription-plans" element={<SubscriptionPlans />} />
+            <Route path="/feature-roadmap" element={<FeatureRoadmap />} />
             
             {/* SHARED FEATURES */}
             <Route path="/instant-consultation" element={<InstantConsultation />} />

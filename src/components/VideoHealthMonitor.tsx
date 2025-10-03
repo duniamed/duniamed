@@ -66,13 +66,13 @@ export function VideoHealthMonitor({
 
   const fetchActiveIncidents = async () => {
     try {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from('telehealth_incidents')
         .select('*')
         .eq('status', 'open')
         .order('created_at', { ascending: false });
 
-      setIncidents(data || []);
+      setIncidents((data || []) as TelehealthIncident[]);
     } catch (error) {
       console.error('Error fetching incidents:', error);
     }
@@ -96,7 +96,7 @@ export function VideoHealthMonitor({
       // Log to database
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await supabase
+        await (supabase as any)
           .from('video_session_health')
           .insert({
             appointment_id: appointmentId,
@@ -132,7 +132,7 @@ export function VideoHealthMonitor({
     });
 
     // Log fallback trigger
-    await supabase
+    await (supabase as any)
       .from('video_session_health')
       .update({
         fallback_triggered: true,

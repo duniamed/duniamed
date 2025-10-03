@@ -53,13 +53,13 @@ export function FeatureEntitlementGuard({ featureKey, children, fallback }: Prop
       }
 
       // Check feature flag
-      const { data: flagData } = await supabase
+      const { data: flagData } = await (supabase as any)
         .from('feature_flags')
         .select('*')
         .eq('feature_key', featureKey)
         .single();
 
-      setFeature(flagData);
+      setFeature(flagData as FeatureFlag);
 
       // Essential features are always available
       if (flagData?.is_essential) {
@@ -69,7 +69,7 @@ export function FeatureEntitlementGuard({ featureKey, children, fallback }: Prop
       }
 
       // Check user entitlement
-      const { data: entitlementData } = await supabase
+      const { data: entitlementData } = await (supabase as any)
         .from('user_entitlements')
         .select('*')
         .eq('user_id', user.id)
@@ -85,7 +85,7 @@ export function FeatureEntitlementGuard({ featureKey, children, fallback }: Prop
           entitlementData.usage_count >= entitlementData.usage_limit;
 
         setHasAccess(!expired && !limitReached);
-        setEntitlement(entitlementData);
+        setEntitlement(entitlementData as FeatureEntitlement);
       } else {
         setHasAccess(false);
       }
@@ -105,7 +105,7 @@ export function FeatureEntitlementGuard({ featureKey, children, fallback }: Prop
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 14); // 14-day trial
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('user_entitlements')
         .insert({
           user_id: user.id,

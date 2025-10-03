@@ -56,7 +56,7 @@ export function PrivacyDashboard() {
       if (!user) return;
 
       // Fetch recent access logs
-      const { data: logs } = await supabase
+      const { data: logs } = await (supabase as any)
         .from('data_access_logs')
         .select('*')
         .eq('user_id', user.id)
@@ -64,7 +64,7 @@ export function PrivacyDashboard() {
         .limit(20);
 
       // Fetch latest data use summary
-      const { data: summary } = await supabase
+      const { data: summary } = await (supabase as any)
         .from('data_use_summaries')
         .select('*')
         .eq('user_id', user.id)
@@ -72,8 +72,8 @@ export function PrivacyDashboard() {
         .limit(1)
         .single();
 
-      setAccessLogs(logs || []);
-      setDataSummary(summary);
+      setAccessLogs((logs || []) as DataAccessLog[]);
+      setDataSummary(summary as DataUseSummary);
     } catch (error) {
       console.error('Error fetching privacy data:', error);
     } finally {
@@ -86,7 +86,7 @@ export function PrivacyDashboard() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('data_deletion_requests')
         .insert({
           user_id: user.id,

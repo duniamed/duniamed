@@ -34,13 +34,13 @@ function FeatureRoadmapContent() {
       if (!user) return;
 
       // Aggregate votes by feature
-      const { data: votes } = await supabase
+      const { data: votes } = await (supabase as any)
         .from('roadmap_votes')
         .select('*');
 
       const voteMap = new Map<string, { count: number; userVoted: boolean }>();
       
-      votes?.forEach(vote => {
+      votes?.forEach((vote: any) => {
         const current = voteMap.get(vote.feature_request) || { count: 0, userVoted: false };
         voteMap.set(vote.feature_request, {
           count: current.count + vote.vote_weight,
@@ -67,7 +67,7 @@ function FeatureRoadmapContent() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('roadmap_votes')
         .insert({
           user_id: user.id,

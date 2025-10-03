@@ -57,14 +57,14 @@ export function SubscriptionManager() {
       if (!user) return;
 
       // Fetch all active tiers
-      const { data: tiersData } = await supabase
+      const { data: tiersData } = await (supabase as any)
         .from('subscription_tiers')
         .select('*')
         .eq('is_active', true)
         .order('monthly_price', { ascending: true });
 
       // Fetch user's current subscription
-      const { data: subData } = await supabase
+      const { data: subData } = await (supabase as any)
         .from('user_subscriptions')
         .select('*')
         .eq('user_id', user.id)
@@ -73,18 +73,18 @@ export function SubscriptionManager() {
 
       // Fetch price change notices
       if (subData) {
-        const { data: notices } = await supabase
+        const { data: notices } = await (supabase as any)
           .from('price_change_notices')
           .select('*')
-          .eq('affected_tier_id', subData.tier_id)
+          .eq('affected_tier_id', (subData as any).tier_id)
           .is('notice_sent_at', null)
           .order('effective_date', { ascending: true });
 
-        setPriceNotices(notices || []);
+        setPriceNotices((notices || []) as PriceChangeNotice[]);
       }
 
-      setTiers(tiersData || []);
-      setSubscription(subData);
+      setTiers((tiersData || []) as SubscriptionTier[]);
+      setSubscription(subData as UserSubscription);
     } catch (error) {
       console.error('Error fetching subscription data:', error);
     } finally {
@@ -101,7 +101,7 @@ export function SubscriptionManager() {
     try {
       if (!subscription) return;
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('user_subscriptions')
         .update({ status: 'paused' })
         .eq('id', subscription.id);
