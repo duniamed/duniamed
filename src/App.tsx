@@ -127,6 +127,10 @@ import CareTeams from './pages/CareTeams';
 import ClinicResourceManagement from './pages/ClinicResourceManagement';
 import RevenueSplitsDashboard from './pages/RevenueSplitsDashboard';
 import PerformanceMetrics from './pages/PerformanceMetrics';
+import AppointmentTemplates from './pages/AppointmentTemplates';
+import CapacityAnalytics from './pages/CapacityAnalytics';
+import ComplianceRules from './pages/ComplianceRules';
+import AdvancedSpecialistSearch from './pages/AdvancedSpecialistSearch';
 
 const queryClient = new QueryClient();
 
@@ -155,6 +159,7 @@ const App = () => (
             {/* SEARCH */}
             <Route path="/search" element={<Navigate to="/search/specialists" replace />} />
             <Route path="/search/specialists" element={<Search />} />
+            <Route path="/search/advanced" element={<AdvancedSpecialistSearch />} />
             <Route path="/search/clinics" element={<SearchClinics />} />
             <Route path="/specialists/:id" element={<SpecialistProfile />} />
             <Route path="/book/:id" element={<BookAppointment />} />
@@ -216,6 +221,9 @@ const App = () => (
             <Route path="/clinic/integrations" element={<ClinicIntegrations />} />
             <Route path="/clinic/resources" element={<ClinicResourceManagement />} />
             <Route path="/clinic/revenue-dashboard" element={<RevenueSplitsDashboard />} />
+            <Route path="/clinic/templates" element={<AppointmentTemplates />} />
+            <Route path="/clinic/capacity-analytics" element={<CapacityAnalytics />} />
+            <Route path="/clinic/compliance-rules" element={<ComplianceRules />} />
             <Route path="/clinic/:slug" element={<PublicClinicPage />} />
             
             {/* SPECIALIST FEATURES */}
