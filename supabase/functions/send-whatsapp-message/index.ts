@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,82 +12,99 @@ serve(async (req) => {
   }
 
   try {
-    const twilioAccountSid = Deno.env.get('TWILIO_ACCOUNT_SID');
-    const twilioAuthToken = Deno.env.get('TWILIO_AUTH_TOKEN');
-    const twilioWhatsAppNumber = Deno.env.get('TWILIO_PHONE_NUMBER'); // Format: whatsapp:+1234567890
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
 
-    if (!twilioAccountSid || !twilioAuthToken || !twilioWhatsAppNumber) {
+    const authHeader = req.headers.get('Authorization')!;
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user } } = await supabase.auth.getUser(token);
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { to, message, media_url, template } = await req.json();
+
+    const TWILIO_ACCOUNT_SID = Deno.env.get('TWILIO_ACCOUNT_SID');
+    const TWILIO_AUTH_TOKEN = Deno.env.get('TWILIO_AUTH_TOKEN');
+    const TWILIO_WHATSAPP_NUMBER = Deno.env.get('TWILIO_WHATSAPP_NUMBER') || 'whatsapp:+14155238886';
+
+    if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) {
       throw new Error('Twilio credentials not configured');
     }
 
-    const { to, message, media_url } = await req.json();
-
-    // Validate phone number format
-    if (!to || !to.startsWith('+')) {
-      throw new Error('Invalid phone number format. Must start with +');
-    }
-
-    console.log('Sending WhatsApp message:', { 
-      to, 
-      message_length: message?.length,
-      has_media: !!media_url 
-    });
-
-    // Build the request body
+    const toNumber = to.startsWith('whatsapp:') ? to : `whatsapp:${to}`;
+    
     const body = new URLSearchParams({
-      From: `whatsapp:${twilioWhatsAppNumber}`,
-      To: `whatsapp:${to}`,
-      Body: message || '',
+      From: TWILIO_WHATSAPP_NUMBER,
+      To: toNumber,
+      StatusCallback: `${Deno.env.get('SUPABASE_URL')}/functions/v1/whatsapp-webhook`,
     });
+
+    if (template) {
+      body.append('ContentSid', template.sid);
+      body.append('ContentVariables', JSON.stringify(template.variables));
+    } else {
+      body.append('Body', message);
+    }
 
     if (media_url) {
       body.append('MediaUrl', media_url);
     }
 
-    // Send via Twilio WhatsApp API
-    const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${twilioAccountSid}/Messages.json`;
-    const authString = btoa(`${twilioAccountSid}:${twilioAuthToken}`);
+    const response = await fetch(
+      `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Basic ' + btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body,
+      }
+    );
 
-    const twilioResponse = await fetch(twilioUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${authString}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: body.toString(),
-    });
-
-    if (!twilioResponse.ok) {
-      const errorText = await twilioResponse.text();
-      console.error('Twilio API error:', errorText);
-      throw new Error(`Twilio API error: ${twilioResponse.status} - ${errorText}`);
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Twilio error:', errorText);
+      throw new Error(`Twilio API error: ${response.status}`);
     }
 
-    const twilioData = await twilioResponse.json();
+    const twilioData = await response.json();
 
-    console.log('WhatsApp message sent successfully:', {
-      message_sid: twilioData.sid,
-      status: twilioData.status,
-      to: twilioData.to
-    });
+    // Log to database
+    const { error: dbError } = await supabase
+      .from('whatsapp_messages')
+      .insert({
+        user_id: user.id,
+        phone_number: to,
+        direction: 'outbound',
+        status: twilioData.status,
+        message_body: message,
+        media_urls: media_url ? [media_url] : null,
+        twilio_sid: twilioData.sid,
+      });
+
+    if (dbError) {
+      console.error('Database error:', dbError);
+    }
 
     return new Response(JSON.stringify({
       success: true,
       message_sid: twilioData.sid,
       status: twilioData.status,
-      date_sent: twilioData.date_sent,
-      to: twilioData.to,
-      from: twilioData.from
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
-    console.error('Error sending WhatsApp message:', error);
-    return new Response(JSON.stringify({ 
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to send WhatsApp message' 
-    }), {
+  } catch (error: any) {
+    console.error('WhatsApp send error:', error);
+    return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

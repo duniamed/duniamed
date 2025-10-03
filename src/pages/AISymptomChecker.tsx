@@ -82,8 +82,31 @@ export default function AISymptomChecker() {
     }
   };
 
-  const bookSpecialist = () => {
-    navigate(`/search/specialists?specialty=${assessment?.recommended_specialty}`);
+  const bookSpecialist = async () => {
+    // Connect triage to booking
+    try {
+      const { data: session } = await supabase
+        .from('symptom_checker_sessions')
+        .select('id')
+        .eq('user_id', user!.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (session) {
+        await supabase.functions.invoke('connect-triage-to-booking', {
+          body: {
+            triage_session_id: session.id,
+            specialty: assessment?.recommended_specialty,
+            urgency_level: assessment?.urgency_level,
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Failed to connect triage:', error);
+    }
+
+    navigate(`/search/specialists?specialty=${encodeURIComponent(assessment?.recommended_specialty)}&urgency=${assessment?.urgency_level}`);
   };
 
   return (

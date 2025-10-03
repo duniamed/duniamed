@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { FileText } from 'lucide-react';
+import { SOAPBillingCodes } from '@/components/SOAPBillingCodes';
 
 export default function CreateSOAPNote() {
   return <CreateSOAPNoteContent />;
@@ -28,6 +29,7 @@ function CreateSOAPNoteContent() {
     assessment: '',
     plan: '',
   });
+  const [savedNoteId, setSavedNoteId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAppointment();
@@ -78,25 +80,7 @@ function CreateSOAPNoteContent() {
 
       if (error) throw error;
 
-      // Extract billing codes using AI
-      try {
-        const { data: billingData } = await supabase.functions.invoke('extract-soap-billing-codes', {
-          body: {
-            soap_note_id: soapNote.id,
-            subjective: formData.subjective,
-            objective: formData.objective,
-            assessment: formData.assessment,
-            plan: formData.plan
-          }
-        });
-        
-        if (billingData) {
-          console.log('Billing codes extracted:', billingData);
-        }
-      } catch (billingError) {
-        console.error('Billing code extraction failed:', billingError);
-        // Don't fail the whole operation if billing extraction fails
-      }
+      setSavedNoteId(soapNote.id);
 
       toast({
         title: 'Success',
@@ -216,6 +200,12 @@ function CreateSOAPNoteContent() {
             </form>
           </CardContent>
         </Card>
+
+        {savedNoteId && (
+          <div className="mt-6">
+            <SOAPBillingCodes soapNoteId={savedNoteId} appointmentId={appointmentId!} />
+          </div>
+        )}
       </main>
     </div>
   );

@@ -13,174 +13,152 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
     const authHeader = req.headers.get('Authorization')!;
     const token = authHeader.replace('Bearer ', '');
     const { data: { user } } = await supabase.auth.getUser(token);
 
-    if (!user) throw new Error('Unauthorized');
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
-    const { action, owner_type, profile_data } = await req.json();
+    const { action, owner_id, owner_type, profile_data } = await req.json();
 
-    if (action === 'create' || action === 'update') {
-      // Get owner details
-      let ownerId, ownerData;
-      
-      if (owner_type === 'specialist') {
-        const { data: specialist } = await supabase
-          .from('specialists')
-          .select('*, profiles:user_id(first_name, last_name, email, phone)')
-          .eq('user_id', user.id)
-          .single();
+    // Get Google Business Profile integration
+    const { data: integration, error: integError } = await supabase
+      .from('clinic_integrations')
+      .select('*')
+      .eq('integration_type', 'google_business_profile')
+      .eq('is_active', true)
+      .single();
 
-        if (!specialist) throw new Error('Specialist not found');
-        ownerId = specialist.id;
-        ownerData = specialist;
-      } else if (owner_type === 'clinic') {
-        const { data: clinic } = await supabase
-          .from('clinics')
-          .select('*')
-          .eq('created_by', user.id)
-          .single();
+    if (integError || !integration) {
+      throw new Error('Google Business Profile not connected');
+    }
 
-        if (!clinic) throw new Error('Clinic not found');
-        ownerId = clinic.id;
-        ownerData = clinic;
-      }
+    const accessToken = integration.access_token;
+    const accountId = integration.profile_id;
 
-      // Check if profile exists
-      const { data: existingProfile } = await supabase
-        .from('google_business_profiles')
-        .select('*')
-        .eq(owner_type === 'specialist' ? 'specialist_id' : 'clinic_id', ownerId)
-        .single();
-
-      // Prepare Google My Business API data
-      const gmbData = {
-        name: owner_type === 'specialist' 
-          ? `Dr. ${ownerData.profiles?.first_name} ${ownerData.profiles?.last_name}`
-          : ownerData.name,
-        primaryCategory: owner_type === 'specialist' 
-          ? `gcid:physician_specialist` 
-          : `gcid:medical_clinic`,
-        phoneNumbers: {
-          primaryPhone: ownerData.phone || ownerData.profiles?.phone
-        },
-        websiteUrl: owner_type === 'clinic' ? ownerData.website : null,
-        ...profile_data
-      };
-
-      // In production, call Google My Business API here
-      // const gmbResponse = await fetch('https://mybusinessbusinessinformation.googleapis.com/v1/accounts/{accountId}/locations', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Authorization': `Bearer ${accessToken}`,
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: JSON.stringify(gmbData)
-      // });
-
-      // Simulate GMB API response
-      const mockGmbResponse = {
-        name: `accounts/123/locations/${Date.now()}`,
-        locationName: gmbData.name,
-        primaryCategory: gmbData.primaryCategory,
-        phoneNumbers: gmbData.phoneNumbers,
-        profile: {
-          description: profile_data.description || ''
+    if (action === 'sync_reviews') {
+      // Fetch reviews from Google Business Profile API
+      const reviewsResponse = await fetch(
+        `https://mybusiness.googleapis.com/v4/accounts/${accountId}/locations/${profile_data.location_id}/reviews`,
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
         }
-      };
+      );
 
-      // Upsert profile record
-      const profileRecord = {
-        owner_type,
-        specialist_id: owner_type === 'specialist' ? ownerId : null,
-        clinic_id: owner_type === 'clinic' ? ownerId : null,
-        google_account_id: 'accounts/123', // From OAuth
-        google_location_id: mockGmbResponse.name,
-        profile_status: 'created',
-        business_name: gmbData.name,
-        primary_category: gmbData.primaryCategory,
-        phone: gmbData.phoneNumbers.primaryPhone,
-        website_url: gmbData.websiteUrl,
-        sync_enabled: true,
-        last_sync_at: new Date().toISOString()
-      };
-
-      let result;
-      if (existingProfile) {
-        const { data, error } = await supabase
-          .from('google_business_profiles')
-          .update(profileRecord)
-          .eq('id', existingProfile.id)
-          .select()
-          .single();
-        
-        if (error) throw error;
-        result = data;
-      } else {
-        const { data, error } = await supabase
-          .from('google_business_profiles')
-          .insert(profileRecord)
-          .select()
-          .single();
-        
-        if (error) throw error;
-        result = data;
+      if (!reviewsResponse.ok) {
+        if (reviewsResponse.status === 429) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Rate limit exceeded, will retry later',
+          }), {
+            status: 429,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+        throw new Error(`Google API error: ${reviewsResponse.status}`);
       }
 
-      return new Response(
-        JSON.stringify({ 
-          profile: result,
-          message: 'Google Business Profile synced successfully',
-          verification_needed: true
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      const reviewsData = await reviewsResponse.json();
+
+      // Sync reviews to database
+      for (const review of reviewsData.reviews || []) {
+        await supabase
+          .from('reviews')
+          .upsert({
+            external_id: review.reviewId,
+            specialist_id: owner_id,
+            rating: review.starRating === 'FIVE' ? 5 : 
+                   review.starRating === 'FOUR' ? 4 :
+                   review.starRating === 'THREE' ? 3 :
+                   review.starRating === 'TWO' ? 2 : 1,
+            review_text: review.comment,
+            created_at: review.createTime,
+            source: 'google',
+          }, { onConflict: 'external_id' });
+      }
+
+      return new Response(JSON.stringify({
+        success: true,
+        synced: reviewsData.reviews?.length || 0,
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
-    if (action === 'verify') {
-      const { profile_id, verification_code } = await req.json();
+    if (action === 'upload_photo') {
+      const { photo_url, category } = profile_data;
 
-      // In production, verify with Google API
-      // const verificationResponse = await fetch(`https://mybusinessverifications.googleapis.com/v1/${locationName}:verify`, ...);
-
-      await supabase
-        .from('google_business_profiles')
-        .update({
-          profile_status: 'verified',
-          verified_at: new Date().toISOString()
-        })
-        .eq('id', profile_id);
-
-      return new Response(
-        JSON.stringify({ message: 'Profile verified successfully' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      const photoResponse = await fetch(
+        `https://mybusiness.googleapis.com/v4/accounts/${accountId}/locations/${profile_data.location_id}/media`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            mediaFormat: 'PHOTO',
+            sourceUrl: photo_url,
+            category: category || 'EXTERIOR',
+          }),
+        }
       );
+
+      if (!photoResponse.ok) {
+        throw new Error(`Photo upload failed: ${photoResponse.status}`);
+      }
+
+      const photoData = await photoResponse.json();
+
+      return new Response(JSON.stringify({
+        success: true,
+        media_id: photoData.name,
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
-    if (action === 'sync_hours') {
-      const { profile_id, hours } = await req.json();
+    if (action === 'reply_review') {
+      const { review_id, reply_text } = profile_data;
 
-      // Update Google My Business hours
-      await supabase
-        .from('google_business_profiles')
-        .update({
-          regular_hours: hours,
-          last_sync_at: new Date().toISOString()
-        })
-        .eq('id', profile_id);
-
-      return new Response(
-        JSON.stringify({ message: 'Hours synced successfully' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      const replyResponse = await fetch(
+        `https://mybusiness.googleapis.com/v4/accounts/${accountId}/locations/${profile_data.location_id}/reviews/${review_id}/reply`,
+        {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            comment: reply_text,
+          }),
+        }
       );
+
+      if (!replyResponse.ok) {
+        throw new Error(`Reply failed: ${replyResponse.status}`);
+      }
+
+      return new Response(JSON.stringify({
+        success: true,
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
-    throw new Error('Invalid action');
+    throw new Error(`Unknown action: ${action}`);
 
   } catch (error: any) {
     console.error('Google Business sync error:', error);
