@@ -133,6 +133,9 @@ import ComplianceRules from './pages/ComplianceRules';
 import AdvancedSpecialistSearch from './pages/AdvancedSpecialistSearch';
 import GroupBooking from './pages/GroupBooking';
 import ImplementationStatus from './pages/ImplementationStatus';
+import ICDCodeSearch from './pages/ICDCodeSearch';
+import VoiceAssistPage from './pages/VoiceAssistPage';
+import SupportChat from './pages/SupportChat';
 
 const queryClient = new QueryClient();
 
@@ -295,6 +298,11 @@ const App = () => (
             <Route path="/admin/audit-logs" element={<AuditLogs />} />
             <Route path="/admin/sessions" element={<SessionManagement />} />
             <Route path="/admin/implementation-status" element={<ImplementationStatus />} />
+            
+            {/* C25-C30 INTEGRATIONS */}
+            <Route path="/icd-codes" element={<ICDCodeSearch />} />
+            <Route path="/voice-assist" element={<VoiceAssistPage />} />
+            <Route path="/support-chat" element={<SupportChat />} />
             
             {/* LEGAL */}
             <Route path="/legal/privacy" element={<PrivacyPolicy />} />
