@@ -68,3 +68,12 @@ verify_jwt = false
 
 [functions.insurance-reminder]
 verify_jwt = false
+
+[functions.elevenlabs-signed-url]
+verify_jwt = true
+
+[functions.translate-support]
+verify_jwt = false
+
+[functions.notify-procedure-match]
+verify_jwt = false

@@ -36,7 +36,9 @@ function BrowseReviewsContent() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('all');
   const [search, setSearch] = useState('');
+  const [keywordSearch, setKeywordSearch] = useState('');
   const [showCensored, setShowCensored] = useState(false);
+  const [showFlagHistory, setShowFlagHistory] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -45,11 +47,11 @@ function BrowseReviewsContent() {
 
   useEffect(() => {
     applyFilters();
-  }, [reviews, filter, search, showCensored]);
+  }, [reviews, filter, search, keywordSearch, showCensored]);
 
   const loadReviews = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('reviews')
         .select(`
           *,
@@ -61,8 +63,17 @@ function BrowseReviewsContent() {
             )
           )
         `)
-        .in('moderation_status', showCensored ? ['published', 'censored'] : ['published'])
-        .order('created_at', { ascending: false });
+        .in('moderation_status', showCensored ? ['published', 'censored'] : ['published']);
+
+      // Use full-text search if keyword search is provided
+      if (keywordSearch) {
+        query = query.textSearch('comment', keywordSearch, {
+          type: 'websearch',
+          config: 'english',
+        });
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
       
@@ -163,44 +174,75 @@ function BrowseReviewsContent() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Rating Filter</label>
-                  <Select value={filter} onValueChange={setFilter}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Reviews</SelectItem>
-                      <SelectItem value="positive">Positive (4-5 ⭐)</SelectItem>
-                      <SelectItem value="negative">Negative (1-2 ⭐)</SelectItem>
-                      <SelectItem value="censored">Censored Reviews</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Rating Filter</label>
+                    <Select value={filter} onValueChange={setFilter}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Reviews</SelectItem>
+                        <SelectItem value="positive">Positive (4-5 ⭐)</SelectItem>
+                        <SelectItem value="negative">Negative (1-2 ⭐)</SelectItem>
+                        <SelectItem value="censored">Censored Reviews</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Search</label>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search reviews..."
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      className="pl-9"
-                    />
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Basic Search</label>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search reviews..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="pl-9"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-end">
-                  <Button
-                    variant={showCensored ? 'default' : 'outline'}
-                    onClick={() => setShowCensored(!showCensored)}
-                    className="w-full"
-                  >
-                    {showCensored ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
-                    {showCensored ? 'Show All' : 'Show Censored'}
-                  </Button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Keyword Search (C9)</label>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Advanced keyword search..."
+                        value={keywordSearch}
+                        onChange={(e) => {
+                          setKeywordSearch(e.target.value);
+                          if (e.target.value) loadReviews();
+                        }}
+                        className="pl-9"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Use operators: AND, OR, NOT for advanced search
+                    </p>
+                  </div>
+
+                  <div className="flex items-end gap-2">
+                    <Button
+                      variant={showCensored ? 'default' : 'outline'}
+                      onClick={() => setShowCensored(!showCensored)}
+                      className="flex-1"
+                    >
+                      {showCensored ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
+                      {showCensored ? 'Hide Censored' : 'Show Censored'}
+                    </Button>
+                    <Button
+                      variant={showFlagHistory ? 'default' : 'outline'}
+                      onClick={() => setShowFlagHistory(!showFlagHistory)}
+                      className="flex-1"
+                    >
+                      <AlertCircle className="h-4 w-4 mr-2" />
+                      Flag History
+                    </Button>
+                  </div>
                 </div>
               </div>
             </CardContent>

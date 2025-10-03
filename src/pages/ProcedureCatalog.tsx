@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { FileText, Search, MessageSquare, Clock, DollarSign, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import ProcedureMatchNotifications from '@/components/ProcedureMatchNotifications';
 
 interface Procedure {
   id: string;
@@ -154,6 +155,9 @@ function ProcedureCatalogContent() {
               Search treatments by symptoms and ask specialists questions
             </p>
           </div>
+
+          {/* C10: Procedure Match Notifications */}
+          <ProcedureMatchNotifications />
 
           <Tabs defaultValue="catalog" className="w-full">
             <TabsList className="grid w-full grid-cols-2">

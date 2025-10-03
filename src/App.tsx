@@ -229,7 +229,8 @@ const App = () => (
             <Route path="/bug-report" element={<BugReport />} />
             <Route path="/accessibility" element={<AccessibilitySettings />} />
             <Route path="/reviews/visibility" element={<AdminReviewVisibility />} />
-            <Route path="/activity" element={<ProviderActivity />} />
+          <Route path="/activity" element={<ProviderActivity />} />
+          <Route path="/session-security" element={<SessionManagement />} />
             <Route path="/voice" element={<VoiceAssist />} />
             <Route path="/learn" element={<TutorialSystem />} />
             <Route path="/chat" element={<LiveChat />} />

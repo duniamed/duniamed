@@ -2443,6 +2443,48 @@ export type Database = {
           },
         ]
       }
+      notification_delivery: {
+        Row: {
+          attempts: number | null
+          channel: string
+          created_at: string | null
+          delivered_at: string | null
+          error_message: string | null
+          id: string
+          last_attempt_at: string | null
+          message_content: Json | null
+          notification_type: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          attempts?: number | null
+          channel: string
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          last_attempt_at?: string | null
+          message_content?: Json | null
+          notification_type: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          attempts?: number | null
+          channel?: string
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          last_attempt_at?: string | null
+          message_content?: Json | null
+          notification_type?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       patient_care_plans: {
         Row: {
           adherence_score: number | null
@@ -2819,6 +2861,60 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      procedure_matches: {
+        Row: {
+          created_at: string | null
+          id: string
+          match_reason: Json | null
+          match_score: number | null
+          notification_sent: boolean | null
+          notification_sent_at: string | null
+          patient_id: string
+          patient_viewed: boolean | null
+          procedure_id: string
+          specialist_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          match_reason?: Json | null
+          match_score?: number | null
+          notification_sent?: boolean | null
+          notification_sent_at?: string | null
+          patient_id: string
+          patient_viewed?: boolean | null
+          procedure_id: string
+          specialist_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          match_reason?: Json | null
+          match_score?: number | null
+          notification_sent?: boolean | null
+          notification_sent_at?: string | null
+          patient_id?: string
+          patient_viewed?: boolean | null
+          procedure_id?: string
+          specialist_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "procedure_matches_procedure_id_fkey"
+            columns: ["procedure_id"]
+            isOneToOne: false
+            referencedRelation: "procedure_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "procedure_matches_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       procedure_questions: {
         Row: {
@@ -3690,6 +3786,36 @@ export type Database = {
           },
         ]
       }
+      session_snapshots: {
+        Row: {
+          biometric_enabled: boolean | null
+          created_at: string | null
+          device_info: Json | null
+          expires_at: string
+          id: string
+          session_data: Json
+          user_id: string
+        }
+        Insert: {
+          biometric_enabled?: boolean | null
+          created_at?: string | null
+          device_info?: Json | null
+          expires_at: string
+          id?: string
+          session_data: Json
+          user_id: string
+        }
+        Update: {
+          biometric_enabled?: boolean | null
+          created_at?: string | null
+          device_info?: Json | null
+          expires_at?: string
+          id?: string
+          session_data?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       soap_notes: {
         Row: {
           ai_generated: boolean | null
@@ -4532,6 +4658,33 @@ export type Database = {
           },
         ]
       }
+      translation_cache: {
+        Row: {
+          created_at: string | null
+          id: string
+          source_language: string
+          source_text: string
+          target_language: string
+          translated_text: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          source_language: string
+          source_text: string
+          target_language: string
+          translated_text: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          source_language?: string
+          source_text?: string
+          target_language?: string
+          translated_text?: string
+        }
+        Relationships: []
+      }
       user_preferences: {
         Row: {
           accessibility_mode: boolean | null
@@ -4617,6 +4770,47 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      verification_reminders: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          due_date: string
+          id: string
+          reminder_sent: boolean | null
+          reminder_sent_at: string | null
+          specialist_id: string
+          verification_type: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          due_date: string
+          id?: string
+          reminder_sent?: boolean | null
+          reminder_sent_at?: string | null
+          specialist_id: string
+          verification_type: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          due_date?: string
+          id?: string
+          reminder_sent?: boolean | null
+          reminder_sent_at?: string | null
+          specialist_id?: string
+          verification_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_reminders_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
             referencedColumns: ["id"]
           },
         ]
