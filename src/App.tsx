@@ -145,6 +145,7 @@ import APMMonitoring from './pages/APMMonitoring';
 import AIFinance from './pages/AIFinance';
 import VirtualClinicQueuePage from './pages/VirtualClinicQueue';
 import AITriage from './pages/AITriage';
+import GoogleBusinessProfile from './pages/GoogleBusinessProfile';
 
 const queryClient = new QueryClient();
 
@@ -312,6 +313,9 @@ const App = () => (
           <Route path="/icd-codes" element={<ICDCodeSearch />} />
           <Route path="/voice-assist" element={<VoiceAssistPage />} />
           <Route path="/support-chat" element={<SupportChat />} />
+            <Route path="/shifts/marketplace" element={<ShiftMarketplace />} />
+            <Route path="/credentials/verification" element={<CredentialVerification />} />
+            <Route path="/google-business" element={<GoogleBusinessProfile />} />
           
           {/* Shift Marketplace & Credentials */}
           <Route path="/shifts/marketplace" element={<ShiftMarketplace />} />
