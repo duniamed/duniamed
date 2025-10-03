@@ -532,6 +532,45 @@ export type Database = {
           },
         ]
       }
+      booking_conversion_metrics: {
+        Row: {
+          booking_completed_at: string | null
+          conversion_time_seconds: number | null
+          created_at: string | null
+          failed_reason: string | null
+          hold_created_at: string | null
+          id: string
+          patient_id: string | null
+          search_timestamp: string | null
+          slot_viewed_at: string | null
+          specialist_id: string | null
+        }
+        Insert: {
+          booking_completed_at?: string | null
+          conversion_time_seconds?: number | null
+          created_at?: string | null
+          failed_reason?: string | null
+          hold_created_at?: string | null
+          id?: string
+          patient_id?: string | null
+          search_timestamp?: string | null
+          slot_viewed_at?: string | null
+          specialist_id?: string | null
+        }
+        Update: {
+          booking_completed_at?: string | null
+          conversion_time_seconds?: number | null
+          created_at?: string | null
+          failed_reason?: string | null
+          hold_created_at?: string | null
+          id?: string
+          patient_id?: string | null
+          search_timestamp?: string | null
+          slot_viewed_at?: string | null
+          specialist_id?: string | null
+        }
+        Relationships: []
+      }
       bug_reports: {
         Row: {
           assigned_to: string | null

@@ -132,6 +132,7 @@ import CapacityAnalytics from './pages/CapacityAnalytics';
 import ComplianceRules from './pages/ComplianceRules';
 import AdvancedSpecialistSearch from './pages/AdvancedSpecialistSearch';
 import GroupBooking from './pages/GroupBooking';
+import ImplementationStatus from './pages/ImplementationStatus';
 
 const queryClient = new QueryClient();
 
@@ -293,6 +294,7 @@ const App = () => (
             <Route path="/admin/dashboard" element={<AdminPanel />} />
             <Route path="/admin/audit-logs" element={<AuditLogs />} />
             <Route path="/admin/sessions" element={<SessionManagement />} />
+            <Route path="/admin/implementation-status" element={<ImplementationStatus />} />
             
             {/* LEGAL */}
             <Route path="/legal/privacy" element={<PrivacyPolicy />} />

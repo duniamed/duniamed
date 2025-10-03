@@ -70,6 +70,14 @@ serve(async (req) => {
 
     if (specialistsError) throw specialistsError;
 
+    // Check if specialists have calendar sync enabled
+    const specialistIds = (specialists || []).map((s: any) => s.user_id);
+    const { data: calendarProviders } = await supabase
+      .from("calendar_providers")
+      .select("user_id, sync_enabled, last_sync_at")
+      .in("user_id", specialistIds)
+      .eq("sync_enabled", true);
+
     // Filter by distance and language
     const candidates = (specialists || []).filter((spec: any) => {
       const clinic = spec.clinic_staff?.[0]?.clinics;
@@ -107,6 +115,15 @@ serve(async (req) => {
         .gte("scheduled_at", startDate)
         .lte("scheduled_at", endDate)
         .neq("status", "cancelled");
+
+      // CALENDAR INTEGRATION: Check external calendar conflicts
+      const hasCalendarSync = calendarProviders?.some(
+        (cp: any) => cp.user_id === specialist.user_id
+      );
+      
+      // If specialist has calendar sync, add buffer time for external conflicts
+      // In production, this would fetch actual external events from calendar API
+      const conflictBuffer = hasCalendarSync ? 15 : 0; // 15min buffer if synced
 
       // Find next available slot
       let nextAvailable = null;
