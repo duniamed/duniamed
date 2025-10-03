@@ -371,6 +371,51 @@ export type Database = {
           },
         ]
       }
+      bug_reports: {
+        Row: {
+          assigned_to: string | null
+          browser_info: Json | null
+          created_at: string | null
+          description: string
+          id: string
+          screenshot_urls: string[] | null
+          severity: string
+          status: string | null
+          steps_to_reproduce: string | null
+          title: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          browser_info?: Json | null
+          created_at?: string | null
+          description: string
+          id?: string
+          screenshot_urls?: string[] | null
+          severity: string
+          status?: string | null
+          steps_to_reproduce?: string | null
+          title: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          browser_info?: Json | null
+          created_at?: string | null
+          description?: string
+          id?: string
+          screenshot_urls?: string[] | null
+          severity?: string
+          status?: string | null
+          steps_to_reproduce?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       calendar_sync_tokens: {
         Row: {
           access_token: string
@@ -1736,6 +1781,39 @@ export type Database = {
           },
         ]
       }
+      feature_flags: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          enabled: boolean | null
+          flag_name: string
+          id: string
+          rollout_percentage: number | null
+          target_roles: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          enabled?: boolean | null
+          flag_name: string
+          id?: string
+          rollout_percentage?: number | null
+          target_roles?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          enabled?: boolean | null
+          flag_name?: string
+          id?: string
+          rollout_percentage?: number | null
+          target_roles?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       financial_transactions: {
         Row: {
           amount: number
@@ -1795,6 +1873,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      form_autosaves: {
+        Row: {
+          created_at: string | null
+          form_data: Json
+          form_type: string
+          id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          form_data: Json
+          form_type: string
+          id?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          form_data?: Json
+          form_type?: string
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       forum_categories: {
         Row: {
@@ -2959,6 +3064,73 @@ export type Database = {
         }
         Relationships: []
       }
+      provider_activity: {
+        Row: {
+          activity_score: number | null
+          availability_updated_at: string | null
+          clinic_id: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          last_appointment: string | null
+          last_login: string | null
+          last_profile_update: string | null
+          response_time_avg: number | null
+          specialist_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          activity_score?: number | null
+          availability_updated_at?: string | null
+          clinic_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_appointment?: string | null
+          last_login?: string | null
+          last_profile_update?: string | null
+          response_time_avg?: number | null
+          specialist_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          activity_score?: number | null
+          availability_updated_at?: string | null
+          clinic_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_appointment?: string | null
+          last_login?: string | null
+          last_profile_update?: string | null
+          response_time_avg?: number | null
+          specialist_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_activity_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_activity_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_activity_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       proxy_access_logs: {
         Row: {
           accessed_at: string | null
@@ -3158,6 +3330,53 @@ export type Database = {
             columns: ["to_specialist_id"]
             isOneToOne: false
             referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_flags: {
+        Row: {
+          created_at: string | null
+          flag_reason: string
+          flag_type: string
+          flagged_by: string | null
+          id: string
+          moderator_notes: string | null
+          review_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          flag_reason: string
+          flag_type: string
+          flagged_by?: string | null
+          id?: string
+          moderator_notes?: string | null
+          review_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          flag_reason?: string
+          flag_type?: string
+          flagged_by?: string | null
+          id?: string
+          moderator_notes?: string | null
+          review_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_flags_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
             referencedColumns: ["id"]
           },
         ]
@@ -3864,6 +4083,67 @@ export type Database = {
           },
         ]
       }
+      sponsorships: {
+        Row: {
+          clinic_id: string | null
+          cost: number
+          created_at: string | null
+          disclosure_text: string
+          end_date: string
+          id: string
+          specialist_id: string | null
+          sponsorship_type: string
+          start_date: string
+          status: string | null
+        }
+        Insert: {
+          clinic_id?: string | null
+          cost: number
+          created_at?: string | null
+          disclosure_text: string
+          end_date: string
+          id?: string
+          specialist_id?: string | null
+          sponsorship_type: string
+          start_date: string
+          status?: string | null
+        }
+        Update: {
+          clinic_id?: string | null
+          cost?: number
+          created_at?: string | null
+          disclosure_text?: string
+          end_date?: string
+          id?: string
+          specialist_id?: string | null
+          sponsorship_type?: string
+          start_date?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsorships_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sponsorships_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sponsorships_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stripe_customers: {
         Row: {
           created_at: string | null
@@ -4187,6 +4467,118 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      third_party_audits: {
+        Row: {
+          audit_date: string
+          audit_type: string
+          auditor_name: string
+          certification_url: string | null
+          clinic_id: string | null
+          created_at: string | null
+          expiry_date: string | null
+          findings_summary: string | null
+          id: string
+          specialist_id: string | null
+          status: string | null
+        }
+        Insert: {
+          audit_date: string
+          audit_type: string
+          auditor_name: string
+          certification_url?: string | null
+          clinic_id?: string | null
+          created_at?: string | null
+          expiry_date?: string | null
+          findings_summary?: string | null
+          id?: string
+          specialist_id?: string | null
+          status?: string | null
+        }
+        Update: {
+          audit_date?: string
+          audit_type?: string
+          auditor_name?: string
+          certification_url?: string | null
+          clinic_id?: string | null
+          created_at?: string | null
+          expiry_date?: string | null
+          findings_summary?: string | null
+          id?: string
+          specialist_id?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "third_party_audits_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "third_party_audits_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "third_party_audits_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_preferences: {
+        Row: {
+          accessibility_mode: boolean | null
+          created_at: string | null
+          font_size: string | null
+          high_contrast: boolean | null
+          id: string
+          language_preference: string | null
+          reduced_motion: boolean | null
+          screen_reader_optimized: boolean | null
+          tutorial_progress: Json | null
+          ui_mode: string | null
+          updated_at: string | null
+          user_id: string
+          voice_assist_enabled: boolean | null
+        }
+        Insert: {
+          accessibility_mode?: boolean | null
+          created_at?: string | null
+          font_size?: string | null
+          high_contrast?: boolean | null
+          id?: string
+          language_preference?: string | null
+          reduced_motion?: boolean | null
+          screen_reader_optimized?: boolean | null
+          tutorial_progress?: Json | null
+          ui_mode?: string | null
+          updated_at?: string | null
+          user_id: string
+          voice_assist_enabled?: boolean | null
+        }
+        Update: {
+          accessibility_mode?: boolean | null
+          created_at?: string | null
+          font_size?: string | null
+          high_contrast?: boolean | null
+          id?: string
+          language_preference?: string | null
+          reduced_motion?: boolean | null
+          screen_reader_optimized?: boolean | null
+          tutorial_progress?: Json | null
+          ui_mode?: string | null
+          updated_at?: string | null
+          user_id?: string
+          voice_assist_enabled?: boolean | null
+        }
+        Relationships: []
       }
       user_sessions: {
         Row: {
