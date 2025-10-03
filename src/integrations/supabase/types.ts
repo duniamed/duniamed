@@ -1391,6 +1391,41 @@ export type Database = {
         }
         Relationships: []
       }
+      delivery_confirmations: {
+        Row: {
+          confirmation_type: string
+          confirmed_by: string
+          created_at: string | null
+          id: string
+          message_delivery_id: string
+          notes: string | null
+        }
+        Insert: {
+          confirmation_type: string
+          confirmed_by: string
+          created_at?: string | null
+          id?: string
+          message_delivery_id: string
+          notes?: string | null
+        }
+        Update: {
+          confirmation_type?: string
+          confirmed_by?: string
+          created_at?: string | null
+          id?: string
+          message_delivery_id?: string
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_confirmations_message_delivery_id_fkey"
+            columns: ["message_delivery_id"]
+            isOneToOne: false
+            referencedRelation: "message_deliveries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       document_access_logs: {
         Row: {
           access_type: string
@@ -2310,6 +2345,47 @@ export type Database = {
           },
         ]
       }
+      mediation_messages: {
+        Row: {
+          attachments: Json | null
+          created_at: string | null
+          dispute_id: string
+          id: string
+          is_private: boolean | null
+          message: string
+          sender_id: string
+          sender_role: string
+        }
+        Insert: {
+          attachments?: Json | null
+          created_at?: string | null
+          dispute_id: string
+          id?: string
+          is_private?: boolean | null
+          message: string
+          sender_id: string
+          sender_role: string
+        }
+        Update: {
+          attachments?: Json | null
+          created_at?: string | null
+          dispute_id?: string
+          id?: string
+          is_private?: boolean | null
+          message?: string
+          sender_id?: string
+          sender_role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mediation_messages_dispute_id_fkey"
+            columns: ["dispute_id"]
+            isOneToOne: false
+            referencedRelation: "review_disputes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       medical_records: {
         Row: {
           appointment_id: string | null
@@ -2388,6 +2464,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      message_deliveries: {
+        Row: {
+          channel: string
+          created_at: string | null
+          delivered_at: string | null
+          error_message: string | null
+          escalated: boolean | null
+          escalated_at: string | null
+          id: string
+          message_id: string
+          provider_message_id: string | null
+          read_at: string | null
+          recipient_id: string
+          retry_count: number | null
+          sent_at: string | null
+          status: string | null
+        }
+        Insert: {
+          channel: string
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          escalated?: boolean | null
+          escalated_at?: string | null
+          id?: string
+          message_id: string
+          provider_message_id?: string | null
+          read_at?: string | null
+          recipient_id: string
+          retry_count?: number | null
+          sent_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          channel?: string
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          escalated?: boolean | null
+          escalated_at?: string | null
+          id?: string
+          message_id?: string
+          provider_message_id?: string | null
+          read_at?: string | null
+          recipient_id?: string
+          retry_count?: number | null
+          sent_at?: string | null
+          status?: string | null
+        }
+        Relationships: []
       }
       messages: {
         Row: {
@@ -3020,6 +3147,97 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_flags: {
+        Row: {
+          created_at: string | null
+          description: string
+          flag_type: string
+          flagged_by: string
+          id: string
+          resolution_notes: string | null
+          resolved_at: string | null
+          reviewed_by: string | null
+          specialist_id: string
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          flag_type: string
+          flagged_by: string
+          id?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          reviewed_by?: string | null
+          specialist_id: string
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          flag_type?: string
+          flagged_by?: string
+          id?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          reviewed_by?: string | null
+          specialist_id?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_flags_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profile_freshness_logs: {
+        Row: {
+          change_reason: string | null
+          changed_by: string | null
+          created_at: string | null
+          field_name: string
+          id: string
+          is_verification: boolean | null
+          new_value: string | null
+          old_value: string | null
+          specialist_id: string
+        }
+        Insert: {
+          change_reason?: string | null
+          changed_by?: string | null
+          created_at?: string | null
+          field_name: string
+          id?: string
+          is_verification?: boolean | null
+          new_value?: string | null
+          old_value?: string | null
+          specialist_id: string
+        }
+        Update: {
+          change_reason?: string | null
+          changed_by?: string | null
+          created_at?: string | null
+          field_name?: string
+          id?: string
+          is_verification?: boolean | null
+          new_value?: string | null
+          old_value?: string | null
+          specialist_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_freshness_logs_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_verifications: {
         Row: {
           created_at: string | null
@@ -3459,6 +3677,59 @@ export type Database = {
             columns: ["to_specialist_id"]
             isOneToOne: false
             referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_disputes: {
+        Row: {
+          assigned_mediator: string | null
+          case_number: string | null
+          created_at: string | null
+          dispute_reason: string
+          evidence_urls: Json | null
+          filed_by: string
+          id: string
+          resolution: string | null
+          resolved_at: string | null
+          review_id: string
+          review_quarantined: boolean | null
+          status: string | null
+        }
+        Insert: {
+          assigned_mediator?: string | null
+          case_number?: string | null
+          created_at?: string | null
+          dispute_reason: string
+          evidence_urls?: Json | null
+          filed_by: string
+          id?: string
+          resolution?: string | null
+          resolved_at?: string | null
+          review_id: string
+          review_quarantined?: boolean | null
+          status?: string | null
+        }
+        Update: {
+          assigned_mediator?: string | null
+          case_number?: string | null
+          created_at?: string | null
+          dispute_reason?: string
+          evidence_urls?: Json | null
+          filed_by?: string
+          id?: string
+          resolution?: string | null
+          resolved_at?: string | null
+          review_id?: string
+          review_quarantined?: boolean | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_disputes_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
             referencedColumns: ["id"]
           },
         ]
@@ -4845,6 +5116,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_locale_preferences: {
+        Row: {
+          created_at: string | null
+          currency: string | null
+          date_format: string | null
+          geo_location: string | null
+          id: string
+          preferred_language: string | null
+          region_restrictions: Json | null
+          timezone: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          currency?: string | null
+          date_format?: string | null
+          geo_location?: string | null
+          id?: string
+          preferred_language?: string | null
+          region_restrictions?: Json | null
+          timezone?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          currency?: string | null
+          date_format?: string | null
+          geo_location?: string | null
+          id?: string
+          preferred_language?: string | null
+          region_restrictions?: Json | null
+          timezone?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_preferences: {
         Row: {
           accessibility_mode: boolean | null
@@ -4930,6 +5240,56 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      verification_cycles: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          due_date: string
+          id: string
+          reminder_sent_at: string | null
+          specialist_id: string
+          status: string | null
+          updated_at: string | null
+          verification_document_url: string | null
+          verification_type: string
+          verified_by: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          due_date: string
+          id?: string
+          reminder_sent_at?: string | null
+          specialist_id: string
+          status?: string | null
+          updated_at?: string | null
+          verification_document_url?: string | null
+          verification_type: string
+          verified_by?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          due_date?: string
+          id?: string
+          reminder_sent_at?: string | null
+          specialist_id?: string
+          status?: string | null
+          updated_at?: string | null
+          verification_document_url?: string | null
+          verification_type?: string
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_cycles_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
             referencedColumns: ["id"]
           },
         ]

@@ -20,7 +20,7 @@ import { AlertTriangle } from 'lucide-react';
 
 interface SupportEscalationProps {
   ticketId: string;
-  onClose: () => void;
+  onClose?: () => void;
   onEscalated?: () => void;
 }
 
@@ -28,6 +28,7 @@ export function SupportEscalation({ ticketId, onClose, onEscalated }: SupportEsc
   const { toast } = useToast();
   const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleEscalate = async () => {
     if (!reason.trim()) {
@@ -68,7 +69,8 @@ export function SupportEscalation({ ticketId, onClose, onEscalated }: SupportEsc
       });
 
       onEscalated?.();
-      onClose();
+      setIsOpen(false);
+      onClose?.();
     } catch (error: any) {
       toast({
         title: "Error",
@@ -81,40 +83,55 @@ export function SupportEscalation({ ticketId, onClose, onEscalated }: SupportEsc
   };
 
   return (
-    <Dialog open onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-orange-500" />
-            Escalate to Supervisor
-          </DialogTitle>
-          <DialogDescription>
-            Your ticket will be prioritized and reviewed by a supervisor immediately.
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <Button 
+        variant="outline" 
+        size="sm" 
+        onClick={() => setIsOpen(true)}
+        className="w-full"
+      >
+        <AlertTriangle className="h-4 w-4 mr-2" />
+        Escalate to Supervisor
+      </Button>
 
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="reason">Escalation Reason</Label>
-            <Textarea
-              id="reason"
-              placeholder="Why does this need supervisor attention?"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              className="min-h-[100px]"
-            />
+      <Dialog open={isOpen} onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open) onClose?.();
+      }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-orange-500" />
+              Escalate to Supervisor
+            </DialogTitle>
+            <DialogDescription>
+              Your ticket will be prioritized and reviewed by a supervisor immediately.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="reason">Escalation Reason</Label>
+              <Textarea
+                id="reason"
+                placeholder="Why does this need supervisor attention?"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                className="min-h-[100px]"
+              />
+            </div>
           </div>
-        </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={handleEscalate} disabled={loading}>
-            {loading ? 'Escalating...' : 'Escalate Now'}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleEscalate} disabled={loading}>
+              {loading ? 'Escalating...' : 'Escalate Now'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

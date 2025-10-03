@@ -1,6 +1,7 @@
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { NotificationChannels } from '@/components/NotificationChannels';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 /**
  * C4 RESILIENCE - Notification Preferences Page
@@ -10,11 +11,21 @@ import { NotificationChannels } from '@/components/NotificationChannels';
 function NotificationPreferencesContent() {
   return (
     <DashboardLayout 
-      title="Notification Preferences" 
-      description="Manage your notification channels for reliable delivery"
+      title="Notification Preferences (C4)" 
+      description="Manage multi-channel notifications for resilience"
     >
       <div className="space-y-6">
-        <NotificationChannels />
+        <Card>
+          <CardHeader>
+            <CardTitle>Multi-Channel Notification Settings</CardTitle>
+            <CardDescription>
+              Add multiple channels to ensure critical messages reach you even during outages
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <NotificationChannels />
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   );

@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { FileText, Search, MessageSquare, Clock, DollarSign, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ProcedureMatchNotifications from '@/components/ProcedureMatchNotifications';
+import { ProcedureQA } from '@/components/ProcedureQA';
 
 interface Procedure {
   id: string;
@@ -332,6 +333,21 @@ function ProcedureCatalogContent() {
               )}
             </TabsContent>
           </Tabs>
+
+          {/* C10: Community Q&A */}
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>Community Q&A</CardTitle>
+              <CardDescription>
+                Ask questions about any procedure - specialists will answer
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Click on any procedure above and use the "Ask" button to submit your questions to experts.
+              </p>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </DashboardLayout>

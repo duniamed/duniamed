@@ -14,6 +14,7 @@ import { MEDICAL_SPECIALTIES } from '@/lib/constants/specialties';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Checkbox } from '@/components/ui/checkbox';
 import { TransparencyBadges } from '@/components/TransparencyBadges';
+import { FreshnessIndicator } from '@/components/FreshnessIndicator';
 
 interface Specialist {
   id: string;

@@ -10,6 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { MessageSquare, Send, Clock, CheckCircle2 } from 'lucide-react';
 import { CSATRating } from '@/components/CSATRating';
+import { SupportEscalation } from '@/components/SupportEscalation';
 
 /**
  * C7 SUPPORT - Live Chat with CSAT Ratings
@@ -349,6 +350,13 @@ export default function LiveChat() {
             </div>
           </CardContent>
         </Card>
+
+        {/* C7: Support Escalation */}
+        {activeTicket && activeTicket.status === 'open' && (
+          <div className="mt-4">
+            <SupportEscalation ticketId={activeTicket.id} />
+          </div>
+        )}
       </div>
 
       {/* CSAT Rating */}

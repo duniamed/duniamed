@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Accessibility, Volume2, Eye, Type, Zap } from 'lucide-react';
+import { LocaleSelector } from '@/components/LocaleSelector';
 
 export default function AccessibilitySettings() {
   const { toast } = useToast();
@@ -282,6 +283,17 @@ export default function AccessibilitySettings() {
                   }
                 />
               </div>
+            </CardContent>
+          </Card>
+
+          {/* C13: Cross-Border Localization */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Language & Region (C13)</CardTitle>
+              <CardDescription>Customize language, currency, and regional preferences</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <LocaleSelector />
             </CardContent>
           </Card>
 
