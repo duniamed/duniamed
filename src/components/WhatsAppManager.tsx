@@ -64,11 +64,39 @@ export default function WhatsAppManager() {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
+    const phoneNumber = prompt('Enter WhatsApp number (with country code, e.g., +14155551234):');
+    if (!phoneNumber) return;
+
     try {
-      // Note: Actual sending would be done via Twilio edge function
-      toast.info('WhatsApp message would be sent via Twilio');
-      setNewMessage('');
+      const { data, error } = await supabase.functions.invoke('send-whatsapp-message', {
+        body: {
+          to: phoneNumber,
+          message: newMessage
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast.success('WhatsApp message sent successfully');
+        setNewMessage('');
+        
+        // Add to local state for immediate feedback
+        const newMsg: WhatsAppMessage = {
+          id: data.message_sid,
+          phone_number: phoneNumber,
+          direction: 'outbound',
+          status: data.status,
+          message_body: newMessage,
+          media_urls: null,
+          created_at: new Date().toISOString()
+        };
+        setMessages(prev => [newMsg, ...prev]);
+      } else {
+        throw new Error(data?.error || 'Failed to send message');
+      }
     } catch (error: any) {
+      console.error('WhatsApp send error:', error);
       toast.error('Failed to send message: ' + error.message);
     }
   };

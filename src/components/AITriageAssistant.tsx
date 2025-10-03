@@ -4,8 +4,9 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Bot, AlertTriangle, Activity, Clock, ArrowRight } from 'lucide-react';
+import { Bot, AlertTriangle, Activity, Clock, ArrowRight, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 interface TriageResult {
   urgency: 'emergency' | 'urgent' | 'routine' | 'non-urgent';
@@ -16,10 +17,22 @@ interface TriageResult {
   estimated_wait_time: string;
 }
 
+interface BookingSuggestion {
+  specialist_id: string;
+  specialist_name: string;
+  specialty: string[];
+  next_available: string;
+  urgency_match: string;
+  booking_url: string;
+}
+
 export default function AITriageAssistant() {
   const [symptoms, setSymptoms] = useState('');
   const [triaging, setTriaging] = useState(false);
   const [result, setResult] = useState<TriageResult | null>(null);
+  const [bookingSuggestions, setBookingSuggestions] = useState<BookingSuggestion[]>([]);
+  const [connectingToBooking, setConnectingToBooking] = useState(false);
+  const navigate = useNavigate();
 
   const performTriage = async () => {
     if (!symptoms.trim()) {
@@ -40,10 +53,40 @@ export default function AITriageAssistant() {
 
       setResult(data);
       toast.success('Triage completed');
+
+      // Automatically connect to booking
+      await connectToBooking(data, symptoms);
     } catch (error: any) {
       toast.error('Triage failed: ' + error.message);
     } finally {
       setTriaging(false);
+    }
+  };
+
+  const connectToBooking = async (triageResults: TriageResult, symptomsText: string) => {
+    setConnectingToBooking(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('connect-triage-to-booking', {
+        body: {
+          triage_results: triageResults,
+          symptoms: symptomsText,
+          urgency: triageResults.urgency
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.booking_suggestions && data.booking_suggestions.length > 0) {
+        setBookingSuggestions(data.booking_suggestions);
+        toast.success(`Found ${data.booking_suggestions.length} available specialists`);
+      } else {
+        toast.info('No immediately available specialists. Try expanding your search.');
+      }
+    } catch (error: any) {
+      console.error('Error connecting to booking:', error);
+      toast.error('Unable to find specialists at this time');
+    } finally {
+      setConnectingToBooking(false);
     }
   };
 
@@ -206,18 +249,71 @@ export default function AITriageAssistant() {
             </Card>
           )}
 
+          {bookingSuggestions.length > 0 && (
+            <Card className="p-6 bg-primary/5 border-primary/20">
+              <h4 className="font-semibold mb-4 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-primary" />
+                Available Specialists
+              </h4>
+              <div className="space-y-3">
+                {bookingSuggestions.map((suggestion) => (
+                  <Card key={suggestion.specialist_id} className="p-4 hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <p className="font-semibold">{suggestion.specialist_name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {Array.isArray(suggestion.specialty) ? suggestion.specialty.join(', ') : suggestion.specialty}
+                        </p>
+                        {suggestion.next_available && (
+                          <div className="flex items-center gap-1 mt-2">
+                            <Clock className="w-3 h-3 text-green-600" />
+                            <span className="text-xs text-green-600">
+                              Next available: {new Date(suggestion.next_available).toLocaleDateString()}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <Button 
+                        onClick={() => navigate(suggestion.booking_url)}
+                        size="sm"
+                      >
+                        Book Now
+                        <ArrowRight className="w-4 h-4 ml-1" />
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+              <Button 
+                variant="outline" 
+                className="w-full mt-4"
+                onClick={() => navigate('/search/specialists')}
+              >
+                View All Specialists
+              </Button>
+            </Card>
+          )}
+
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-semibold mb-1">Ready to book an appointment?</h4>
+                <h4 className="font-semibold mb-1">
+                  {bookingSuggestions.length > 0 ? 'Ready to book?' : 'Ready to book an appointment?'}
+                </h4>
                 <p className="text-sm text-muted-foreground">
                   Based on your triage, we recommend seeing a {result.recommended_specialty} specialist
                 </p>
               </div>
-              <Button size="lg">
-                Book Now
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              {bookingSuggestions.length === 0 && (
+                <Button 
+                  size="lg" 
+                  onClick={() => connectToBooking(result, symptoms)}
+                  disabled={connectingToBooking}
+                >
+                  {connectingToBooking ? 'Finding Specialists...' : 'Find Available Specialists'}
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              )}
             </div>
           </Card>
         </div>

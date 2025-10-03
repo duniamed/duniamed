@@ -37,11 +37,38 @@ export default function EveningLoadFirewall() {
     loadMetrics();
     checkQuietHours();
 
-    const interval = setInterval(() => {
-      checkQuietHours();
-    }, 60000); // Check every minute
+    // Real-time subscription for work queue items
+    const queueChannel = supabase
+      .channel('work-queue-realtime')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'work_queue_items'
+      }, (payload) => {
+        console.log('New work item:', payload.new);
+        loadWorkQueue();
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'work_queue_items'
+      }, (payload) => {
+        console.log('Work item updated:', payload.new);
+        loadWorkQueue();
+      })
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log('Realtime subscription active for work queue');
+        }
+      });
 
-    return () => clearInterval(interval);
+    // Check quiet hours every minute
+    const interval = setInterval(checkQuietHours, 60000);
+
+    return () => {
+      supabase.removeChannel(queueChannel);
+      clearInterval(interval);
+    };
   }, []);
 
   const checkQuietHours = () => {

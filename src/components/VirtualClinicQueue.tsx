@@ -27,17 +27,38 @@ export default function VirtualClinicQueue() {
   useEffect(() => {
     fetchQueue();
 
-    // Real-time subscription
+    // Real-time subscription with Supabase Realtime
     const channel = supabase
-      .channel('virtual-clinic-queue')
+      .channel('virtual-clinic-queue-realtime')
       .on('postgres_changes', {
-        event: '*',
+        event: 'INSERT',
         schema: 'public',
         table: 'appointments'
-      }, () => {
+      }, (payload) => {
+        console.log('New appointment in queue:', payload.new);
         fetchQueue();
       })
-      .subscribe();
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'appointments'
+      }, (payload) => {
+        console.log('Appointment updated:', payload.new);
+        fetchQueue();
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'appointments'
+      }, (payload) => {
+        console.log('Appointment removed:', payload.old);
+        fetchQueue();
+      })
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log('Realtime subscription active for virtual clinic queue');
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);

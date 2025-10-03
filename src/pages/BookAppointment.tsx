@@ -190,74 +190,130 @@ function BookAppointmentContent() {
     setSubmitting(true);
     setSubmitError(null);
 
-    const scheduledAt = new Date(selectedDate);
-    const [hours, minutes] = selectedTime.split(':');
-    scheduledAt.setHours(parseInt(hours), parseInt(minutes));
+    try {
+      // STEP 0: Verify insurance BEFORE booking
+      const { data: insuranceCheck, error: insuranceError } = await supabase.functions.invoke(
+        'verify-insurance-before-booking',
+        {
+          body: {
+            specialist_id: specialistId,
+            appointment_type: consultationType,
+            estimated_cost: specialist!.consultation_fee_min
+          }
+        }
+      );
 
-    // STEP 1: Create optimistic hold (60-second reservation)
-    const { data: holdData, error: holdError } = await supabase.functions.invoke('book-with-hold', {
-      body: {
-        action: 'hold',
-        specialist_id: specialistId,
-        scheduled_at: scheduledAt.toISOString(),
-        duration_minutes: 30,
-        patient_id: profile!.id,
+      if (insuranceError) {
+        console.error('Insurance verification error:', insuranceError);
+        toast({
+          title: 'Verification Error',
+          description: 'Unable to verify insurance. Proceeding as self-pay.',
+          variant: 'default',
+        });
       }
-    });
 
-    if (holdError || !holdData?.success) {
-      toast({
-        title: '⚠️ Slot No Longer Available',
-        description: holdData?.error || 'Someone just booked this slot. Showing alternatives...',
-        variant: 'destructive',
-      });
-      setSubmitting(false);
-      // TODO: Show alternative slots
-      return;
-    }
+      // Block booking if action required
+      if (insuranceCheck?.requires_action) {
+        toast({
+          title: 'Insurance Action Required',
+          description: insuranceCheck.message || 'Please complete insurance verification',
+          variant: 'destructive',
+        });
+        
+        if (insuranceCheck.redirect_url) {
+          navigate(insuranceCheck.redirect_url);
+        }
+        setSubmitting(false);
+        return;
+      }
 
-    // STEP 2: Use ATOMIC booking edge function
-    const { data: bookingData, error: bookingError } = await supabase.functions.invoke(
-      'book-appointment-atomic',
-      {
+      // Update cost estimate with insurance info
+      if (insuranceCheck?.verified && insuranceCheck.estimated_out_of_pocket) {
+        setCostEstimate({
+          service_fee: specialist!.consultation_fee_min,
+          insurance_coverage: specialist!.consultation_fee_min - insuranceCheck.estimated_out_of_pocket,
+          copay: insuranceCheck.insurance_details?.copay || 0,
+          patient_responsibility: insuranceCheck.estimated_out_of_pocket,
+        });
+      }
+
+      const scheduledAt = new Date(selectedDate);
+      const [hours, minutes] = selectedTime.split(':');
+      scheduledAt.setHours(parseInt(hours), parseInt(minutes));
+
+      // STEP 1: Create optimistic hold (60-second reservation)
+      const { data: holdData, error: holdError } = await supabase.functions.invoke('book-with-hold', {
         body: {
-          patient_id: profile!.id,
+          action: 'hold',
           specialist_id: specialistId,
           scheduled_at: scheduledAt.toISOString(),
           duration_minutes: 30,
-          consultation_type: consultationType,
-          chief_complaint: chiefComplaint,
-          urgency_level: urgencyLevel,
-          fee: costEstimate?.patient_responsibility || specialist!.consultation_fee_min,
-          currency: specialist!.currency,
-        },
-      }
-    );
-
-    if (bookingError || !bookingData?.success) {
-      // Release hold
-      await supabase.functions.invoke('book-with-hold', {
-        body: {
-          action: 'release',
-          patient_id: holdData.hold_id,
+          patient_id: profile!.id,
         }
       });
 
+      if (holdError || !holdData?.success) {
+        toast({
+          title: '⚠️ Slot No Longer Available',
+          description: holdData?.error || 'Someone just booked this slot. Showing alternatives...',
+          variant: 'destructive',
+        });
+        setSubmitting(false);
+        // TODO: Show alternative slots
+        return;
+      }
+
+      // STEP 2: Use ATOMIC booking edge function
+      const { data: bookingData, error: bookingError } = await supabase.functions.invoke(
+        'book-appointment-atomic',
+        {
+          body: {
+            patient_id: profile!.id,
+            specialist_id: specialistId,
+            scheduled_at: scheduledAt.toISOString(),
+            duration_minutes: 30,
+            consultation_type: consultationType,
+            chief_complaint: chiefComplaint,
+            urgency_level: urgencyLevel,
+            fee: costEstimate?.patient_responsibility || specialist!.consultation_fee_min,
+            currency: specialist!.currency,
+          },
+        }
+      );
+
+      if (bookingError || !bookingData?.success) {
+        // Release hold
+        await supabase.functions.invoke('book-with-hold', {
+          body: {
+            action: 'release',
+            patient_id: holdData.hold_id,
+          }
+        });
+
+        toast({
+          title: 'Booking Failed',
+          description: bookingData?.message || 'Unable to complete booking. Please try again.',
+          variant: 'destructive',
+        });
+        setSubmitting(false);
+        return;
+      }
+
+      // Success!
       toast({
-        title: 'Booking Failed',
-        description: bookingData?.message || 'Unable to complete booking. Please try again.',
+        title: '✅ Appointment Secured!',
+        description: 'Your appointment has been confirmed. Check your email for details.',
+      });
+      navigate('/appointments');
+    } catch (error: any) {
+      console.error('Booking error:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'An unexpected error occurred',
         variant: 'destructive',
       });
       setSubmitting(false);
-      return;
     }
-
-    // Success!
-    toast({
-      title: '✅ Appointment Secured!',
-      description: 'Your appointment has been confirmed. Check your email for details.',
-    });
-    navigate('/appointments');
   };
 
   if (loading) {
