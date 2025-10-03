@@ -1,5 +1,35 @@
 project_id = "knybxihimqrqwzkdeaio"
 
+[functions.ai-moderate-content]
+verify_jwt = true
+
+[functions.docusign-signature]
+verify_jwt = true
+
+[functions.check-insurance-eligibility]
+verify_jwt = true
+
+[functions.sync-icd-codes]
+verify_jwt = true
+
+[functions.voice-assistant]
+verify_jwt = true
+
+[functions.ai-chatbot]
+verify_jwt = false
+
+[functions.verify-credentials]
+verify_jwt = true
+
+[functions.whatsapp-webhook]
+verify_jwt = false
+
+[functions.legal-archive]
+verify_jwt = true
+
+[functions.newrelic-monitor]
+verify_jwt = false
+
 [functions.moderate-review-ai]
 verify_jwt = true
 
