@@ -3470,6 +3470,59 @@ export type Database = {
           },
         ]
       }
+      prescription_renewals: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          completed_at: string | null
+          created_at: string | null
+          denial_reason: string | null
+          id: string
+          notes: string | null
+          patient_id: string
+          pharmacy_id: string | null
+          prescription_id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          denial_reason?: string | null
+          id?: string
+          notes?: string | null
+          patient_id: string
+          pharmacy_id?: string | null
+          prescription_id: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          denial_reason?: string | null
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          pharmacy_id?: string | null
+          prescription_id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescription_renewals_prescription_id_fkey"
+            columns: ["prescription_id"]
+            isOneToOne: false
+            referencedRelation: "prescriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prescriptions: {
         Row: {
           appointment_id: string | null
@@ -3691,6 +3744,53 @@ export type Database = {
         }
         Relationships: []
       }
+      procedure_checklist_items: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          due_date: string | null
+          id: string
+          instructions: string | null
+          is_completed: boolean | null
+          procedure_id: string
+          sequence_order: number | null
+          task_name: string
+          task_type: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          due_date?: string | null
+          id?: string
+          instructions?: string | null
+          is_completed?: boolean | null
+          procedure_id: string
+          sequence_order?: number | null
+          task_name: string
+          task_type?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          due_date?: string | null
+          id?: string
+          instructions?: string | null
+          is_completed?: boolean | null
+          procedure_id?: string
+          sequence_order?: number | null
+          task_name?: string
+          task_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "procedure_checklist_items_procedure_id_fkey"
+            columns: ["procedure_id"]
+            isOneToOne: false
+            referencedRelation: "procedure_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       procedure_matches: {
         Row: {
           created_at: string | null
@@ -3738,6 +3838,68 @@ export type Database = {
           },
           {
             foreignKeyName: "procedure_matches_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      procedure_orders: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          estimated_duration_minutes: number | null
+          id: string
+          location: string | null
+          patient_id: string
+          post_procedure_notes: string | null
+          pre_procedure_instructions: string | null
+          procedure_name: string
+          procedure_type: string | null
+          scheduled_date: string | null
+          scheduled_time: string | null
+          specialist_id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          estimated_duration_minutes?: number | null
+          id?: string
+          location?: string | null
+          patient_id: string
+          post_procedure_notes?: string | null
+          pre_procedure_instructions?: string | null
+          procedure_name: string
+          procedure_type?: string | null
+          scheduled_date?: string | null
+          scheduled_time?: string | null
+          specialist_id: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          estimated_duration_minutes?: number | null
+          id?: string
+          location?: string | null
+          patient_id?: string
+          post_procedure_notes?: string | null
+          pre_procedure_instructions?: string | null
+          procedure_name?: string
+          procedure_type?: string | null
+          scheduled_date?: string | null
+          scheduled_time?: string | null
+          specialist_id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "procedure_orders_specialist_id_fkey"
             columns: ["specialist_id"]
             isOneToOne: false
             referencedRelation: "specialists"

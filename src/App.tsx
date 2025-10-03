@@ -114,6 +114,16 @@ import RoleManagement from './pages/RoleManagement';
 import EngagementCampaigns from './pages/EngagementCampaigns';
 import PaymentProcessing from './pages/PaymentProcessing';
 import LocaleSettings from './pages/LocaleSettings';
+import CalendarSyncSettings from './pages/CalendarSyncSettings';
+import MultiPractitionerScheduling from './pages/MultiPractitionerScheduling';
+import ProfessionalNetwork from './pages/ProfessionalNetwork';
+import PrescriptionRenewals from './pages/PrescriptionRenewals';
+import ProcedureTrackingPatient from './pages/ProcedureTrackingPatient';
+import SpecialistForumsPublic from './pages/SpecialistForumsPublic';
+import ReviewResponses from './pages/ReviewResponses';
+import SecureDelivery from './pages/SecureDelivery';
+import ProviderAbsences from './pages/ProviderAbsences';
+import CareTeams from './pages/CareTeams';
 
 const queryClient = new QueryClient();
 
@@ -305,6 +315,16 @@ const App = () => (
           <Route path="/payment-processing" element={<PaymentProcessing />} />
             {/* C25-C30 Features */}
             <Route path="/locale-settings" element={<LocaleSettings />} />
+            <Route path="/calendar-sync-settings" element={<CalendarSyncSettings />} />
+            <Route path="/multi-practitioner-scheduling" element={<MultiPractitionerScheduling />} />
+            <Route path="/professional-network" element={<ProfessionalNetwork />} />
+            <Route path="/prescription-renewals" element={<PrescriptionRenewals />} />
+            <Route path="/procedure-tracking" element={<ProcedureTrackingPatient />} />
+            <Route path="/community-forums" element={<SpecialistForumsPublic />} />
+            <Route path="/review-responses" element={<ReviewResponses />} />
+            <Route path="/secure-delivery" element={<SecureDelivery />} />
+            <Route path="/provider-absences" element={<ProviderAbsences />} />
+            <Route path="/care-teams" element={<CareTeams />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

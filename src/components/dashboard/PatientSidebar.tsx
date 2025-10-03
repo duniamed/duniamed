@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Calendar, FileText, CreditCard, MessageSquare, Users, Heart, Bell, Settings, User, Upload, Search, Pill, Stethoscope, Shield, DollarSign, Share2, Download, LifeBuoy, FileSignature } from 'lucide-react';
+import { Home, Calendar, FileText, CreditCard, MessageSquare, Users, Heart, Bell, Settings, User, Upload, Search, Pill, Stethoscope, Shield, DollarSign, Share2, Download, LifeBuoy, FileSignature, CalendarSync, Network, ClipboardList } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -18,11 +18,17 @@ const patientMenuItems = [
   { title: 'Procedures', url: '/procedures', icon: FileText },
   { title: 'Find Specialists', url: '/search/specialists', icon: Search },
   { title: 'Appointments', url: '/patient/appointments', icon: Calendar },
+  { title: 'Multi-Practitioner', url: '/multi-practitioner-scheduling', icon: Users },
+  { title: 'Calendar Sync', url: '/calendar-sync-settings', icon: CalendarSync },
   { title: 'Prescriptions', url: '/patient/prescriptions', icon: Pill },
+  { title: 'Prescription Renewals', url: '/prescription-renewals', icon: Pill },
+  { title: 'Procedure Tracking', url: '/procedure-tracking', icon: ClipboardList },
   { title: 'Medical Records', url: '/patient/medical-records', icon: FileText },
   { title: 'Upload Records', url: '/patient/medical-records/upload', icon: Upload },
   { title: 'Document Sharing', url: '/document-sharing', icon: Share2 },
+  { title: 'Secure Delivery', url: '/secure-delivery', icon: FileSignature },
   { title: 'Messages', url: '/patient/messages', icon: MessageSquare },
+  { title: 'Community Forums', url: '/community-forums', icon: MessageSquare },
   { title: 'Payments', url: '/patient/payments', icon: CreditCard },
   { title: 'Insurance Check', url: '/patient/insurance-check', icon: Shield },
   { title: 'Cost Estimator', url: '/cost-estimator', icon: DollarSign },

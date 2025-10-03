@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Calendar, FileText, CreditCard, MessageSquare, Bell, Settings, User, Activity, Clock, BarChart3, Stethoscope, Users, Building2, ListChecks, UsersRound, LifeBuoy, Shield } from 'lucide-react';
+import { Home, Calendar, FileText, CreditCard, MessageSquare, Bell, Settings, User, Activity, Clock, BarChart3, Stethoscope, Users, Building2, ListChecks, UsersRound, LifeBuoy, Shield, CalendarSync, Network, Reply, ClipboardList, UserX } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -16,12 +16,18 @@ const specialistMenuItems = [
   { title: 'Dashboard', url: '/specialist/dashboard', icon: Home },
   { title: 'Appointments', url: '/specialist/appointments', icon: Calendar },
   { title: 'Availability', url: '/specialist/availability', icon: Clock },
+  { title: 'Calendar Sync', url: '/calendar-sync-settings', icon: CalendarSync },
+  { title: 'Absences', url: '/provider-absences', icon: UserX },
   { title: 'Waitlist', url: '/specialist/waitlist', icon: ListChecks },
   { title: 'Clinic Queue', url: '/specialist/virtual-clinic-queue', icon: UsersRound },
   { title: 'Time Off', url: '/specialist/time-off', icon: Activity },
   { title: 'Virtual Clinic', url: '/specialist/create-virtual-clinic', icon: Building2 },
   { title: 'Insurance Panel', url: '/insurance/management', icon: Shield },
   { title: 'Patients', url: '/specialist/patients', icon: Users },
+  { title: 'Review Responses', url: '/review-responses', icon: Reply },
+  { title: 'Procedure Tracking', url: '/procedure-tracking', icon: ClipboardList },
+  { title: 'Professional Network', url: '/professional-network', icon: Network },
+  { title: 'Specialist Forums', url: '/forums', icon: MessageSquare },
   { title: 'Messages', url: '/specialist/messages', icon: MessageSquare },
   { title: 'Payments', url: '/specialist/payments', icon: CreditCard },
   { title: 'Analytics', url: '/specialist/analytics', icon: BarChart3 },
