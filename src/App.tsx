@@ -113,12 +113,13 @@ import IntegrationConnectors from './pages/IntegrationConnectors';
 import RoleManagement from './pages/RoleManagement';
 import EngagementCampaigns from './pages/EngagementCampaigns';
 import PaymentProcessing from './pages/PaymentProcessing';
-import LocaleSettings from './pages/LocaleSettings';
-import ReviewResponses from './pages/ReviewResponses';
-import SecureDelivery from './pages/SecureDelivery';
-import TeamCare from './pages/TeamCare';
-import ProviderAbsences from './pages/ProviderAbsences';
-import DataExports from './pages/DataExports';
+// C25-C30 pages - temporarily commented until migration approved
+// import LocaleSettings from './pages/LocaleSettings';
+// import ReviewResponses from './pages/ReviewResponses';
+// import SecureDelivery from './pages/SecureDelivery';
+// import TeamCare from './pages/TeamCare';
+// import ProviderAbsences from './pages/ProviderAbsences';
+// import DataExports from './pages/DataExports';
 
 const queryClient = new QueryClient();
 
@@ -308,12 +309,13 @@ const App = () => (
           <Route path="/role-management" element={<RoleManagement />} />
           <Route path="/engagement-campaigns" element={<EngagementCampaigns />} />
           <Route path="/payment-processing" element={<PaymentProcessing />} />
-          <Route path="/locale-settings" element={<LocaleSettings />} />
-          <Route path="/review-responses" element={<ReviewResponses />} />
-          <Route path="/secure-delivery" element={<SecureDelivery />} />
-          <Route path="/team-care" element={<TeamCare />} />
-          <Route path="/provider-absences" element={<ProviderAbsences />} />
-          <Route path="/data-exports" element={<DataExports />} />
+            {/* C25-C30 routes - uncomment after approving migration */}
+            {/* <Route path="/locale-settings" element={<LocaleSettings />} /> */}
+            {/* <Route path="/review-responses" element={<ReviewResponses />} /> */}
+            {/* <Route path="/secure-delivery" element={<SecureDelivery />} /> */}
+            {/* <Route path="/team-care" element={<TeamCare />} /> */}
+            {/* <Route path="/provider-absences" element={<ProviderAbsences />} /> */}
+            {/* <Route path="/data-exports" element={<DataExports />} /> */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
