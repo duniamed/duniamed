@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import Layout from '@/components/layout/Layout';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { MessageSquare, Send, Clock, CheckCircle2, Star } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Textarea } from '@/components/ui/textarea';
+import { MessageSquare, Send, Clock, CheckCircle2 } from 'lucide-react';
+import { CSATRating } from '@/components/CSATRating';
 
 /**
  * C7 SUPPORT - Live Chat with CSAT Ratings
@@ -59,8 +59,6 @@ export default function LiveChat() {
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [showRating, setShowRating] = useState(false);
-  const [rating, setRating] = useState(0);
-  const [ratingComment, setRatingComment] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -207,34 +205,16 @@ export default function LiveChat() {
   const closeTicket = async () => {
     if (!activeTicket) return;
 
-    setShowRating(true);
-  };
-
-  const submitRating = async () => {
-    if (!activeTicket) return;
-
     try {
-      const { error } = await supabase
+      await supabase
         .from('support_tickets')
         .update({
           status: 'resolved',
-          resolved_at: new Date().toISOString(),
-          rating,
-          rating_comment: ratingComment
+          resolved_at: new Date().toISOString()
         })
         .eq('id', activeTicket.id);
 
-      if (error) throw error;
-
-      toast({
-        title: "Thank you for your feedback!",
-        description: "We appreciate your rating and will use it to improve",
-      });
-
-      setActiveTicket(null);
-      setShowRating(false);
-      setRating(0);
-      setRatingComment('');
+      setShowRating(true);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -371,47 +351,17 @@ export default function LiveChat() {
         </Card>
       </div>
 
-      <Dialog open={showRating} onOpenChange={setShowRating}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Rate Your Support Experience</DialogTitle>
-            <DialogDescription>
-              Help us improve by rating this support interaction
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-4">
-            <div className="flex justify-center gap-2">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <button
-                  key={value}
-                  onClick={() => setRating(value)}
-                  className="transition-transform hover:scale-110"
-                >
-                  <Star
-                    className={`h-8 w-8 ${
-                      value <= rating
-                        ? 'fill-yellow-400 text-yellow-400'
-                        : 'text-gray-300'
-                    }`}
-                  />
-                </button>
-              ))}
-            </div>
-
-            <Textarea
-              placeholder="Additional feedback (optional)"
-              value={ratingComment}
-              onChange={(e) => setRatingComment(e.target.value)}
-              rows={3}
-            />
-
-            <Button onClick={submitRating} className="w-full" disabled={rating === 0}>
-              Submit Rating
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* CSAT Rating */}
+      {showRating && activeTicket && (
+        <CSATRating
+          ticketId={activeTicket.id}
+          onClose={() => setShowRating(false)}
+          onSubmitted={() => {
+            setActiveTicket(null);
+            setMessages([]);
+          }}
+        />
+      )}
     </Layout>
   );
 }

@@ -4024,6 +4024,56 @@ export type Database = {
           },
         ]
       }
+      specialist_verifications: {
+        Row: {
+          attestation_url: string | null
+          created_at: string | null
+          expiry_date: string | null
+          id: string
+          specialist_id: string
+          status: string | null
+          updated_at: string | null
+          verification_date: string | null
+          verification_document_url: string | null
+          verification_type: string
+          verified_by: string
+        }
+        Insert: {
+          attestation_url?: string | null
+          created_at?: string | null
+          expiry_date?: string | null
+          id?: string
+          specialist_id: string
+          status?: string | null
+          updated_at?: string | null
+          verification_date?: string | null
+          verification_document_url?: string | null
+          verification_type: string
+          verified_by: string
+        }
+        Update: {
+          attestation_url?: string | null
+          created_at?: string | null
+          expiry_date?: string | null
+          id?: string
+          specialist_id?: string
+          status?: string | null
+          updated_at?: string | null
+          verification_date?: string | null
+          verification_document_url?: string | null
+          verification_type?: string
+          verified_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "specialist_verifications_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       specialists: {
         Row: {
           accepts_insurance: boolean | null
@@ -4376,6 +4426,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      support_ticket_ratings: {
+        Row: {
+          feedback: string | null
+          id: string
+          rated_at: string | null
+          rated_by: string
+          rating: number
+          ticket_id: string
+        }
+        Insert: {
+          feedback?: string | null
+          id?: string
+          rated_at?: string | null
+          rated_by: string
+          rating: number
+          ticket_id: string
+        }
+        Update: {
+          feedback?: string | null
+          id?: string
+          rated_at?: string | null
+          rated_by?: string
+          rating?: number
+          ticket_id?: string
+        }
+        Relationships: []
       }
       support_tickets: {
         Row: {
@@ -4776,30 +4853,36 @@ export type Database = {
       }
       verification_reminders: {
         Row: {
+          acknowledged_at: string | null
           completed_at: string | null
           created_at: string | null
           due_date: string
           id: string
+          reminder_acknowledged: boolean | null
           reminder_sent: boolean | null
           reminder_sent_at: string | null
           specialist_id: string
           verification_type: string
         }
         Insert: {
+          acknowledged_at?: string | null
           completed_at?: string | null
           created_at?: string | null
           due_date: string
           id?: string
+          reminder_acknowledged?: boolean | null
           reminder_sent?: boolean | null
           reminder_sent_at?: string | null
           specialist_id: string
           verification_type: string
         }
         Update: {
+          acknowledged_at?: string | null
           completed_at?: string | null
           created_at?: string | null
           due_date?: string
           id?: string
+          reminder_acknowledged?: boolean | null
           reminder_sent?: boolean | null
           reminder_sent_at?: string | null
           specialist_id?: string

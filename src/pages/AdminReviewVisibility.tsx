@@ -24,21 +24,20 @@ export default function AdminReviewVisibility() {
 
   const loadReviews = async () => {
     try {
-      const { data: allReviews, error: reviewError } = await supabase
+      // Simplified query - load reviews with basic data only
+      const { data: reviewData, error: reviewError } = await supabase
         .from('reviews')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('id, rating, comment, created_at, moderation_status')
+        .order('created_at', { ascending: false })
+        .limit(100);
       
       if (reviewError) throw reviewError;
 
-      // Filter by visibility  
-      const reviewData = allReviews;
-
-
-      // Load flags separately
+      // Load flags separately with explicit limit
       const { data: flagData } = await supabase
         .from('review_flags')
-        .select('*');
+        .select('id, review_id, flag_type, flag_reason, status')
+        .limit(200);
 
       // Group flags by review_id
       const flagsByReview: Record<string, any[]> = {};
@@ -51,13 +50,14 @@ export default function AdminReviewVisibility() {
 
       setFlags(flagsByReview);
 
+      // Apply filters
       let filtered = reviewData || [];
 
       if (flagFilter === 'flagged') {
         filtered = filtered.filter(r => flagsByReview[r.id]?.length > 0);
       } else if (flagFilter === 'pending') {
         filtered = filtered.filter(r =>
-          flagsByReview[r.id]?.some((f: any) => f.status === 'pending')
+          flagsByReview[r.id]?.some((f: { status: string }) => f.status === 'pending')
         );
       }
 

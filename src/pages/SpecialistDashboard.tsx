@@ -13,6 +13,7 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
+import { VerificationReminders } from '@/components/VerificationReminders';
 
 interface SpecialistData {
   id: string;
@@ -342,6 +343,9 @@ function DashboardContent() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Verification Reminders */}
+          <VerificationReminders />
 
           {/* Upcoming Appointments */}
           <Card className="border-2">

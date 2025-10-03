@@ -148,13 +148,22 @@ function AppointmentsContent() {
           <p className="line-clamp-2">{appointment.chief_complaint}</p>
         </div>
 
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center justify-between text-sm gap-2">
           <span className="text-muted-foreground">
             Fee: {appointment.fee} {appointment.currency}
           </span>
-          <Button asChild variant="outline" size="sm">
-            <Link to={`/appointments/${appointment.id}`}>View Details</Link>
-          </Button>
+          <div className="flex gap-2">
+            {appointment.status === 'completed' && (
+              <Button asChild variant="outline" size="sm">
+                <Link to={`/visit-confirmation/${appointment.id}`}>
+                  Confirm Visit
+                </Link>
+              </Button>
+            )}
+            <Button asChild variant="outline" size="sm">
+              <Link to={`/appointments/${appointment.id}`}>View Details</Link>
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
