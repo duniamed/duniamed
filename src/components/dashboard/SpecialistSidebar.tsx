@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Calendar, FileText, CreditCard, MessageSquare, Bell, Settings, User, Activity, Clock, BarChart3, Stethoscope, Users, Building2, ListChecks, UsersRound } from 'lucide-react';
+import { Home, Calendar, FileText, CreditCard, MessageSquare, Bell, Settings, User, Activity, Clock, BarChart3, Stethoscope, Users, Building2, ListChecks, UsersRound, LifeBuoy, Shield } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -20,10 +20,12 @@ const specialistMenuItems = [
   { title: 'Clinic Queue', url: '/specialist/virtual-clinic-queue', icon: UsersRound },
   { title: 'Time Off', url: '/specialist/time-off', icon: Activity },
   { title: 'Virtual Clinic', url: '/specialist/create-virtual-clinic', icon: Building2 },
+  { title: 'Insurance Panel', url: '/insurance/management', icon: Shield },
   { title: 'Patients', url: '/specialist/patients', icon: Users },
   { title: 'Messages', url: '/specialist/messages', icon: MessageSquare },
   { title: 'Payments', url: '/specialist/payments', icon: CreditCard },
   { title: 'Analytics', url: '/specialist/analytics', icon: BarChart3 },
+  { title: 'Support', url: '/support/tickets', icon: LifeBuoy },
   { title: 'Notifications', url: '/specialist/notifications', icon: Bell },
   { title: 'Profile', url: '/specialist/profile', icon: User },
   { title: 'Settings', url: '/specialist/profile/edit', icon: Settings },

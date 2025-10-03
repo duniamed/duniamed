@@ -1251,6 +1251,53 @@ export type Database = {
           },
         ]
       }
+      credential_verifications: {
+        Row: {
+          audit_trail: Json | null
+          created_at: string | null
+          expiry_date: string | null
+          id: string
+          is_active: boolean | null
+          specialist_id: string
+          verification_date: string | null
+          verification_document_url: string | null
+          verification_type: string
+          verified_by: string
+        }
+        Insert: {
+          audit_trail?: Json | null
+          created_at?: string | null
+          expiry_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          specialist_id: string
+          verification_date?: string | null
+          verification_document_url?: string | null
+          verification_type: string
+          verified_by: string
+        }
+        Update: {
+          audit_trail?: Json | null
+          created_at?: string | null
+          expiry_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          specialist_id?: string
+          verification_date?: string | null
+          verification_document_url?: string | null
+          verification_type?: string
+          verified_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credential_verifications_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       data_portability_requests: {
         Row: {
           completed_at: string | null
@@ -2569,6 +2616,146 @@ export type Database = {
           },
         ]
       }
+      procedure_answers: {
+        Row: {
+          answer: string
+          created_at: string | null
+          id: string
+          is_verified: boolean | null
+          question_id: string
+          specialist_id: string
+          updated_at: string | null
+          upvotes: number | null
+        }
+        Insert: {
+          answer: string
+          created_at?: string | null
+          id?: string
+          is_verified?: boolean | null
+          question_id: string
+          specialist_id: string
+          updated_at?: string | null
+          upvotes?: number | null
+        }
+        Update: {
+          answer?: string
+          created_at?: string | null
+          id?: string
+          is_verified?: boolean | null
+          question_id?: string
+          specialist_id?: string
+          updated_at?: string | null
+          upvotes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "procedure_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "procedure_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "procedure_answers_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      procedure_catalog: {
+        Row: {
+          average_duration: number | null
+          category: string
+          contraindications: string[] | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          preparation_required: string | null
+          procedure_name: string
+          recovery_time: string | null
+          success_rate: number | null
+          symptoms_treated: string[] | null
+          typical_cost_range: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          average_duration?: number | null
+          category: string
+          contraindications?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          preparation_required?: string | null
+          procedure_name: string
+          recovery_time?: string | null
+          success_rate?: number | null
+          symptoms_treated?: string[] | null
+          typical_cost_range?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          average_duration?: number | null
+          category?: string
+          contraindications?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          preparation_required?: string | null
+          procedure_name?: string
+          recovery_time?: string | null
+          success_rate?: number | null
+          symptoms_treated?: string[] | null
+          typical_cost_range?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      procedure_questions: {
+        Row: {
+          created_at: string | null
+          id: string
+          patient_id: string
+          priority: string | null
+          procedure_id: string | null
+          question: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          patient_id: string
+          priority?: string | null
+          procedure_id?: string | null
+          question: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          patient_id?: string
+          priority?: string | null
+          procedure_id?: string | null
+          question?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "procedure_questions_procedure_id_fkey"
+            columns: ["procedure_id"]
+            isOneToOne: false
+            referencedRelation: "procedure_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_analytics: {
         Row: {
           created_at: string | null
@@ -3406,6 +3593,57 @@ export type Database = {
           },
         ]
       }
+      specialist_procedures: {
+        Row: {
+          cases_performed: number | null
+          created_at: string | null
+          experience_years: number | null
+          id: string
+          is_verified: boolean | null
+          last_verified_at: string | null
+          procedure_id: string
+          specialist_id: string
+          verification_documents: Json | null
+        }
+        Insert: {
+          cases_performed?: number | null
+          created_at?: string | null
+          experience_years?: number | null
+          id?: string
+          is_verified?: boolean | null
+          last_verified_at?: string | null
+          procedure_id: string
+          specialist_id: string
+          verification_documents?: Json | null
+        }
+        Update: {
+          cases_performed?: number | null
+          created_at?: string | null
+          experience_years?: number | null
+          id?: string
+          is_verified?: boolean | null
+          last_verified_at?: string | null
+          procedure_id?: string
+          specialist_id?: string
+          verification_documents?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "specialist_procedures_procedure_id_fkey"
+            columns: ["procedure_id"]
+            isOneToOne: false
+            referencedRelation: "procedure_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "specialist_procedures_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       specialist_time_off: {
         Row: {
           created_at: string | null
@@ -3690,6 +3928,107 @@ export type Database = {
           status?: string
           stripe_customer_id?: string
           stripe_subscription_id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      support_ticket_messages: {
+        Row: {
+          attachments: Json | null
+          created_at: string | null
+          id: string
+          is_staff: boolean | null
+          message: string
+          sender_id: string
+          ticket_id: string
+        }
+        Insert: {
+          attachments?: Json | null
+          created_at?: string | null
+          id?: string
+          is_staff?: boolean | null
+          message: string
+          sender_id: string
+          ticket_id: string
+        }
+        Update: {
+          attachments?: Json | null
+          created_at?: string | null
+          id?: string
+          is_staff?: boolean | null
+          message?: string
+          sender_id?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_tickets: {
+        Row: {
+          assigned_to: string | null
+          category: string
+          created_at: string | null
+          description: string
+          escalated: boolean | null
+          escalated_at: string | null
+          id: string
+          priority: string | null
+          rating: number | null
+          rating_comment: string | null
+          resolution_notes: string | null
+          resolved_at: string | null
+          sla_deadline: string | null
+          status: string | null
+          subject: string
+          ticket_number: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          category: string
+          created_at?: string | null
+          description: string
+          escalated?: boolean | null
+          escalated_at?: string | null
+          id?: string
+          priority?: string | null
+          rating?: number | null
+          rating_comment?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          sla_deadline?: string | null
+          status?: string | null
+          subject: string
+          ticket_number?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          assigned_to?: string | null
+          category?: string
+          created_at?: string | null
+          description?: string
+          escalated?: boolean | null
+          escalated_at?: string | null
+          id?: string
+          priority?: string | null
+          rating?: number | null
+          rating_comment?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          sla_deadline?: string | null
+          status?: string | null
+          subject?: string
+          ticket_number?: string
           updated_at?: string | null
           user_id?: string
         }
@@ -4005,6 +4344,74 @@ export type Database = {
             columns: ["specialist_id"]
             isOneToOne: false
             referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      visit_confirmations: {
+        Row: {
+          appointment_id: string
+          created_at: string | null
+          dispute_evidence: Json | null
+          dispute_opened: boolean | null
+          dispute_opened_at: string | null
+          dispute_reason: string | null
+          dispute_resolution: string | null
+          dispute_resolved_at: string | null
+          id: string
+          patient_confirmed: boolean | null
+          patient_confirmed_at: string | null
+          patient_signature: string | null
+          service_delivered: boolean | null
+          specialist_confirmed: boolean | null
+          specialist_confirmed_at: string | null
+          specialist_signature: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string | null
+          dispute_evidence?: Json | null
+          dispute_opened?: boolean | null
+          dispute_opened_at?: string | null
+          dispute_reason?: string | null
+          dispute_resolution?: string | null
+          dispute_resolved_at?: string | null
+          id?: string
+          patient_confirmed?: boolean | null
+          patient_confirmed_at?: string | null
+          patient_signature?: string | null
+          service_delivered?: boolean | null
+          specialist_confirmed?: boolean | null
+          specialist_confirmed_at?: string | null
+          specialist_signature?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string | null
+          dispute_evidence?: Json | null
+          dispute_opened?: boolean | null
+          dispute_opened_at?: string | null
+          dispute_reason?: string | null
+          dispute_resolution?: string | null
+          dispute_resolved_at?: string | null
+          id?: string
+          patient_confirmed?: boolean | null
+          patient_confirmed_at?: string | null
+          patient_signature?: string | null
+          service_delivered?: boolean | null
+          specialist_confirmed?: boolean | null
+          specialist_confirmed_at?: string | null
+          specialist_signature?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visit_confirmations_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
             referencedColumns: ["id"]
           },
         ]

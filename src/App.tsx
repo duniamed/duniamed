@@ -91,6 +91,9 @@ import InsuranceManagement from "./pages/InsuranceManagement";
 import MediationChat from "./pages/MediationChat";
 import ReviewResponse from "./pages/ReviewResponse";
 import ReviewAppeals from "./pages/ReviewAppeals";
+import VisitConfirmation from "./pages/VisitConfirmation";
+import SupportTickets from "./pages/SupportTickets";
+import ProcedureCatalog from "./pages/ProcedureCatalog";
 
 const queryClient = new QueryClient();
 
@@ -213,6 +216,9 @@ const App = () => (
             <Route path="/document-sharing" element={<DocumentSharing />} />
             <Route path="/data-export" element={<DataExport />} />
             <Route path="/patient/insurance-check" element={<PatientInsuranceCheck />} />
+            <Route path="/visit-confirmation/:appointmentId" element={<VisitConfirmation />} />
+            <Route path="/support/tickets" element={<SupportTickets />} />
+            <Route path="/procedures" element={<ProcedureCatalog />} />
             
             {/* SHARED FEATURES */}
             <Route path="/instant-consultation" element={<InstantConsultation />} />
