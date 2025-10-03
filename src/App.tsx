@@ -135,6 +135,8 @@ import ImplementationStatus from './pages/ImplementationStatus';
 import ICDCodeSearch from './pages/ICDCodeSearch';
 import VoiceAssistPage from './pages/VoiceAssistPage';
 import SupportChat from './pages/SupportChat';
+import ShiftMarketplace from './pages/ShiftMarketplace';
+import CredentialVerification from './pages/CredentialVerification';
 import ModerationCenter from './pages/ModerationCenter';
 import DocumentSignatures from './pages/DocumentSignatures';
 import WhatsAppMessages from './pages/WhatsAppMessages';
@@ -307,9 +309,13 @@ const App = () => (
             <Route path="/admin/implementation-status" element={<ImplementationStatus />} />
             
             {/* C25-C30 INTEGRATIONS */}
-            <Route path="/icd-codes" element={<ICDCodeSearch />} />
-            <Route path="/voice-assist" element={<VoiceAssistPage />} />
-            <Route path="/support-chat" element={<SupportChat />} />
+          <Route path="/icd-codes" element={<ICDCodeSearch />} />
+          <Route path="/voice-assist" element={<VoiceAssistPage />} />
+          <Route path="/support-chat" element={<SupportChat />} />
+          
+          {/* Shift Marketplace & Credentials */}
+          <Route path="/shifts/marketplace" element={<ShiftMarketplace />} />
+          <Route path="/credentials/verification" element={<CredentialVerification />} />
             <Route path="/admin/moderation" element={<ModerationCenter />} />
             <Route path="/documents/signatures" element={<DocumentSignatures />} />
             <Route path="/messages/whatsapp" element={<WhatsAppMessages />} />
