@@ -46,6 +46,9 @@ interface Complaint {
   escalated_to_board: boolean;
   created_at: string;
   resolved_at: string | null;
+  dispute_opened_at: string | null;
+  dispute_reason: string | null;
+  mediation_status: string;
 }
 
 export default function Complaints() {
@@ -153,6 +156,34 @@ export default function Complaints() {
         return 'secondary';
       default:
         return 'outline';
+    }
+  };
+
+  const handleOpenDispute = async (complaintId: string) => {
+    try {
+      const { error } = await supabase
+        .from('complaints')
+        .update({
+          dispute_opened_at: new Date().toISOString(),
+          mediation_status: 'active',
+          status: 'mediation'
+        })
+        .eq('id', complaintId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Dispute opened',
+        description: 'Mediation process has been initiated',
+      });
+
+      loadComplaints();
+    } catch (error: any) {
+      toast({
+        title: 'Error opening dispute',
+        description: error.message,
+        variant: 'destructive',
+      });
     }
   };
 
@@ -307,6 +338,33 @@ export default function Complaints() {
                   <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
                     <p className="text-sm text-green-700 dark:text-green-300">
                       ✓ Resolved on {new Date(complaint.resolved_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                )}
+                
+                {/* Dispute button for specialists */}
+                {complaint.against_type === 'specialist' && 
+                 complaint.status !== 'resolved' && 
+                 !complaint.dispute_opened_at && (
+                  <div className="mt-4">
+                    <Button 
+                      onClick={() => handleOpenDispute(complaint.id)}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      Open Dispute
+                    </Button>
+                  </div>
+                )}
+
+                {complaint.dispute_opened_at && (
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                      Dispute Active
+                    </p>
+                    <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                      Mediation opened on {new Date(complaint.dispute_opened_at).toLocaleDateString()}
                     </p>
                   </div>
                 )}
