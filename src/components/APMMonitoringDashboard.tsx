@@ -103,56 +103,56 @@ export default function APMMonitoringDashboard() {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="container mx-auto p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Activity className="w-8 h-8" />
+          <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
+            <Activity className="w-6 h-6 md:w-8 md:h-8" />
             APM Monitoring Dashboard
           </h1>
-          <p className="text-muted-foreground">Application Performance & Security Event Tracking</p>
+          <p className="text-sm md:text-base text-muted-foreground">Application Performance & Security Event Tracking</p>
         </div>
-        <Badge variant="outline" className="text-lg px-4 py-2">
-          <Zap className="w-4 h-4 mr-2" />
+        <Badge variant="outline" className="text-sm md:text-lg px-3 py-1.5 md:px-4 md:py-2">
+          <Zap className="w-3 h-3 md:w-4 md:h-4 mr-2" />
           New Relic Connected
         </Badge>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-        <Card className="p-4">
-          <h3 className="text-sm font-medium mb-2">Total Events</h3>
-          <p className="text-3xl font-bold">{stats.total}</p>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4 mb-6">
+        <Card className="p-3 md:p-4">
+          <h3 className="text-xs md:text-sm font-medium mb-1 md:mb-2">Total Events</h3>
+          <p className="text-2xl md:text-3xl font-bold">{stats.total}</p>
         </Card>
 
-        <Card className="p-4 border-red-200">
-          <h3 className="text-sm font-medium mb-2 text-red-600">Critical</h3>
-          <p className="text-3xl font-bold text-red-600">{stats.critical}</p>
+        <Card className="p-3 md:p-4 border-red-200">
+          <h3 className="text-xs md:text-sm font-medium mb-1 md:mb-2 text-red-600">Critical</h3>
+          <p className="text-2xl md:text-3xl font-bold text-red-600">{stats.critical}</p>
         </Card>
 
-        <Card className="p-4 border-orange-200">
-          <h3 className="text-sm font-medium mb-2 text-orange-600">Errors</h3>
-          <p className="text-3xl font-bold text-orange-600">{stats.error}</p>
+        <Card className="p-3 md:p-4 border-orange-200">
+          <h3 className="text-xs md:text-sm font-medium mb-1 md:mb-2 text-orange-600">Errors</h3>
+          <p className="text-2xl md:text-3xl font-bold text-orange-600">{stats.error}</p>
         </Card>
 
-        <Card className="p-4 border-yellow-200">
-          <h3 className="text-sm font-medium mb-2 text-yellow-600">Warnings</h3>
-          <p className="text-3xl font-bold text-yellow-600">{stats.warning}</p>
+        <Card className="p-3 md:p-4 border-yellow-200">
+          <h3 className="text-xs md:text-sm font-medium mb-1 md:mb-2 text-yellow-600">Warnings</h3>
+          <p className="text-2xl md:text-3xl font-bold text-yellow-600">{stats.warning}</p>
         </Card>
 
-        <Card className="p-4 border-blue-200">
-          <h3 className="text-sm font-medium mb-2 text-blue-600">Info</h3>
-          <p className="text-3xl font-bold text-blue-600">{stats.info}</p>
+        <Card className="p-3 md:p-4 border-blue-200">
+          <h3 className="text-xs md:text-sm font-medium mb-1 md:mb-2 text-blue-600">Info</h3>
+          <p className="text-2xl md:text-3xl font-bold text-blue-600">{stats.info}</p>
         </Card>
       </div>
 
       <ScrollArea className="h-[500px]">
         <div className="space-y-2">
           {events.map((event) => (
-            <Card key={event.id} className="p-4">
-              <div className="flex items-start justify-between mb-2">
+            <Card key={event.id} className="p-3 md:p-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 gap-2">
                 <div className="flex items-center gap-2">
                   {getSeverityIcon(event.severity)}
-                  <span className="font-semibold">{event.event_type}</span>
+                  <span className="font-semibold text-sm md:text-base">{event.event_type}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   {getSeverityBadge(event.severity)}
@@ -162,14 +162,14 @@ export default function APMMonitoringDashboard() {
                 </div>
               </div>
 
-              <p className="text-sm mb-2">{event.message}</p>
+              <p className="text-xs md:text-sm mb-2">{event.message}</p>
 
               {event.metadata && Object.keys(event.metadata).length > 0 && (
                 <details className="text-xs">
                   <summary className="cursor-pointer text-muted-foreground">
                     View metadata
                   </summary>
-                  <pre className="mt-2 p-2 bg-muted rounded overflow-x-auto">
+                  <pre className="mt-2 p-2 bg-muted rounded overflow-x-auto text-[10px] md:text-xs">
                     {JSON.stringify(event.metadata, null, 2)}
                   </pre>
                 </details>
