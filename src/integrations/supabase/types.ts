@@ -2443,6 +2443,39 @@ export type Database = {
           },
         ]
       }
+      notification_channels: {
+        Row: {
+          channel_type: string
+          channel_value: string
+          created_at: string | null
+          id: string
+          is_primary: boolean | null
+          is_verified: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          channel_type: string
+          channel_value: string
+          created_at?: string | null
+          id?: string
+          is_primary?: boolean | null
+          is_verified?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          channel_type?: string
+          channel_value?: string
+          created_at?: string | null
+          id?: string
+          is_primary?: boolean | null
+          is_verified?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       notification_delivery: {
         Row: {
           attempts: number | null
@@ -3989,6 +4022,50 @@ export type Database = {
           },
         ]
       }
+      specialist_sponsorships: {
+        Row: {
+          amount_paid: number | null
+          created_at: string | null
+          end_date: string
+          id: string
+          is_active: boolean | null
+          specialist_id: string
+          sponsorship_type: string
+          start_date: string
+          updated_at: string | null
+        }
+        Insert: {
+          amount_paid?: number | null
+          created_at?: string | null
+          end_date: string
+          id?: string
+          is_active?: boolean | null
+          specialist_id: string
+          sponsorship_type: string
+          start_date: string
+          updated_at?: string | null
+        }
+        Update: {
+          amount_paid?: number | null
+          created_at?: string | null
+          end_date?: string
+          id?: string
+          is_active?: boolean | null
+          specialist_id?: string
+          sponsorship_type?: string
+          start_date?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "specialist_sponsorships_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       specialist_time_off: {
         Row: {
           created_at: string | null
@@ -4090,11 +4167,13 @@ export type Database = {
           currency: string | null
           education: Json | null
           emergency_availability: boolean | null
+          fee_transparency_level: string | null
           graduation_year: number | null
           hospital_affiliations: string[] | null
           id: string
           in_person_enabled: boolean | null
           insurance_accepted: string[] | null
+          insurance_accepted_list: string[] | null
           is_accepting_patients: boolean | null
           is_online: boolean | null
           languages: string[] | null
@@ -4141,11 +4220,13 @@ export type Database = {
           currency?: string | null
           education?: Json | null
           emergency_availability?: boolean | null
+          fee_transparency_level?: string | null
           graduation_year?: number | null
           hospital_affiliations?: string[] | null
           id?: string
           in_person_enabled?: boolean | null
           insurance_accepted?: string[] | null
+          insurance_accepted_list?: string[] | null
           is_accepting_patients?: boolean | null
           is_online?: boolean | null
           languages?: string[] | null
@@ -4192,11 +4273,13 @@ export type Database = {
           currency?: string | null
           education?: Json | null
           emergency_availability?: boolean | null
+          fee_transparency_level?: string | null
           graduation_year?: number | null
           hospital_affiliations?: string[] | null
           id?: string
           in_person_enabled?: boolean | null
           insurance_accepted?: string[] | null
+          insurance_accepted_list?: string[] | null
           is_accepting_patients?: boolean | null
           is_online?: boolean | null
           languages?: string[] | null

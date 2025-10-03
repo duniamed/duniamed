@@ -8,11 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search as SearchIcon, MapPin, Star, Calendar, DollarSign, Filter, X } from 'lucide-react';
+import { Search as SearchIcon, MapPin, Star, Calendar, DollarSign, Filter, X, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { MEDICAL_SPECIALTIES } from '@/lib/constants/specialties';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Checkbox } from '@/components/ui/checkbox';
+import { TransparencyBadges } from '@/components/TransparencyBadges';
 
 interface Specialist {
   id: string;
@@ -59,6 +60,7 @@ function SearchContent() {
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'rating');
   const [minFee, setMinFee] = useState(searchParams.get('minFee') || '');
   const [maxFee, setMaxFee] = useState(searchParams.get('maxFee') || '');
+  const [verifiedOnly, setVerifiedOnly] = useState(searchParams.get('verified') === 'true');
   
   // Advanced filters
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -70,6 +72,7 @@ function SearchContent() {
   
   const [conditions, setConditions] = useState<string[]>([]);
   const [insuranceNetworks, setInsuranceNetworks] = useState<string[]>([]);
+  const [sponsorships, setSponsorships] = useState<Record<string, any>>({});
 
   const specialties = MEDICAL_SPECIALTIES;
   const languages = ['English', 'Spanish', 'Portuguese', 'French', 'German'];
@@ -80,11 +83,12 @@ function SearchContent() {
 
   useEffect(() => {
     fetchConditionsAndInsurance();
+    loadSponsorships();
   }, []);
 
   useEffect(() => {
     fetchSpecialists();
-  }, [searchQuery, selectedSpecialty, selectedLanguage, sortBy, minFee, maxFee, selectedCondition, selectedTimezone, acceptsInsurance, consultationType, availableNow]);
+  }, [searchQuery, selectedSpecialty, selectedLanguage, sortBy, minFee, maxFee, selectedCondition, selectedTimezone, acceptsInsurance, consultationType, availableNow, verifiedOnly]);
 
   const fetchConditionsAndInsurance = async () => {
     const [conditionsRes, insuranceRes] = await Promise.all([
@@ -98,6 +102,19 @@ function SearchContent() {
     if (insuranceRes.data) {
       setInsuranceNetworks(insuranceRes.data.map(i => i.network_name));
     }
+  };
+
+  const loadSponsorships = async () => {
+    const { data } = await supabase
+      .from('specialist_sponsorships')
+      .select('specialist_id, sponsorship_type')
+      .eq('is_active', true);
+
+    const sponsorshipMap: Record<string, any> = {};
+    data?.forEach(s => {
+      sponsorshipMap[s.specialist_id] = s.sponsorship_type;
+    });
+    setSponsorships(sponsorshipMap);
   };
 
   const fetchSpecialists = async () => {
@@ -115,7 +132,7 @@ function SearchContent() {
           city
         )
       `)
-      .in('verification_status', ['verified', 'pending'])
+      .in('verification_status', verifiedOnly ? ['verified'] : ['verified', 'pending'])
       .eq('is_accepting_patients', true);
 
     if (searchQuery) {
@@ -195,6 +212,7 @@ function SearchContent() {
     if (acceptsInsurance) params.insurance = 'true';
     if (consultationType !== 'all') params.type = consultationType;
     if (availableNow) params.available = 'true';
+    if (verifiedOnly) params.verified = 'true';
     setSearchParams(params);
   };
 
@@ -210,6 +228,7 @@ function SearchContent() {
     setAcceptsInsurance(false);
     setConsultationType('all');
     setAvailableNow(false);
+    setVerifiedOnly(false);
     setSearchParams({});
   };
 
@@ -387,7 +406,18 @@ function SearchContent() {
                       />
                     </div>
 
-                    <div className="space-y-3 flex flex-col justify-end">
+                     <div className="space-y-3 flex flex-col justify-end">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="verified" 
+                          checked={verifiedOnly}
+                          onCheckedChange={(checked) => setVerifiedOnly(checked as boolean)}
+                        />
+                        <label htmlFor="verified" className="text-sm font-medium cursor-pointer flex items-center gap-1">
+                          <Shield className="h-3 w-3" />
+                          Verified Quality Only
+                        </label>
+                      </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox 
                           id="insurance" 
@@ -437,7 +467,7 @@ function SearchContent() {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {specialists.map((specialist) => (
                 <Card key={specialist.id} className="benefit-card hover:shadow-xl transition-all border-2 hover:border-primary/30 group">
-                  <CardHeader>
+                   <CardHeader>
                     <div className="flex items-start gap-4">
                       <div className="relative">
                         <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center text-primary font-bold text-xl border-2 border-primary/20">
@@ -465,6 +495,16 @@ function SearchContent() {
                            <MapPin className="h-3 w-3" />
                            {specialist.profiles?.city}, {specialist.profiles?.country}
                          </CardDescription>
+                         {/* C8: Transparency Badges */}
+                         <div className="mt-2">
+                           <TransparencyBadges
+                             isVerified={specialist.verification_status === 'verified'}
+                             sponsorshipType={sponsorships[specialist.id]}
+                             insuranceAccepted={specialist.insurance_accepted}
+                             auditCertified={specialist.verification_status === 'verified'}
+                             showLabels={false}
+                           />
+                         </div>
                        </div>
                     </div>
                   </CardHeader>

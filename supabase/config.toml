@@ -77,3 +77,9 @@ verify_jwt = false
 
 [functions.notify-procedure-match]
 verify_jwt = false
+
+[functions.send-multi-channel-notification]
+verify_jwt = false
+
+[functions.route-procedure-question]
+verify_jwt = false

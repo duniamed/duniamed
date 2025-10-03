@@ -225,12 +225,14 @@ const App = () => (
             <Route path="/patient/insurance-check" element={<PatientInsuranceCheck />} />
             <Route path="/visit-confirmation/:appointmentId" element={<VisitConfirmation />} />
             <Route path="/support/tickets" element={<SupportTickets />} />
+            <Route path="/support/analytics" element={<SupportAnalyticsDashboard />} />
             <Route path="/procedures" element={<ProcedureCatalog />} />
             <Route path="/bug-report" element={<BugReport />} />
             <Route path="/accessibility" element={<AccessibilitySettings />} />
             <Route path="/reviews/visibility" element={<AdminReviewVisibility />} />
-          <Route path="/activity" element={<ProviderActivity />} />
-          <Route path="/session-security" element={<SessionManagement />} />
+            <Route path="/activity" element={<ProviderActivity />} />
+            <Route path="/session-security" element={<SessionManagement />} />
+            <Route path="/notifications/preferences" element={<NotificationPreferences />} />
             <Route path="/voice" element={<VoiceAssist />} />
             <Route path="/learn" element={<TutorialSystem />} />
             <Route path="/chat" element={<LiveChat />} />
