@@ -5,8 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Volume2, Mic, Square, Play, Settings } from 'lucide-react';
+import { Volume2, Mic, Square, Settings } from 'lucide-react';
 import { useConversation } from '@11labs/react';
+import { supabase } from '@/integrations/supabase/client';
 
 /**
  * C6 USABILITY - Voice Assist Integration
@@ -52,7 +53,7 @@ export default function VoiceAssist() {
     onError: (error) => {
       toast({
         title: "Voice error",
-        description: error.message,
+        description: typeof error === 'string' ? error : 'An error occurred',
         variant: "destructive",
       });
     },
@@ -79,20 +80,19 @@ export default function VoiceAssist() {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       
-      // Generate signed URL from your backend
-      const response = await fetch('/api/elevenlabs/signed-url', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ agentId, apiKey })
+      // Get signed URL from edge function
+      const { data, error } = await supabase.functions.invoke('elevenlabs-signed-url', {
+        body: { agentId, apiKey }
       });
       
-      const { signedUrl } = await response.json();
+      if (error) throw error;
+      if (!data?.signedUrl) throw new Error('No signed URL returned');
       
-      await conversation.startSession({ url: signedUrl });
+      await conversation.startSession({ signedUrl: data.signedUrl });
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message,
+        description: error?.message || 'Failed to start conversation',
         variant: "destructive",
       });
     }
