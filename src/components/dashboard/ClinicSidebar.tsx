@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Calendar, Users, Settings, BarChart3, CreditCard, Building2, UserPlus, FileText, ListChecks, UsersRound, Palette, UsersIcon } from 'lucide-react';
+import { Home, Calendar, Users, Settings, BarChart3, CreditCard, Building2, FileText, ListChecks, UsersRound, Palette, UsersIcon, Package, DollarSign } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +22,8 @@ const clinicMenuItems = [
   { title: 'Clinic Queue', url: '/clinic/virtual-clinic-queue', icon: UsersRound },
   { title: 'Analytics', url: '/clinic/analytics', icon: BarChart3 },
   { title: 'Payments', url: '/clinic/payments', icon: CreditCard },
+  { title: 'Resources', url: '/clinic/resources', icon: Package },
+  { title: 'Revenue Dashboard', url: '/clinic/revenue-dashboard', icon: DollarSign },
   { title: 'Profile', url: '/clinic/profile/edit', icon: Building2 },
   { title: 'Settings', url: '/clinic/settings', icon: Settings },
 ];

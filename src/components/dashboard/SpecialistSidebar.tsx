@@ -27,6 +27,7 @@ const specialistMenuItems = [
   { title: 'Review Responses', url: '/review-responses', icon: Reply },
   { title: 'Procedure Tracking', url: '/procedure-tracking', icon: ClipboardList },
   { title: 'Professional Network', url: '/professional-network', icon: Network },
+  { title: 'Performance Metrics', url: '/specialist/performance', icon: BarChart3 },
   { title: 'Specialist Forums', url: '/forums', icon: MessageSquare },
   { title: 'Messages', url: '/specialist/messages', icon: MessageSquare },
   { title: 'Payments', url: '/specialist/payments', icon: CreditCard },

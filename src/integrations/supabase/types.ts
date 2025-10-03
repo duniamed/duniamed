@@ -421,9 +421,12 @@ export type Database = {
           access_token: string | null
           calendar_id: string | null
           created_at: string | null
+          failure_count: number | null
           id: string
+          last_refresh_attempt: string | null
           last_sync_at: string | null
           provider: string
+          refresh_count: number | null
           refresh_token: string | null
           sync_enabled: boolean | null
           sync_errors: Json | null
@@ -435,9 +438,12 @@ export type Database = {
           access_token?: string | null
           calendar_id?: string | null
           created_at?: string | null
+          failure_count?: number | null
           id?: string
+          last_refresh_attempt?: string | null
           last_sync_at?: string | null
           provider: string
+          refresh_count?: number | null
           refresh_token?: string | null
           sync_enabled?: boolean | null
           sync_errors?: Json | null
@@ -449,15 +455,48 @@ export type Database = {
           access_token?: string | null
           calendar_id?: string | null
           created_at?: string | null
+          failure_count?: number | null
           id?: string
+          last_refresh_attempt?: string | null
           last_sync_at?: string | null
           provider?: string
+          refresh_count?: number | null
           refresh_token?: string | null
           sync_enabled?: boolean | null
           sync_errors?: Json | null
           token_expires_at?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      calendar_sync_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          error_message: string | null
+          id: string
+          provider: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          provider: string
+          status: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          provider?: string
+          status?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -906,6 +945,64 @@ export type Database = {
             columns: ["clinic_id"]
             isOneToOne: false
             referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clinic_resources: {
+        Row: {
+          capacity: number | null
+          clinic_id: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          location_id: string | null
+          properties: Json | null
+          resource_name: string
+          resource_type: string
+        }
+        Insert: {
+          capacity?: number | null
+          clinic_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          location_id?: string | null
+          properties?: Json | null
+          resource_name: string
+          resource_type: string
+        }
+        Update: {
+          capacity?: number | null
+          clinic_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          location_id?: string | null
+          properties?: Json | null
+          resource_name?: string
+          resource_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinic_resources_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinic_resources_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinic_resources_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "clinic_locations"
             referencedColumns: ["id"]
           },
         ]
@@ -2811,6 +2908,82 @@ export type Database = {
           },
         ]
       }
+      job_postings: {
+        Row: {
+          application_count: number | null
+          clinic_id: string | null
+          created_at: string | null
+          description: string
+          employment_type: string | null
+          experience_level: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          location_id: string | null
+          posted_by: string
+          salary_range_max: number | null
+          salary_range_min: number | null
+          specialty_required: string[] | null
+          title: string
+        }
+        Insert: {
+          application_count?: number | null
+          clinic_id?: string | null
+          created_at?: string | null
+          description: string
+          employment_type?: string | null
+          experience_level?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          location_id?: string | null
+          posted_by: string
+          salary_range_max?: number | null
+          salary_range_min?: number | null
+          specialty_required?: string[] | null
+          title: string
+        }
+        Update: {
+          application_count?: number | null
+          clinic_id?: string | null
+          created_at?: string | null
+          description?: string
+          employment_type?: string | null
+          experience_level?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          location_id?: string | null
+          posted_by?: string
+          salary_range_max?: number | null
+          salary_range_min?: number | null
+          specialty_required?: string[] | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_postings_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_postings_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_postings_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "clinic_locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lab_orders: {
         Row: {
           appointment_id: string | null
@@ -3981,6 +4154,47 @@ export type Database = {
         }
         Relationships: []
       }
+      professional_endorsements: {
+        Row: {
+          created_at: string | null
+          endorsed_id: string | null
+          endorsement_text: string | null
+          endorser_id: string
+          id: string
+          is_verified: boolean | null
+          relationship_type: string | null
+          skill_category: string
+        }
+        Insert: {
+          created_at?: string | null
+          endorsed_id?: string | null
+          endorsement_text?: string | null
+          endorser_id: string
+          id?: string
+          is_verified?: boolean | null
+          relationship_type?: string | null
+          skill_category: string
+        }
+        Update: {
+          created_at?: string | null
+          endorsed_id?: string | null
+          endorsement_text?: string | null
+          endorser_id?: string
+          id?: string
+          is_verified?: boolean | null
+          relationship_type?: string | null
+          skill_category?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_endorsements_endorsed_id_fkey"
+            columns: ["endorsed_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_analytics: {
         Row: {
           created_at: string | null
@@ -4703,6 +4917,134 @@ export type Database = {
           },
         ]
       }
+      resource_bookings: {
+        Row: {
+          appointment_id: string | null
+          created_at: string | null
+          end_time: string
+          id: string
+          resource_id: string | null
+          start_time: string
+          status: string | null
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string | null
+          end_time: string
+          id?: string
+          resource_id?: string | null
+          start_time: string
+          status?: string | null
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string | null
+          end_time?: string
+          id?: string
+          resource_id?: string | null
+          start_time?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_bookings_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "resource_bookings_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "clinic_resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      revenue_splits: {
+        Row: {
+          appointment_id: string | null
+          clinic_amount: number
+          clinic_id: string | null
+          clinic_percentage: number | null
+          created_at: string | null
+          id: string
+          paid_at: string | null
+          period_end: string
+          period_start: string
+          service_type: string
+          specialist_amount: number
+          specialist_id: string | null
+          specialist_percentage: number | null
+          status: string | null
+          total_amount: number
+        }
+        Insert: {
+          appointment_id?: string | null
+          clinic_amount: number
+          clinic_id?: string | null
+          clinic_percentage?: number | null
+          created_at?: string | null
+          id?: string
+          paid_at?: string | null
+          period_end: string
+          period_start: string
+          service_type: string
+          specialist_amount: number
+          specialist_id?: string | null
+          specialist_percentage?: number | null
+          status?: string | null
+          total_amount: number
+        }
+        Update: {
+          appointment_id?: string | null
+          clinic_amount?: number
+          clinic_id?: string | null
+          clinic_percentage?: number | null
+          created_at?: string | null
+          id?: string
+          paid_at?: string | null
+          period_end?: string
+          period_start?: string
+          service_type?: string
+          specialist_amount?: number
+          specialist_id?: string | null
+          specialist_percentage?: number | null
+          status?: string | null
+          total_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "revenue_splits_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "revenue_splits_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "revenue_splits_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "revenue_splits_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       review_disputes: {
         Row: {
           assigned_mediator: string | null
@@ -5404,6 +5746,73 @@ export type Database = {
           },
           {
             foreignKeyName: "specialist_clinics_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      specialist_performance_metrics: {
+        Row: {
+          appointments_cancelled: number | null
+          appointments_completed: number | null
+          average_rating: number | null
+          clinic_id: string | null
+          created_at: string | null
+          id: string
+          no_show_count: number | null
+          patient_count: number | null
+          period_end: string
+          period_start: string
+          specialist_id: string | null
+          total_revenue: number | null
+        }
+        Insert: {
+          appointments_cancelled?: number | null
+          appointments_completed?: number | null
+          average_rating?: number | null
+          clinic_id?: string | null
+          created_at?: string | null
+          id?: string
+          no_show_count?: number | null
+          patient_count?: number | null
+          period_end: string
+          period_start: string
+          specialist_id?: string | null
+          total_revenue?: number | null
+        }
+        Update: {
+          appointments_cancelled?: number | null
+          appointments_completed?: number | null
+          average_rating?: number | null
+          clinic_id?: string | null
+          created_at?: string | null
+          id?: string
+          no_show_count?: number | null
+          patient_count?: number | null
+          period_end?: string
+          period_start?: string
+          specialist_id?: string | null
+          total_revenue?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "specialist_performance_metrics_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "specialist_performance_metrics_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "specialist_performance_metrics_specialist_id_fkey"
             columns: ["specialist_id"]
             isOneToOne: false
             referencedRelation: "specialists"

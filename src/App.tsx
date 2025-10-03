@@ -124,6 +124,9 @@ import ReviewResponses from './pages/ReviewResponses';
 import SecureDelivery from './pages/SecureDelivery';
 import ProviderAbsences from './pages/ProviderAbsences';
 import CareTeams from './pages/CareTeams';
+import ClinicResourceManagement from './pages/ClinicResourceManagement';
+import RevenueSplitsDashboard from './pages/RevenueSplitsDashboard';
+import PerformanceMetrics from './pages/PerformanceMetrics';
 
 const queryClient = new QueryClient();
 
@@ -211,7 +214,12 @@ const App = () => (
             <Route path="/clinic/notifications" element={<Notifications />} />
             <Route path="/clinic/analytics" element={<Analytics />} />
             <Route path="/clinic/integrations" element={<ClinicIntegrations />} />
+            <Route path="/clinic/resources" element={<ClinicResourceManagement />} />
+            <Route path="/clinic/revenue-dashboard" element={<RevenueSplitsDashboard />} />
             <Route path="/clinic/:slug" element={<PublicClinicPage />} />
+            
+            {/* SPECIALIST FEATURES */}
+            <Route path="/specialist/performance" element={<PerformanceMetrics />} />
             
             {/* CLINICAL WORKFLOWS */}
             <Route path="/referrals" element={<Referrals />} />
