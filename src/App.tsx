@@ -136,6 +136,11 @@ import ImplementationStatus from './pages/ImplementationStatus';
 import ICDCodeSearch from './pages/ICDCodeSearch';
 import VoiceAssistPage from './pages/VoiceAssistPage';
 import SupportChat from './pages/SupportChat';
+import ModerationCenter from './pages/ModerationCenter';
+import DocumentSignatures from './pages/DocumentSignatures';
+import WhatsAppMessages from './pages/WhatsAppMessages';
+import LegalArchives from './pages/LegalArchives';
+import APMMonitoring from './pages/APMMonitoring';
 
 const queryClient = new QueryClient();
 
@@ -303,6 +308,11 @@ const App = () => (
             <Route path="/icd-codes" element={<ICDCodeSearch />} />
             <Route path="/voice-assist" element={<VoiceAssistPage />} />
             <Route path="/support-chat" element={<SupportChat />} />
+            <Route path="/admin/moderation" element={<ModerationCenter />} />
+            <Route path="/documents/signatures" element={<DocumentSignatures />} />
+            <Route path="/messages/whatsapp" element={<WhatsAppMessages />} />
+            <Route path="/admin/legal-archives" element={<LegalArchives />} />
+            <Route path="/admin/apm-monitoring" element={<APMMonitoring />} />
             
             {/* LEGAL */}
             <Route path="/legal/privacy" element={<PrivacyPolicy />} />

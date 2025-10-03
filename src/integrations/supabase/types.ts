@@ -1015,6 +1015,42 @@ export type Database = {
           },
         ]
       }
+      chatbot_sessions: {
+        Row: {
+          created_at: string | null
+          escalated: boolean | null
+          escalated_at: string | null
+          id: string
+          messages: Json | null
+          resolved: boolean | null
+          resolved_at: string | null
+          session_type: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          escalated?: boolean | null
+          escalated_at?: string | null
+          id?: string
+          messages?: Json | null
+          resolved?: boolean | null
+          resolved_at?: string | null
+          session_type?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          escalated?: boolean | null
+          escalated_at?: string | null
+          id?: string
+          messages?: Json | null
+          resolved?: boolean | null
+          resolved_at?: string | null
+          session_type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       clinic_integrations: {
         Row: {
           access_token: string | null
@@ -2177,6 +2213,42 @@ export type Database = {
           },
         ]
       }
+      document_signatures: {
+        Row: {
+          created_at: string | null
+          document_id: string
+          document_type: string
+          docusign_envelope_id: string | null
+          id: string
+          signed_at: string | null
+          signer_id: string
+          signing_url: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          document_id: string
+          document_type: string
+          docusign_envelope_id?: string | null
+          id?: string
+          signed_at?: string | null
+          signer_id: string
+          signing_url?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          document_id?: string
+          document_type?: string
+          docusign_envelope_id?: string | null
+          id?: string
+          signed_at?: string | null
+          signer_id?: string
+          signing_url?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
       ehds_consents: {
         Row: {
           consent_document_url: string | null
@@ -3332,6 +3404,50 @@ export type Database = {
           },
         ]
       }
+      legal_archives: {
+        Row: {
+          archive_hash: string
+          archive_type: string
+          archived_by: string | null
+          archived_data: Json
+          case_number: string | null
+          complaint_id: string | null
+          created_at: string | null
+          id: string
+          legal_hold: boolean | null
+        }
+        Insert: {
+          archive_hash: string
+          archive_type: string
+          archived_by?: string | null
+          archived_data: Json
+          case_number?: string | null
+          complaint_id?: string | null
+          created_at?: string | null
+          id?: string
+          legal_hold?: boolean | null
+        }
+        Update: {
+          archive_hash?: string
+          archive_type?: string
+          archived_by?: string | null
+          archived_data?: Json
+          case_number?: string | null
+          complaint_id?: string | null
+          created_at?: string | null
+          id?: string
+          legal_hold?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legal_archives_complaint_id_fkey"
+            columns: ["complaint_id"]
+            isOneToOne: false
+            referencedRelation: "complaints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mediation_messages: {
         Row: {
           attachments: Json | null
@@ -3372,6 +3488,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      medical_codes: {
+        Row: {
+          category: string | null
+          code: string
+          code_system: string
+          created_at: string | null
+          description: string | null
+          display_name: string
+          id: string
+          metadata: Json | null
+        }
+        Insert: {
+          category?: string | null
+          code: string
+          code_system: string
+          created_at?: string | null
+          description?: string | null
+          display_name: string
+          id?: string
+          metadata?: Json | null
+        }
+        Update: {
+          category?: string | null
+          code?: string
+          code_system?: string
+          created_at?: string | null
+          description?: string | null
+          display_name?: string
+          id?: string
+          metadata?: Json | null
+        }
+        Relationships: []
       }
       medical_records: {
         Row: {
@@ -3556,6 +3705,75 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      moderation_logs: {
+        Row: {
+          content_id: string
+          content_type: string
+          created_at: string | null
+          id: string
+          moderated_by: string | null
+          moderation_action: string
+          original_content: string
+          phi_detected: Json | null
+          redacted_content: string | null
+          toxicity_score: number | null
+        }
+        Insert: {
+          content_id: string
+          content_type: string
+          created_at?: string | null
+          id?: string
+          moderated_by?: string | null
+          moderation_action: string
+          original_content: string
+          phi_detected?: Json | null
+          redacted_content?: string | null
+          toxicity_score?: number | null
+        }
+        Update: {
+          content_id?: string
+          content_type?: string
+          created_at?: string | null
+          id?: string
+          moderated_by?: string | null
+          moderation_action?: string
+          original_content?: string
+          phi_detected?: Json | null
+          redacted_content?: string | null
+          toxicity_score?: number | null
+        }
+        Relationships: []
+      }
+      monitoring_events: {
+        Row: {
+          created_at: string | null
+          event_type: string
+          id: string
+          message: string
+          metadata: Json | null
+          severity: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_type: string
+          id?: string
+          message: string
+          metadata?: Json | null
+          severity: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: string
+          id?: string
+          message?: string
+          metadata?: Json | null
+          severity?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       notification_channels: {
         Row: {
@@ -7560,6 +7778,39 @@ export type Database = {
           },
         ]
       }
+      voice_sessions: {
+        Row: {
+          conversation_id: string | null
+          created_at: string | null
+          duration_seconds: number | null
+          ended_at: string | null
+          id: string
+          session_type: string
+          transcript: string | null
+          user_id: string
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          session_type: string
+          transcript?: string | null
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          session_type?: string
+          transcript?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       waitlist_matches: {
         Row: {
           accepted_at: string | null
@@ -7610,6 +7861,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      whatsapp_messages: {
+        Row: {
+          created_at: string | null
+          direction: string
+          id: string
+          media_urls: Json | null
+          message_body: string | null
+          message_sid: string | null
+          phone_number: string
+          status: string | null
+          user_id: string | null
+          webhook_data: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          direction: string
+          id?: string
+          media_urls?: Json | null
+          message_body?: string | null
+          message_sid?: string | null
+          phone_number: string
+          status?: string | null
+          user_id?: string | null
+          webhook_data?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          direction?: string
+          id?: string
+          media_urls?: Json | null
+          message_body?: string | null
+          message_sid?: string | null
+          phone_number?: string
+          status?: string | null
+          user_id?: string | null
+          webhook_data?: Json | null
+        }
+        Relationships: []
       }
     }
     Views: {
