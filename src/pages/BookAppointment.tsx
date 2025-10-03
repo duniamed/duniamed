@@ -148,7 +148,7 @@ function BookAppointmentContent() {
         title: data.is_eligible ? 'Insurance verified' : 'Insurance not verified',
         description: data.is_eligible ? 'Your insurance is active' : 'Proceeding as self-pay',
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: 'Verification failed',
         description: 'Proceeding as self-pay',

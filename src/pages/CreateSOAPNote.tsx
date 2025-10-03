@@ -21,7 +21,7 @@ function CreateSOAPNoteContent() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [appointment, setAppointment] = useState<any>(null);
+  const [appointment, setAppointment] = useState<Record<string, unknown> | null>(null);
   const [formData, setFormData] = useState({
     subjective: '',
     objective: '',
@@ -38,7 +38,7 @@ function CreateSOAPNoteContent() {
       .from('appointments')
       .select(`
         *,
-        profiles:patient_id (
+        patient:profiles!patient_id (
           first_name,
           last_name
         )
@@ -47,7 +47,7 @@ function CreateSOAPNoteContent() {
       .single();
 
     if (data) {
-      setAppointment(data);
+      setAppointment(data as Record<string, unknown>);
     }
   };
 
@@ -67,7 +67,7 @@ function CreateSOAPNoteContent() {
       }
 
       const { data: soapNote, error } = await supabase.from('soap_notes').insert({
-        patient_id: appointment.patient_id,
+        patient_id: (appointment as { patient_id: string }).patient_id,
         specialist_id: specialist.id,
         appointment_id: appointmentId,
         subjective: formData.subjective || null,
@@ -137,7 +137,7 @@ function CreateSOAPNoteContent() {
               <div>
                 <CardTitle>Create SOAP Note</CardTitle>
                 <CardDescription>
-                  Patient: {appointment.profiles.first_name} {appointment.profiles.last_name}
+                  Patient: {(appointment as { patient: { first_name: string; last_name: string } }).patient.first_name} {(appointment as { patient: { first_name: string; last_name: string } }).patient.last_name}
                 </CardDescription>
               </div>
             </div>

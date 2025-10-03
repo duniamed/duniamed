@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { useAvailability } from '@/hooks/useAvailability';
 import { GripVertical, Plus, Trash2 } from 'lucide-react';
 import { format, addDays, startOfWeek, addMinutes } from 'date-fns';
 
@@ -23,39 +24,22 @@ interface TimeSlot {
 export function DragDropCalendar({ specialistId }: { specialistId: string }) {
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [draggedSlot, setDraggedSlot] = useState<TimeSlot | null>(null);
-  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { availability, loading } = useAvailability({ specialistId });
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const hours = Array.from({ length: 13 }, (_, i) => i + 8); // 8 AM to 8 PM
 
   useEffect(() => {
-    fetchAvailability();
-  }, [specialistId]);
-
-  const fetchAvailability = async () => {
-    try {
-      const { data } = await supabase
-        .from('availability_schedules')
-        .select('*')
-        .eq('specialist_id', specialistId)
-        .eq('is_active', true);
-
-      const mappedSlots: TimeSlot[] = (data || []).map((schedule) => ({
-        id: schedule.id,
-        day: schedule.day_of_week,
-        startTime: schedule.start_time,
-        endTime: schedule.end_time,
-        isAvailable: true
-      }));
-
-      setSlots(mappedSlots);
-    } catch (error) {
-      console.error('Error fetching availability:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const mappedSlots: TimeSlot[] = availability.map((schedule) => ({
+      id: schedule.id,
+      day: schedule.day_of_week,
+      startTime: schedule.start_time,
+      endTime: schedule.end_time,
+      isAvailable: true
+    }));
+    setSlots(mappedSlots);
+  }, [availability]);
 
   const handleDragStart = (slot: TimeSlot) => {
     setDraggedSlot(slot);
@@ -105,7 +89,23 @@ export function DragDropCalendar({ specialistId }: { specialistId: string }) {
         description: "Availability updated successfully",
       });
 
-      fetchAvailability();
+      // Refresh slots by re-mapping from availability
+      const { data: refreshedData } = await supabase
+        .from('availability_schedules')
+        .select('*')
+        .eq('specialist_id', specialistId)
+        .eq('is_active', true);
+
+      if (refreshedData) {
+        const mappedSlots: TimeSlot[] = refreshedData.map((schedule) => ({
+          id: schedule.id,
+          day: schedule.day_of_week,
+          startTime: schedule.start_time,
+          endTime: schedule.end_time,
+          isAvailable: true
+        }));
+        setSlots(mappedSlots);
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -142,7 +142,23 @@ export function DragDropCalendar({ specialistId }: { specialistId: string }) {
         description: "New availability slot created",
       });
 
-      fetchAvailability();
+      // Refresh slots
+      const { data: refreshedData } = await supabase
+        .from('availability_schedules')
+        .select('*')
+        .eq('specialist_id', specialistId)
+        .eq('is_active', true);
+
+      if (refreshedData) {
+        const mappedSlots: TimeSlot[] = refreshedData.map((schedule) => ({
+          id: schedule.id,
+          day: schedule.day_of_week,
+          startTime: schedule.start_time,
+          endTime: schedule.end_time,
+          isAvailable: true
+        }));
+        setSlots(mappedSlots);
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -166,7 +182,23 @@ export function DragDropCalendar({ specialistId }: { specialistId: string }) {
         description: "Availability slot removed",
       });
 
-      fetchAvailability();
+      // Refresh slots
+      const { data: refreshedData } = await supabase
+        .from('availability_schedules')
+        .select('*')
+        .eq('specialist_id', specialistId)
+        .eq('is_active', true);
+
+      if (refreshedData) {
+        const mappedSlots: TimeSlot[] = refreshedData.map((schedule) => ({
+          id: schedule.id,
+          day: schedule.day_of_week,
+          startTime: schedule.start_time,
+          endTime: schedule.end_time,
+          isAvailable: true
+        }));
+        setSlots(mappedSlots);
+      }
     } catch (error) {
       toast({
         title: "Error",

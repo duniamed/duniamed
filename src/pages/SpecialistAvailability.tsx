@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { useAvailability } from '@/hooks/useAvailability';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DragDropCalendar } from '@/components/DragDropCalendar';
@@ -36,7 +37,10 @@ function AvailabilityContent() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [specialistId, setSpecialistId] = useState<string | null>(null);
-  const [availability, setAvailability] = useState<AvailabilitySlot[]>([]);
+  const { availability, fetchAvailability } = useAvailability({ 
+    specialistId: specialistId || '', 
+    autoFetch: false 
+  });
 
   useEffect(() => {
     fetchSpecialistData();
@@ -53,22 +57,9 @@ function AvailabilityContent() {
 
     if (specialistData) {
       setSpecialistId(specialistData.id);
-      fetchAvailability(specialistData.id);
+      await fetchAvailability();
+      setLoading(false);
     }
-  };
-
-  const fetchAvailability = async (specId: string) => {
-    const { data, error } = await supabase
-      .from('availability_schedules')
-      .select('*')
-      .eq('specialist_id', specId)
-      .order('day_of_week');
-
-    if (!error && data) {
-      setAvailability(data);
-    }
-    
-    setLoading(false);
   };
 
   const handleToggleDay = async (dayOfWeek: number, isActive: boolean) => {
@@ -83,18 +74,14 @@ function AvailabilityContent() {
         .eq('id', existingSlot.id);
 
       if (!error) {
-        setAvailability(prev =>
-          prev.map(slot =>
-            slot.day_of_week === dayOfWeek ? { ...slot, is_active: isActive } : slot
-          )
-        );
         toast({
           title: 'Updated',
           description: `${DAYS[dayOfWeek]} availability updated`,
         });
+        await fetchAvailability();
       }
     } else if (isActive) {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('availability_schedules')
         .insert({
           specialist_id: specialistId,
@@ -102,16 +89,14 @@ function AvailabilityContent() {
           start_time: '09:00',
           end_time: '17:00',
           is_active: true,
-        })
-        .select()
-        .single();
+        });
 
-      if (!error && data) {
-        setAvailability(prev => [...prev, data]);
+      if (!error) {
         toast({
           title: 'Added',
           description: `${DAYS[dayOfWeek]} availability added`,
         });
+        await fetchAvailability();
       }
     }
   };
@@ -132,11 +117,7 @@ function AvailabilityContent() {
       .eq('id', slot.id);
 
     if (!error) {
-      setAvailability(prev =>
-        prev.map(s =>
-          s.day_of_week === dayOfWeek ? { ...s, [field]: value } : s
-        )
-      );
+      await fetchAvailability();
     }
   };
 
