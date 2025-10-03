@@ -96,7 +96,9 @@ import DataExport from "./pages/DataExport";
 import PatientInsuranceCheck from "./pages/PatientInsuranceCheck";
 import BrowseReviews from "./pages/BrowseReviews";
 import InsuranceManagement from "./pages/InsuranceManagement";
-import MediationChat from "./pages/MediationChat";
+import MediationChat from './pages/MediationChat';
+import ClinicMessagesInbox from './pages/ClinicMessagesInbox';
+import ReviewFlagHistory from './pages/ReviewFlagHistory';
 import ReviewResponse from "./pages/ReviewResponse";
 import VisitConfirmation from "./pages/VisitConfirmation";
 import SupportTickets from "./pages/SupportTickets";
@@ -279,6 +281,9 @@ const App = () => (
             <Route path="/specialist/:id" element={<Navigate to="/specialists/:id" replace />} />
             
             {/* 404 */}
+            <Route path="/mediation/:disputeId" element={<MediationChat />} />
+            <Route path="/clinic/messages" element={<ClinicMessagesInbox />} />
+            <Route path="/review-flag-history" element={<ReviewFlagHistory />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
