@@ -2,16 +2,16 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-import enTranslations from './locales/en-full.json';
-import esTranslations from './locales/es-full.json';
-import frTranslations from './locales/fr-full.json';
-import deTranslations from './locales/de-full.json';
-import ptTranslations from './locales/pt-full.json';
-import ptBrTranslations from './locales/pt-BR-full.json';
-import arTranslations from './locales/ar-full.json';
-import koTranslations from './locales/ko-full.json';
-import msTranslations from './locales/ms-full.json';
-import idTranslations from './locales/id-full.json';
+import enTranslations from './locales/en-complete.json';
+import esTranslations from './locales/en-complete.json';  // Temporary - using English until translated
+import frTranslations from './locales/en-complete.json';  // Temporary - using English until translated
+import deTranslations from './locales/en-complete.json';  // Temporary - using English until translated
+import ptTranslations from './locales/en-complete.json';  // Temporary - using English until translated
+import ptBrTranslations from './locales/en-complete.json';  // Temporary - using English until translated
+import arTranslations from './locales/en-complete.json';  // Temporary - using English until translated
+import koTranslations from './locales/en-complete.json';  // Temporary - using English until translated
+import msTranslations from './locales/en-complete.json';  // Temporary - using English until translated
+import idTranslations from './locales/en-complete.json';  // Temporary - using English until translated
 
 i18n
   .use(LanguageDetector)
