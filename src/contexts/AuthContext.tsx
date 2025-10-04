@@ -16,10 +16,18 @@ interface Profile {
   timezone?: string;
 }
 
+interface UserRole {
+  role: 'admin' | 'moderator' | 'user';
+  granted_at: string;
+  expires_at: string | null;
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: Profile | null;
+  userRoles: UserRole[];
+  isAdmin: boolean;
   loading: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -31,6 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [userRoles, setUserRoles] = useState<UserRole[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -46,11 +55,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const fetchUserRoles = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role, granted_at, expires_at')
+      .eq('user_id', userId)
+      .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString());
+
+    if (!error && data) {
+      setUserRoles(data as UserRole[]);
+    } else {
+      setUserRoles([]);
+    }
+  };
+
   const refreshProfile = async () => {
     if (user) {
       await fetchProfile(user.id);
+      await fetchUserRoles(user.id);
     }
   };
+
+  const isAdmin = userRoles.some(r => r.role === 'admin');
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -59,13 +85,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Defer profile fetch with setTimeout to prevent deadlock
+        // Defer profile and roles fetch with setTimeout to prevent deadlock
         if (session?.user) {
           setTimeout(() => {
             fetchProfile(session.user.id);
+            fetchUserRoles(session.user.id);
           }, 0);
         } else {
           setProfile(null);
+          setUserRoles([]);
         }
         
         setLoading(false);
@@ -79,6 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (session?.user) {
         fetchProfile(session.user.id);
+        fetchUserRoles(session.user.id);
       }
       setLoading(false);
     });
@@ -91,11 +120,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setSession(null);
     setProfile(null);
+    setUserRoles([]);
     navigate('/home');
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signOut, refreshProfile }}>
+    <AuthContext.Provider value={{ user, session, profile, userRoles, isAdmin, loading, signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );

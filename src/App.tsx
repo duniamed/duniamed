@@ -49,6 +49,7 @@ import UploadMedicalRecord from "./pages/UploadMedicalRecord";
 import Favorites from "./pages/Favorites";
 import Analytics from "./pages/Analytics";
 import AdminPanel from "./pages/AdminPanel";
+import AdminUserManagement from "./pages/AdminUserManagement";
 import AuditLogs from "./pages/AuditLogs";
 import SessionManagement from "./pages/SessionManagement";
 import NotFound from "./pages/NotFound";
@@ -308,6 +309,7 @@ const App = () => (
             
             {/* ADMIN */}
             <Route path="/admin/dashboard" element={<AdminPanel />} />
+            <Route path="/admin/users" element={<AdminUserManagement />} />
             <Route path="/admin/audit-logs" element={<AuditLogs />} />
             <Route path="/admin/sessions" element={<SessionManagement />} />
             <Route path="/admin/implementation-status" element={<ImplementationStatus />} />

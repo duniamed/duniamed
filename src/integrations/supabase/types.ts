@@ -8448,6 +8448,8 @@ export type Database = {
           assigned_at: string | null
           assigned_by: string | null
           expires_at: string | null
+          granted_at: string | null
+          granted_by: string | null
           id: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
@@ -8456,6 +8458,8 @@ export type Database = {
           assigned_at?: string | null
           assigned_by?: string | null
           expires_at?: string | null
+          granted_at?: string | null
+          granted_by?: string | null
           id?: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
@@ -8464,6 +8468,8 @@ export type Database = {
           assigned_at?: string | null
           assigned_by?: string | null
           expires_at?: string | null
+          granted_at?: string | null
+          granted_by?: string | null
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
@@ -9115,6 +9121,10 @@ export type Database = {
         Args: { _user_id: string }
         Returns: string[]
       }
+      grant_master_admin: {
+        Args: { _granted_by?: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -9137,6 +9147,10 @@ export type Database = {
           p_start_date: string
         }
         Returns: number
+      }
+      revoke_admin_role: {
+        Args: { _revoked_by?: string; _user_id: string }
+        Returns: boolean
       }
     }
     Enums: {
