@@ -51,6 +51,18 @@ verify_jwt = true
 [functions.ai-symptom-checker]
 verify_jwt = false
 
+[functions.ai-symptom-check]
+verify_jwt = true
+
+[functions.ai-config-manage]
+verify_jwt = true
+
+[functions.ai-source-validate]
+verify_jwt = true
+
+[functions.ai-meta-instruction]
+verify_jwt = true
+
 [functions.ai-soap-note]
 verify_jwt = false
 

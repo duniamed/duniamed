@@ -1,56 +1,18 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download, TrendingUp, Users, AlertCircle } from 'lucide-react';
-import { toast } from 'sonner';
-
-interface LogStats {
-  total_interactions: number;
-  avg_latency_ms: number;
-  contexts: Record<string, number>;
-  flags_count: number;
-}
+import { Download, TrendingUp, Users, Clock, FileText } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export function AIAnalytics() {
-  const [isExporting, setIsExporting] = useState(false);
+  const { toast } = useToast();
 
   const { data: stats, isLoading } = useQuery({
-    queryKey: ['aiLogStats'],
+    queryKey: ['aiSymptomStats'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('ai_symptom_logs')
-        .select('context, latency_ms, flags');
-
-      if (error) throw error;
-
-      const total_interactions = data.length;
-      const avg_latency_ms = data.reduce((sum, log) => sum + (log.latency_ms || 0), 0) / total_interactions || 0;
-      
-      const contexts: Record<string, number> = {};
-      let flags_count = 0;
-
-      data.forEach(log => {
-        contexts[log.context] = (contexts[log.context] || 0) + 1;
-        if (log.flags && Object.keys(log.flags).length > 0) {
-          flags_count++;
-        }
-      });
-
-      return {
-        total_interactions,
-        avg_latency_ms: Math.round(avg_latency_ms),
-        contexts,
-        flags_count
-      } as LogStats;
-    }
-  });
-
-  const handleExport = async () => {
-    setIsExporting(true);
-    try {
-      const { data, error } = await supabase
+      const { data: logs, error } = await supabase
         .from('ai_symptom_logs')
         .select('*')
         .order('timestamp', { ascending: false })
@@ -58,146 +20,216 @@ export function AIAnalytics() {
 
       if (error) throw error;
 
-      // Convert to CSV
-      const csv = convertToCSV(data);
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
+      const totalInteractions = logs.length;
+      const avgLatency = logs.reduce((sum, log) => sum + (log.latency_ms || 0), 0) / totalInteractions;
+      const withCitations = logs.filter(log => 
+        Array.isArray(log.citations) && log.citations.length > 0
+      ).length;
+      const abstained = logs.filter(log => 
+        typeof log.flags === 'object' && log.flags !== null && (log.flags as any).abstained
+      ).length;
+
+      const contextBreakdown = logs.reduce((acc, log) => {
+        acc[log.context] = (acc[log.context] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+
+      const recentLogs = logs.slice(0, 20);
+
+      return {
+        totalInteractions,
+        avgLatency: Math.round(avgLatency),
+        citationRate: ((withCitations / totalInteractions) * 100).toFixed(1),
+        abstainRate: ((abstained / totalInteractions) * 100).toFixed(1),
+        contextBreakdown,
+        recentLogs,
+      };
+    },
+  });
+
+  const handleExport = async (format: 'csv' | 'json') => {
+    try {
+      const { data: logs, error } = await supabase
+        .from('ai_symptom_logs')
+        .select('*')
+        .order('timestamp', { ascending: false });
+
+      if (error) throw error;
+
+      let content: string;
+      let mimeType: string;
+      let filename: string;
+
+      if (format === 'csv') {
+        const headers = ['timestamp', 'context', 'user_role', 'latency_ms', 'has_citations', 'abstained'];
+        const rows = logs.map(log => [
+          log.timestamp,
+          log.context,
+          log.user_role,
+          log.latency_ms,
+          Array.isArray(log.citations) && log.citations.length > 0,
+          typeof log.flags === 'object' && log.flags !== null && (log.flags as any).abstained || false,
+        ]);
+        content = [headers, ...rows].map(row => row.join(',')).join('\n');
+        mimeType = 'text/csv';
+        filename = `ai-logs-${new Date().toISOString().split('T')[0]}.csv`;
+      } else {
+        content = JSON.stringify(logs, null, 2);
+        mimeType = 'application/json';
+        filename = `ai-logs-${new Date().toISOString().split('T')[0]}.json`;
+      }
+
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `ai-logs-${new Date().toISOString().split('T')[0]}.csv`;
+      a.download = filename;
       a.click();
-      
-      toast.success('Logs exported successfully');
-    } catch (error) {
-      toast.error('Failed to export logs');
-    } finally {
-      setIsExporting(false);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Export Complete",
+        description: `Downloaded ${logs.length} records as ${format.toUpperCase()}`,
+      });
+    } catch (error: any) {
+      console.error('Export error:', error);
+      toast({
+        title: "Export Failed",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
-  const convertToCSV = (data: any[]) => {
-    if (!data.length) return '';
-    
-    const headers = Object.keys(data[0]).join(',');
-    const rows = data.map(row => 
-      Object.values(row).map(val => 
-        typeof val === 'object' ? JSON.stringify(val) : val
-      ).join(',')
-    );
-    
-    return [headers, ...rows].join('\n');
-  };
-
   if (isLoading) {
-    return <div>Loading analytics...</div>;
+    return <div className="animate-pulse space-y-4">
+      <div className="h-32 bg-muted rounded"></div>
+      <div className="h-32 bg-muted rounded"></div>
+    </div>;
   }
+
+  if (!stats) return null;
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-semibold text-lg">AI Interaction Analytics</h3>
+          <h3 className="text-lg font-semibold">Interaction Analytics</h3>
           <p className="text-sm text-muted-foreground">
-            Anonymized logs for research and quality improvement
+            Anonymized AI interaction metrics and exports
           </p>
         </div>
-        <Button onClick={handleExport} disabled={isExporting}>
-          <Download className="h-4 w-4 mr-2" />
-          {isExporting ? 'Exporting...' : 'Export CSV'}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => handleExport('csv')}>
+            <Download className="h-4 w-4 mr-2" />
+            Export CSV
+          </Button>
+          <Button variant="outline" onClick={() => handleExport('json')}>
+            <Download className="h-4 w-4 mr-2" />
+            Export JSON
+          </Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid gap-4 md:grid-cols-4">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <Users className="h-4 w-4 text-primary" />
               Total Interactions
             </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {stats?.total_interactions.toLocaleString()}
-            </div>
+            <div className="text-2xl font-bold">{stats.totalInteractions}</div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Avg Response Time
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <Clock className="h-4 w-4 text-primary" />
+              Avg Latency
             </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {stats?.avg_latency_ms}ms
-            </div>
+            <div className="text-2xl font-bold">{stats.avgLatency}ms</div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Flagged Interactions
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <FileText className="h-4 w-4 text-primary" />
+              Citation Rate
             </CardTitle>
-            <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {stats?.flags_count}
-            </div>
+            <div className="text-2xl font-bold">{stats.citationRate}%</div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Top Context
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              Abstain Rate
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {stats?.contexts && Object.entries(stats.contexts).sort((a, b) => b[1] - a[1])[0]?.[0]}
-            </div>
+            <div className="text-2xl font-bold">{stats.abstainRate}%</div>
           </CardContent>
         </Card>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Context Distribution</CardTitle>
+          <CardTitle>Context Breakdown</CardTitle>
+          <CardDescription>Interaction distribution by context</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(stats.contextBreakdown).map(([context, count]) => (
+              <Badge key={context} variant="secondary">
+                {context}: {count}
+              </Badge>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Interactions</CardTitle>
+          <CardDescription>Last 20 AI interactions (anonymized)</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {stats?.contexts && Object.entries(stats.contexts).map(([context, count]) => (
-              <div key={context} className="flex justify-between items-center">
-                <span className="capitalize">{context}</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-32 bg-muted rounded-full h-2">
-                    <div
-                      className="bg-primary h-2 rounded-full"
-                      style={{ width: `${(count / stats.total_interactions) * 100}%` }}
-                    />
+            {stats.recentLogs.map((log: any) => (
+              <div key={log.id} className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">{log.context}</Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(log.timestamp).toLocaleString()}
+                    </span>
                   </div>
-                  <span className="text-sm text-muted-foreground w-12 text-right">
-                    {count}
-                  </span>
+                  <div className="text-sm">
+                    {log.citations?.length || 0} citations • {log.latency_ms}ms latency
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {log.flags?.abstained && (
+                    <Badge variant="destructive">Abstained</Badge>
+                  )}
+                  {log.citations?.length > 0 && (
+                    <Badge variant="default">Cited</Badge>
+                  )}
                 </div>
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
-
-      <div className="text-xs text-muted-foreground space-y-1 p-4 bg-muted rounded-lg">
-        <div className="font-medium">Privacy Notice:</div>
-        <ul className="list-disc list-inside space-y-0.5">
-          <li>All logs are anonymized and contain no direct identifiers</li>
-          <li>Exports are audited and linked to the requesting administrator</li>
-          <li>Data retention follows organizational and regulatory policies</li>
-        </ul>
-      </div>
     </div>
   );
 }

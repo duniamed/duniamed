@@ -340,6 +340,7 @@ const App = () => (
             <Route path="/finance/ai-insights" element={<AIFinance />} />
             <Route path="/clinic/queue" element={<VirtualClinicQueuePage />} />
             <Route path="/triage" element={<AITriage />} />
+            <Route path="/ai-symptom-checker" element={<AISymptomChecker />} />
             
             {/* LEGAL */}
             <Route path="/legal/privacy" element={<PrivacyPolicy />} />
