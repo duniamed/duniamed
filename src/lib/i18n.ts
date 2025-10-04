@@ -2,16 +2,16 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-import enTranslations from './locales/en.json';
-import esTranslations from './locales/es.json';
-import frTranslations from './locales/fr.json';
-import deTranslations from './locales/de.json';
-import ptTranslations from './locales/pt.json';
-import ptBrTranslations from './locales/pt-BR.json';
-import arTranslations from './locales/ar.json';
-import koTranslations from './locales/ko.json';
-import msTranslations from './locales/ms.json';
-import idTranslations from './locales/id.json';
+import enTranslations from './locales/en-full.json';
+import esTranslations from './locales/es-full.json';
+import frTranslations from './locales/fr-full.json';
+import deTranslations from './locales/de-full.json';
+import ptTranslations from './locales/pt-full.json';
+import ptBrTranslations from './locales/pt-BR-full.json';
+import arTranslations from './locales/ar-full.json';
+import koTranslations from './locales/ko-full.json';
+import msTranslations from './locales/ms-full.json';
+import idTranslations from './locales/id-full.json';
 
 i18n
   .use(LanguageDetector)
