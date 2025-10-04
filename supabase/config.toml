@@ -227,3 +227,15 @@ verify_jwt = true
 
 [functions.check-rate-limit]
 verify_jwt = false
+
+[functions.ai-clinic-triage]
+verify_jwt = true
+
+[functions.medical-knowledge-search]
+verify_jwt = true
+
+[functions.ai-sandbox-execute]
+verify_jwt = true
+
+[functions.ai-source-freshness-check]
+verify_jwt = false

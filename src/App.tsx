@@ -340,7 +340,8 @@ const App = () => (
             <Route path="/finance/ai-insights" element={<AIFinance />} />
             <Route path="/clinic/queue" element={<VirtualClinicQueuePage />} />
             <Route path="/triage" element={<AITriage />} />
-            <Route path="/ai-symptom-checker" element={<AISymptomChecker />} />
+          <Route path="/ai-symptom-checker" element={<AISymptomChecker />} />
+          <Route path="/ai-triage" element={<AITriage />} />
             
             {/* LEGAL */}
             <Route path="/legal/privacy" element={<PrivacyPolicy />} />
