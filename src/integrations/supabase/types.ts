@@ -47,6 +47,281 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_config_profiles: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          change_note: string | null
+          compliance_layers: Json
+          context: Database["public"]["Enums"]["ai_context"]
+          created_at: string
+          created_by: string
+          data_access_scope: Json
+          id: string
+          is_active: boolean
+          name: string
+          responsiveness: Json
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          change_note?: string | null
+          compliance_layers?: Json
+          context: Database["public"]["Enums"]["ai_context"]
+          created_at?: string
+          created_by: string
+          data_access_scope?: Json
+          id?: string
+          is_active?: boolean
+          name: string
+          responsiveness?: Json
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          change_note?: string | null
+          compliance_layers?: Json
+          context?: Database["public"]["Enums"]["ai_context"]
+          created_at?: string
+          created_by?: string
+          data_access_scope?: Json
+          id?: string
+          is_active?: boolean
+          name?: string
+          responsiveness?: Json
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
+      ai_policy_audit: {
+        Row: {
+          action: Database["public"]["Enums"]["ai_audit_action"]
+          actor_id: string
+          config_id: string | null
+          diff: Json | null
+          id: string
+          ip_address: string | null
+          justification: string
+          timestamp: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: Database["public"]["Enums"]["ai_audit_action"]
+          actor_id: string
+          config_id?: string | null
+          diff?: Json | null
+          id?: string
+          ip_address?: string | null
+          justification: string
+          timestamp?: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: Database["public"]["Enums"]["ai_audit_action"]
+          actor_id?: string
+          config_id?: string | null
+          diff?: Json | null
+          id?: string
+          ip_address?: string | null
+          justification?: string
+          timestamp?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_policy_audit_config_id_fkey"
+            columns: ["config_id"]
+            isOneToOne: false
+            referencedRelation: "ai_config_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_sandbox_sessions: {
+        Row: {
+          config_snapshot: Json
+          config_version: number | null
+          created_at: string
+          ended_at: string | null
+          id: string
+          notes: string | null
+          source_scope_snapshot: Json
+          started_by: string
+          status: string
+          test_results: Json | null
+        }
+        Insert: {
+          config_snapshot: Json
+          config_version?: number | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          source_scope_snapshot: Json
+          started_by: string
+          status?: string
+          test_results?: Json | null
+        }
+        Update: {
+          config_snapshot?: Json
+          config_version?: number | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          source_scope_snapshot?: Json
+          started_by?: string
+          status?: string
+          test_results?: Json | null
+        }
+        Relationships: []
+      }
+      ai_source_registry: {
+        Row: {
+          checksum: string | null
+          created_at: string
+          id: string
+          metadata: Json | null
+          name: string
+          retrieval_method: string | null
+          source_key: string
+          source_type: Database["public"]["Enums"]["ai_source_type"]
+          status: Database["public"]["Enums"]["ai_source_status"]
+          updated_at: string
+          uri: string
+          valid_from: string
+          valid_to: string | null
+          version: string
+        }
+        Insert: {
+          checksum?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          name: string
+          retrieval_method?: string | null
+          source_key: string
+          source_type: Database["public"]["Enums"]["ai_source_type"]
+          status?: Database["public"]["Enums"]["ai_source_status"]
+          updated_at?: string
+          uri: string
+          valid_from?: string
+          valid_to?: string | null
+          version: string
+        }
+        Update: {
+          checksum?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          name?: string
+          retrieval_method?: string | null
+          source_key?: string
+          source_type?: Database["public"]["Enums"]["ai_source_type"]
+          status?: Database["public"]["Enums"]["ai_source_status"]
+          updated_at?: string
+          uri?: string
+          valid_from?: string
+          valid_to?: string | null
+          version?: string
+        }
+        Relationships: []
+      }
+      ai_symptom_checker_modules: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          last_validated_at: string | null
+          module_key: string
+          owning_team: string | null
+          status: string
+          storage_ref: string
+          version: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_validated_at?: string | null
+          module_key: string
+          owning_team?: string | null
+          status?: string
+          storage_ref: string
+          version: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_validated_at?: string | null
+          module_key?: string
+          owning_team?: string | null
+          status?: string
+          storage_ref?: string
+          version?: string
+        }
+        Relationships: []
+      }
+      ai_symptom_logs: {
+        Row: {
+          citations: Json
+          context: Database["public"]["Enums"]["ai_context"]
+          evaluator_scores: Json | null
+          flags: Json | null
+          geo_region: string | null
+          id: string
+          inputs_hash: string
+          inputs_schema: Json | null
+          latency_ms: number | null
+          output_schema: Json | null
+          output_summary: string | null
+          request_id: string
+          retrieved_sources: Json
+          timestamp: string
+          user_role: string | null
+        }
+        Insert: {
+          citations?: Json
+          context: Database["public"]["Enums"]["ai_context"]
+          evaluator_scores?: Json | null
+          flags?: Json | null
+          geo_region?: string | null
+          id?: string
+          inputs_hash: string
+          inputs_schema?: Json | null
+          latency_ms?: number | null
+          output_schema?: Json | null
+          output_summary?: string | null
+          request_id?: string
+          retrieved_sources?: Json
+          timestamp?: string
+          user_role?: string | null
+        }
+        Update: {
+          citations?: Json
+          context?: Database["public"]["Enums"]["ai_context"]
+          evaluator_scores?: Json | null
+          flags?: Json | null
+          geo_region?: string | null
+          id?: string
+          inputs_hash?: string
+          inputs_schema?: Json | null
+          latency_ms?: number | null
+          output_schema?: Json | null
+          output_summary?: string | null
+          request_id?: string
+          retrieved_sources?: Json
+          timestamp?: string
+          user_role?: string | null
+        }
+        Relationships: []
+      }
       appointment_compliance_rules: {
         Row: {
           action_required: Json
@@ -9229,6 +9504,22 @@ export type Database = {
       }
     }
     Enums: {
+      ai_audit_action:
+        | "create"
+        | "update"
+        | "approve"
+        | "rollback"
+        | "retire"
+        | "deploy"
+      ai_context: "patient" | "clinic" | "internal" | "specialist"
+      ai_source_status: "approved" | "pending" | "retired" | "under_review"
+      ai_source_type:
+        | "guideline"
+        | "ontology"
+        | "formulary"
+        | "internal_protocol"
+        | "journal_api"
+        | "fhir_resource"
       app_role:
         | "patient"
         | "specialist"
@@ -9395,6 +9686,24 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      ai_audit_action: [
+        "create",
+        "update",
+        "approve",
+        "rollback",
+        "retire",
+        "deploy",
+      ],
+      ai_context: ["patient", "clinic", "internal", "specialist"],
+      ai_source_status: ["approved", "pending", "retired", "under_review"],
+      ai_source_type: [
+        "guideline",
+        "ontology",
+        "formulary",
+        "internal_protocol",
+        "journal_api",
+        "fhir_resource",
+      ],
       app_role: [
         "patient",
         "specialist",

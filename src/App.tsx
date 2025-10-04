@@ -148,6 +148,7 @@ import VirtualClinicQueuePage from './pages/VirtualClinicQueue';
 import AITriage from './pages/AITriage';
 import GoogleBusinessProfile from './pages/GoogleBusinessProfile';
 import ClinicalFocus from './pages/ClinicalFocus';
+import AIGovernance from './pages/AIGovernance';
 import WorkQueue from './pages/WorkQueue';
 import ComplianceDashboard from './pages/ComplianceDashboard';
 
