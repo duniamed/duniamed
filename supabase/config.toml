@@ -209,3 +209,9 @@ verify_jwt = true
 
 [functions.map-fhir-resources]
 verify_jwt = true
+
+[functions.log-security-event]
+verify_jwt = true
+
+[functions.check-rate-limit]
+verify_jwt = false

@@ -24,20 +24,24 @@ export function useDataAccessLogger() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      // Use security_audit_log table for comprehensive audit trail
       await (supabase as any)
-        .from('data_access_logs')
+        .from('security_audit_log')
         .insert({
           user_id: user.id,
-          accessor_id: user.id,
+          action: accessType,
           resource_type: resourceType,
           resource_id: resourceId,
-          access_type: accessType,
-          purpose: purpose || `User accessed ${resourceType}`,
-          ip_address: null, // Would be set by backend in production
-          user_agent: navigator.userAgent
+          metadata: {
+            purpose: purpose || `User accessed ${resourceType}`,
+            timestamp: new Date().toISOString()
+          },
+          ip_address: null, // Would be set by edge function in production
+          user_agent: navigator.userAgent,
+          severity: accessType === 'delete' ? 'high' : 'low'
         });
     } catch (error) {
-      console.error('Error logging data access:', error);
+      console.error('Error logging security audit:', error);
     }
   };
 
