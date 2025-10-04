@@ -314,6 +314,7 @@ const App = () => (
             <Route path="/admin/audit-logs" element={<AuditLogs />} />
             <Route path="/admin/sessions" element={<SessionManagement />} />
             <Route path="/admin/implementation-status" element={<ImplementationStatus />} />
+            <Route path="/admin/ai-governance" element={<AIGovernance />} />
             
             {/* C25-C30 INTEGRATIONS */}
           <Route path="/icd-codes" element={<ICDCodeSearch />} />
