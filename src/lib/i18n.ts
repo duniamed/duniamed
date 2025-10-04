@@ -7,6 +7,11 @@ import esTranslations from './locales/es.json';
 import frTranslations from './locales/fr.json';
 import deTranslations from './locales/de.json';
 import ptTranslations from './locales/pt.json';
+import ptBrTranslations from './locales/pt-BR.json';
+import arTranslations from './locales/ar.json';
+import koTranslations from './locales/ko.json';
+import msTranslations from './locales/ms.json';
+import idTranslations from './locales/id.json';
 
 i18n
   .use(LanguageDetector)
@@ -18,6 +23,11 @@ i18n
       fr: { translation: frTranslations },
       de: { translation: deTranslations },
       pt: { translation: ptTranslations },
+      'pt-BR': { translation: ptBrTranslations },
+      ar: { translation: arTranslations },
+      ko: { translation: koTranslations },
+      ms: { translation: msTranslations },
+      id: { translation: idTranslations },
     },
     fallbackLng: 'en',
     debug: false,
