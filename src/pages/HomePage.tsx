@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,58 +18,42 @@ import {
 import Layout from "@/components/layout/Layout";
 
 export default function Home() {
-  const { t } = useTranslation();
   const services = [
     {
       icon: Stethoscope,
-      title: t('home.services.urgentCare.title'),
-      description: t('home.services.urgentCare.description'),
-      conditions: [
-        t('home.services.urgentCare.conditions.0'),
-        t('home.services.urgentCare.conditions.1'),
-        t('home.services.urgentCare.conditions.2'),
-        t('home.services.urgentCare.conditions.3')
-      ]
+      title: "Urgent Care",
+      description: "24/7 online doctors for immediate medical needs",
+      conditions: ["Cold & flu", "Infections", "Allergies", "Minor injuries"]
     },
     {
       icon: Video,
-      title: t('home.services.mentalHealth.title'),
-      description: t('home.services.mentalHealth.description'),
-      conditions: [
-        t('home.services.mentalHealth.conditions.0'),
-        t('home.services.mentalHealth.conditions.1'),
-        t('home.services.mentalHealth.conditions.2'),
-        t('home.services.mentalHealth.conditions.3')
-      ]
+      title: "Mental Health",
+      description: "Licensed therapists and psychiatrists available",
+      conditions: ["Anxiety", "Depression", "Stress", "Counseling"]
     },
     {
       icon: Calendar,
-      title: t('home.services.primaryCare.title'),
-      description: t('home.services.primaryCare.description'),
-      conditions: [
-        t('home.services.primaryCare.conditions.0'),
-        t('home.services.primaryCare.conditions.1'),
-        t('home.services.primaryCare.conditions.2'),
-        t('home.services.primaryCare.conditions.3')
-      ]
+      title: "Primary Care",
+      description: "Ongoing care and chronic condition management",
+      conditions: ["Check-ups", "Prescriptions", "Lab orders", "Referrals"]
     }
   ];
 
   const howItWorks = [
     {
       step: "1",
-      title: t('home.howItWorks.step1.title'),
-      description: t('home.howItWorks.step1.description')
+      title: "Choose your care",
+      description: "Select the type of medical care you need"
     },
     {
       step: "2",
-      title: t('home.howItWorks.step2.title'),
-      description: t('home.howItWorks.step2.description')
+      title: "Connect instantly",
+      description: "See a doctor via video in minutes or schedule ahead"
     },
     {
       step: "3",
-      title: t('home.howItWorks.step3.title'),
-      description: t('home.howItWorks.step3.description')
+      title: "Get treatment",
+      description: "Receive diagnosis, prescriptions, and follow-up care"
     }
   ];
 
@@ -84,27 +67,27 @@ export default function Home() {
                 {/* Badge */}
                 <Badge className="inline-flex items-center gap-2.5 px-6 py-3 bg-green-50 dark:bg-green-500/10 border-0 text-green-700 dark:text-green-400 rounded-full font-semibold">
                   <div className="h-2.5 w-2.5 rounded-full bg-green-500 animate-pulse" />
-                  {t('home.hero.badge')}
+                  500K+ patients this year
                 </Badge>
                 
                 <div className="space-y-6">
                   <h1 className="font-display leading-tight">
-                    {t('home.hero.title')}
+                    See a Doctor in
                     <span className="block bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mt-2">
-                      {t('home.hero.titleHighlight')}
+                      Under 5 Minutes
                     </span>
                   </h1>
                   <p className="text-2xl text-muted-foreground leading-relaxed font-light max-w-xl">
-                    {t('home.hero.subtitle')}
+                    No waiting rooms. No commute. Just instant access to verified specialists from $0-79.
                   </p>
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-5">
                   <Button size="lg" className="h-16 px-10 text-lg rounded-full bg-primary hover:bg-primary/90 font-semibold shadow-xl" asChild>
-                    <Link to="/instant-consultation">{t('home.hero.ctaPrimary')}</Link>
+                    <Link to="/instant-consultation">Get Care Now</Link>
                   </Button>
                   <Button size="lg" variant="outline" className="h-16 px-10 text-lg rounded-full border-2 font-semibold" asChild>
-                    <Link to="/search">{t('home.hero.ctaSecondary')}</Link>
+                    <Link to="/search">Find Specialist</Link>
                   </Button>
                 </div>
                 
@@ -112,7 +95,7 @@ export default function Home() {
                 <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <Shield className="h-5 w-5 text-primary" />
-                    <span>{t('home.trust.hipaa')}</span>
+                    <span>HIPAA Compliant</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-600" />

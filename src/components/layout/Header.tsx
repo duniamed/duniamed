@@ -1,5 +1,4 @@
 import { Link, useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut, Bell } from "lucide-react";
 import { useState } from "react";
@@ -17,19 +16,18 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Header() {
-  const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { user, profile, signOut } = useAuth();
   const isMobile = useIsMobile();
 
   const navigation = [
-    { name: t('nav.urgentCare'), href: "/instant-consultation" },
-    { name: t('nav.findSpecialists'), href: "/search" },
-    { name: t('nav.forPatients'), href: "/for-patients" },
-    { name: t('nav.forSpecialists'), href: "/for-specialists" },
-    { name: t('nav.forClinics'), href: "/for-clinics" },
-    { name: t('nav.howItWorks'), href: "/how-it-works" },
+    { name: "Urgent Care", href: "/instant-consultation" },
+    { name: "Find Specialists", href: "/search" },
+    { name: "For Patients", href: "/for-patients" },
+    { name: "For Specialists", href: "/for-specialists" },
+    { name: "For Clinics", href: "/for-clinics" },
+    { name: "How It Works", href: "/how-it-works" },
   ];
 
   const isActive = (path: string) => location.pathname === path;

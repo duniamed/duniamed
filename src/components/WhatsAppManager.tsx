@@ -162,7 +162,6 @@ export default function WhatsAppManager() {
           direction: 'outbound',
           status: data.status,
           message_body: newMessage,
-          message_sid: data.message_sid,
           media_urls: null,
           created_at: new Date().toISOString()
         };

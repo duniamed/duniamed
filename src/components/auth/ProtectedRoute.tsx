@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  const { user, profile, isAdmin, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,12 +18,11 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
         return;
       }
 
-      // System admin users (from user_roles table) can access everything
-      if (isAdmin) {
+      // Admin users can access everything
+      if (profile?.role === 'admin') {
         return;
       }
 
-      // Check profile role for regular role-based access
       if (allowedRoles && profile && !allowedRoles.includes(profile.role)) {
         // Redirect to appropriate dashboard based on role
         if (profile.role === 'patient') {
@@ -35,7 +34,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
         }
       }
     }
-  }, [user, profile, isAdmin, loading, navigate, allowedRoles]);
+  }, [user, profile, loading, navigate, allowedRoles]);
 
   if (loading) {
     return (
@@ -49,12 +48,11 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
     return null;
   }
 
-  // System admin users (from user_roles table) can access everything
-  if (isAdmin) {
+  // Admin users can access everything
+  if (profile?.role === 'admin') {
     return <>{children}</>;
   }
 
-  // Check profile role for regular role-based access
   if (allowedRoles && profile && !allowedRoles.includes(profile.role)) {
     return null;
   }

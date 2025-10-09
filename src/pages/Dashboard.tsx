@@ -1,5 +1,4 @@
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,23 +17,22 @@ export default function Dashboard() {
 }
 
 function DashboardContent() {
-  const { t } = useTranslation();
   const { profile } = useAuth();
-  const firstName = profile?.first_name || t('common.welcome');
+  const firstName = profile?.first_name || 'Guest';
 
   const menuItems = [
-    { title: t('nav.dashboard'), url: '/patient/dashboard', icon: Users },
-    { title: t('dashboard.instantVideoCall'), url: '/instant-consultation', icon: Video },
-    { title: t('nav.findSpecialists'), url: '/search', icon: Search },
-    { title: t('nav.searchClinics'), url: '/search/clinics', icon: MapPin },
-    { title: t('nav.myAppointments'), url: '/appointments', icon: Calendar },
-    { title: t('nav.prescriptions'), url: '/prescriptions', icon: Pill },
-    { title: t('nav.medicalRecords'), url: '/medical-records', icon: FileText },
-    { title: t('nav.messages'), url: '/messages', icon: MessageSquare },
-    { title: t('nav.payments'), url: '/payments', icon: CreditCard },
-    { title: t('nav.familyMembers'), url: '/family-members', icon: Users },
-    { title: t('nav.notifications'), url: '/notifications', icon: Bell },
-    { title: t('nav.profile'), url: '/patient/profile', icon: User },
+    { title: 'Dashboard', url: '/patient/dashboard', icon: Users },
+    { title: 'Instant Video Call', url: '/instant-consultation', icon: Video },
+    { title: 'Search Specialists', url: '/search', icon: Search },
+    { title: 'Search Clinics', url: '/search/clinics', icon: MapPin },
+    { title: 'My Appointments', url: '/appointments', icon: Calendar },
+    { title: 'Prescriptions', url: '/prescriptions', icon: Pill },
+    { title: 'Medical Records', url: '/medical-records', icon: FileText },
+    { title: 'Messages', url: '/messages', icon: MessageSquare },
+    { title: 'Payments', url: '/payments', icon: CreditCard },
+    { title: 'Family Members', url: '/family-members', icon: Users },
+    { title: 'Notifications', url: '/notifications', icon: Bell },
+    { title: 'Profile', url: '/patient/profile', icon: User },
   ];
 
   return (
@@ -47,8 +45,8 @@ function DashboardContent() {
             <SidebarTrigger className="mb-4" />
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold">{t('dashboard.welcomeBack')}, {firstName}!</h1>
-            <p className="text-muted-foreground">{t('dashboard.manageHealthcare')}</p>
+            <h1 className="text-3xl font-bold">Welcome back, {firstName}!</h1>
+            <p className="text-muted-foreground">Manage your healthcare appointments and records</p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -56,15 +54,15 @@ function DashboardContent() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Video className="h-6 w-6 text-primary" />
-                  {t('dashboard.instantVideoCall')}
+                  Instant Video Call
                 </CardTitle>
-                <CardDescription className="text-base">{t('dashboard.talkToDoctor')}</CardDescription>
+                <CardDescription className="text-base">Talk to a doctor right now</CardDescription>
               </CardHeader>
               <CardContent>
                 <Link to="/instant-consultation">
                   <Button className="w-full h-12 text-base font-semibold" size="lg">
                     <Video className="mr-2 h-5 w-5" />
-                    {t('common.startNow')}
+                    Start Now
                   </Button>
                 </Link>
               </CardContent>
@@ -74,9 +72,9 @@ function DashboardContent() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Search className="h-5 w-5" />
-                  {t('dashboard.findSpecialists')}
+                  Find Specialists
                 </CardTitle>
-                <CardDescription>{t('dashboard.searchProviders')}</CardDescription>
+                <CardDescription>Search for healthcare providers</CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
                 <Link to="/search">

@@ -7,9 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Users, Shield, Calendar, AlertTriangle, CheckCircle, XCircle, Brain, Database, Settings, FileText } from 'lucide-react';
+import { Users, Shield, Calendar, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useNavigate } from 'react-router-dom';
 
 export default function AdminPanel() {
   return (
@@ -21,7 +20,6 @@ export default function AdminPanel() {
 
 function AdminPanelContent() {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -124,39 +122,6 @@ function AdminPanelContent() {
       <Header />
       <main className="flex-1 container py-8 px-4 mt-16">
         <h1 className="text-3xl font-bold mb-6">Admin Panel</h1>
-
-        {/* Admin Navigation Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => navigate('/admin/ai-governance')}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">AI Governance</CardTitle>
-              <Brain className="h-5 w-5 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Configure AI behavior, sources, and compliance</p>
-            </CardContent>
-          </Card>
-
-          <Card className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => navigate('/admin/user-management')}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">User Management</CardTitle>
-              <Users className="h-5 w-5 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Manage users, roles, and permissions</p>
-            </CardContent>
-          </Card>
-
-          <Card className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => navigate('/admin/audit-logs')}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Audit Logs</CardTitle>
-              <FileText className="h-5 w-5 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">View system activity and security events</p>
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">

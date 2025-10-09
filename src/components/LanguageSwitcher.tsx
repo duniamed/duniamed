@@ -13,12 +13,7 @@ const languages = [
   { code: 'es', name: 'Español', flag: '🇪🇸' },
   { code: 'fr', name: 'Français', flag: '🇫🇷' },
   { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-  { code: 'pt', name: 'Português (PT)', flag: '🇵🇹' },
-  { code: 'pt-BR', name: 'Português (BR)', flag: '🇧🇷' },
-  { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-  { code: 'ko', name: '한국어', flag: '🇰🇷' },
-  { code: 'ms', name: 'Bahasa Melayu', flag: '🇲🇾' },
-  { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩' },
+  { code: 'pt', name: 'Português', flag: '🇵🇹' },
 ];
 
 export function LanguageSwitcher() {
