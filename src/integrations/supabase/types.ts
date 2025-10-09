@@ -8277,6 +8277,7 @@ export type Database = {
           publications: string[] | null
           research_interests: string[] | null
           specialty: string[]
+          specialty_licenses: Json | null
           stripe_account_id: string | null
           sub_specialty: string[] | null
           telemedicine_platforms: string[] | null
@@ -8330,6 +8331,7 @@ export type Database = {
           publications?: string[] | null
           research_interests?: string[] | null
           specialty: string[]
+          specialty_licenses?: Json | null
           stripe_account_id?: string | null
           sub_specialty?: string[] | null
           telemedicine_platforms?: string[] | null
@@ -8383,6 +8385,7 @@ export type Database = {
           publications?: string[] | null
           research_interests?: string[] | null
           specialty?: string[]
+          specialty_licenses?: Json | null
           stripe_account_id?: string | null
           sub_specialty?: string[] | null
           telemedicine_platforms?: string[] | null
