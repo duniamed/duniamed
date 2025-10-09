@@ -24,11 +24,11 @@ export function FeatureFlagsManager() {
   const [showDialog, setShowDialog] = useState(false);
   const [editingFlag, setEditingFlag] = useState<any>(null);
   const [formData, setFormData] = useState({
-    flag_key: '',
-    name: '',
+    flag_name: '',
     description: '',
     enabled: false,
-    rollout_percentage: 100
+    rollout_percentage: 100,
+    target_roles: [] as string[]
   });
   const { toast } = useToast();
 
@@ -122,11 +122,11 @@ export function FeatureFlagsManager() {
 
   const resetForm = () => {
     setFormData({
-      flag_key: '',
-      name: '',
+      flag_name: '',
       description: '',
       enabled: false,
-      rollout_percentage: 100
+      rollout_percentage: 100,
+      target_roles: []
     });
     setEditingFlag(null);
   };
@@ -134,11 +134,11 @@ export function FeatureFlagsManager() {
   const openEditDialog = (flag: any) => {
     setEditingFlag(flag);
     setFormData({
-      flag_key: flag.flag_key,
-      name: flag.name,
+      flag_name: flag.flag_name,
       description: flag.description || '',
       enabled: flag.enabled,
-      rollout_percentage: flag.rollout_percentage || 100
+      rollout_percentage: flag.rollout_percentage || 100,
+      target_roles: flag.target_roles || []
     });
     setShowDialog(true);
   };
@@ -174,23 +174,13 @@ export function FeatureFlagsManager() {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="flag_key">Key</Label>
+                <Label htmlFor="flag_name">Flag Name</Label>
                 <Input
-                  id="flag_key"
-                  value={formData.flag_key}
-                  onChange={(e) => setFormData({ ...formData, flag_key: e.target.value })}
+                  id="flag_name"
+                  value={formData.flag_name}
+                  onChange={(e) => setFormData({ ...formData, flag_name: e.target.value })}
                   placeholder="new_feature"
                   disabled={!!editingFlag}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="New Feature"
                 />
               </div>
 
@@ -244,9 +234,9 @@ export function FeatureFlagsManager() {
               className="p-4 border border-border rounded-lg flex items-center justify-between"
             >
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <p className="font-medium text-foreground">{flag.name}</p>
-                  <code className="text-xs bg-muted px-2 py-1 rounded">{flag.flag_key}</code>
+              <div className="flex items-center gap-2 mb-1">
+                  <p className="font-medium text-foreground">{flag.flag_name}</p>
+                  <code className="text-xs bg-muted px-2 py-1 rounded">{flag.flag_name}</code>
                 </div>
                 {flag.description && (
                   <p className="text-sm text-muted-foreground">{flag.description}</p>

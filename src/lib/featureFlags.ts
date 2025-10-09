@@ -15,7 +15,7 @@ export async function isFeatureEnabled(key: string): Promise<boolean> {
     // Fetch fresh flags
     const { data: flags, error } = await supabase
       .from('feature_flags')
-      .select('flag_key, enabled, rollout_percentage, target_users, target_roles')
+      .select('flag_name, enabled, rollout_percentage, target_roles')
       .eq('enabled', true);
 
     if (error) throw error;
@@ -40,11 +40,6 @@ export async function isFeatureEnabled(key: string): Promise<boolean> {
         enabled = enabled && (userHash % 100) < flag.rollout_percentage;
       }
 
-      // Check target users
-      if (flag.target_users && flag.target_users.length > 0 && user) {
-        enabled = enabled && flag.target_users.includes(user.id);
-      }
-
       // Check target roles
       if (flag.target_roles && flag.target_roles.length > 0 && user) {
         const { data: roles } = await supabase
@@ -52,11 +47,13 @@ export async function isFeatureEnabled(key: string): Promise<boolean> {
           .select('role')
           .eq('user_id', user.id);
         
-        const userRoles = roles?.map(r => r.role) || [];
-        enabled = enabled && flag.target_roles.some((r: string) => userRoles.includes(r));
+        const userRoles = roles?.map(r => r.role as string) || [];
+        enabled = enabled && flag.target_roles.some((targetRole: string) => 
+          userRoles.includes(targetRole)
+        );
       }
 
-      flagsCache.set(flag.flag_key, enabled);
+      flagsCache.set(flag.flag_name, enabled);
     }
 
     return flagsCache.get(key) || false;

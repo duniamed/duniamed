@@ -21,7 +21,7 @@ export function AnalyticsDashboard() {
       since.setDate(since.getDate() - daysAgo);
 
       const { data: events, error } = await supabase
-        .from('analytics_events')
+        .from('analytics_events' as any)
         .select('*')
         .gte('created_at', since.toISOString())
         .order('created_at', { ascending: false });
@@ -30,10 +30,10 @@ export function AnalyticsDashboard() {
 
       // Calculate stats
       const totalEvents = events?.length || 0;
-      const uniqueUsers = new Set(events?.map(e => e.user_id).filter(Boolean)).size;
+      const uniqueUsers = new Set(events?.map((e: any) => e.user_id).filter(Boolean)).size;
 
       // Top events
-      const eventCounts = events?.reduce((acc: any, event) => {
+      const eventCounts = events?.reduce((acc: any, event: any) => {
         acc[event.event_name] = (acc[event.event_name] || 0) + 1;
         return acc;
       }, {});
@@ -44,7 +44,7 @@ export function AnalyticsDashboard() {
         .map(([name, count]) => ({ name, count }));
 
       // Events trend by day
-      const dayGroups = events?.reduce((acc: any, event) => {
+      const dayGroups = events?.reduce((acc: any, event: any) => {
         const day = new Date(event.created_at).toLocaleDateString();
         acc[day] = (acc[day] || 0) + 1;
         return acc;
