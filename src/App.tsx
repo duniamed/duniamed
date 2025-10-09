@@ -154,6 +154,8 @@ import ClinicalFocus from './pages/ClinicalFocus';
 import AIGovernance from './pages/AIGovernance';
 import WorkQueue from './pages/WorkQueue';
 import ComplianceDashboard from './pages/ComplianceDashboard';
+import FinanceDashboard from './pages/FinanceDashboard';
+import ActivityFeed from './pages/ActivityFeed';
 
 const queryClient = new QueryClient();
 
@@ -265,6 +267,10 @@ const App = () => (
             
             {/* FINANCIAL */}
             <Route path="/ai-finance" element={<AIFinance />} />
+            <Route path="/finance" element={<FinanceDashboard />} />
+            
+            {/* ACTIVITY FEED */}
+            <Route path="/activity-feed" element={<ActivityFeed />} />
             
             {/* EHDS COMPLIANCE */}
             <Route path="/ehds-compliance" element={<EHDSCompliance />} />
