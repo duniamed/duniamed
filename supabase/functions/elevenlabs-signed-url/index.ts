@@ -11,12 +11,22 @@ serve(async (req) => {
   }
 
   try {
-    const { agentId, apiKey } = await req.json();
+    const { agentId } = await req.json();
 
-    if (!agentId || !apiKey) {
+    if (!agentId) {
       return new Response(
-        JSON.stringify({ error: 'agentId and apiKey are required' }),
+        JSON.stringify({ error: 'agentId is required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // SECURITY: Get API key from server-side environment variable
+    const apiKey = Deno.env.get('ELEVENLABS_API_KEY');
+    if (!apiKey) {
+      console.error('ELEVENLABS_API_KEY not configured in environment');
+      return new Response(
+        JSON.stringify({ error: 'ElevenLabs API key not configured. Please contact your administrator.' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 

@@ -34,9 +34,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 export default function VoiceAssist() {
   const { toast } = useToast();
-  const [apiKey, setApiKey] = useState('');
-  const [agentId, setAgentId] = useState('');
-  const [isConfigured, setIsConfigured] = useState(false);
+  const [agentId, setAgentId] = useState(() => sessionStorage.getItem('elevenlabs_agent_id') || '');
+  const [isConfigured, setIsConfigured] = useState(() => !!sessionStorage.getItem('elevenlabs_agent_id'));
   
   const conversation = useConversation({
     onConnect: () => {
@@ -80,9 +79,9 @@ export default function VoiceAssist() {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       
-      // Get signed URL from edge function
+      // Get signed URL from edge function (API key is stored server-side)
       const { data, error } = await supabase.functions.invoke('elevenlabs-signed-url', {
-        body: { agentId, apiKey }
+        body: { agentId }
       });
       
       if (error) throw error;
@@ -103,12 +102,13 @@ export default function VoiceAssist() {
   };
 
   const saveConfiguration = () => {
-    // Save to user preferences
-    localStorage.setItem('elevenlabs_config', JSON.stringify({ apiKey, agentId }));
+    // SECURITY: Only store agent ID locally, never the API key
+    // API key should be configured server-side in Supabase secrets
+    sessionStorage.setItem('elevenlabs_agent_id', agentId);
     setIsConfigured(true);
     toast({
       title: "Configuration saved",
-      description: "Voice assist is ready to use",
+      description: "Voice assist is ready to use. Note: API key must be configured in system settings.",
     });
   };
 
@@ -137,20 +137,9 @@ export default function VoiceAssist() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="apiKey">ElevenLabs API Key</Label>
-                <Input
-                  id="apiKey"
-                  type="password"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="sk_..."
-                />
-                <p className="text-sm text-muted-foreground">
-                  Get your API key from{' '}
-                  <a href="https://elevenlabs.io/api-keys" target="_blank" rel="noopener noreferrer" className="text-primary underline">
-                    ElevenLabs dashboard
-                  </a>
+              <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-4">
+                <p className="text-sm text-amber-800 dark:text-amber-200">
+                  <strong>Security Note:</strong> The ElevenLabs API key must be configured by an administrator in the system's Supabase secrets as <code className="bg-amber-100 dark:bg-amber-900 px-1 py-0.5 rounded">ELEVENLABS_API_KEY</code>. Only the Agent ID is stored locally.
                 </p>
               </div>
 
@@ -163,11 +152,11 @@ export default function VoiceAssist() {
                   placeholder="agent_..."
                 />
                 <p className="text-sm text-muted-foreground">
-                  Create a conversational AI agent in your ElevenLabs dashboard
+                  Create a conversational AI agent in your ElevenLabs dashboard and enter the Agent ID here
                 </p>
               </div>
 
-              <Button onClick={saveConfiguration} disabled={!apiKey || !agentId}>
+              <Button onClick={saveConfiguration} disabled={!agentId}>
                 Save Configuration
               </Button>
             </CardContent>
