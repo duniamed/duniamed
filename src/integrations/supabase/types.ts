@@ -9732,6 +9732,21 @@ export type Database = {
         Args: { _revoked_by?: string; _user_id: string }
         Returns: boolean
       }
+      search_user_embeddings: {
+        Args: {
+          match_count?: number
+          match_threshold?: number
+          query_embedding: string
+        }
+        Returns: {
+          content_text: string
+          content_type: string
+          id: string
+          metadata: Json
+          similarity: number
+          user_id: string
+        }[]
+      }
       sparsevec_out: {
         Args: { "": unknown }
         Returns: unknown

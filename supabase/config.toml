@@ -239,3 +239,15 @@ verify_jwt = true
 
 [functions.ai-source-freshness-check]
 verify_jwt = false
+
+[functions.chat-stream]
+verify_jwt = true
+
+[functions.generate-blog-content]
+verify_jwt = true
+
+[functions.semantic-search]
+verify_jwt = true
+
+[functions.generate-embeddings]
+verify_jwt = true

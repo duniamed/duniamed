@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import "./lib/i18n";
+import { ChatWidget } from "@/components/ChatWidget";
 import Home from "./pages/HomePage";
 import HowItWorks from "./pages/HowItWorks";
 import ForPatients from "./pages/ForPatients";
@@ -15,6 +16,8 @@ import ForClinics from "./pages/ForClinics";
 import About from "./pages/About";
 import Careers from "./pages/Careers";
 import Blog from "./pages/Blog";
+import BlogAdmin from "./pages/BlogAdmin";
+import SemanticSearchPage from "./pages/SemanticSearchPage";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
@@ -394,8 +397,11 @@ const App = () => (
             <Route path="/secure-delivery" element={<SecureDelivery />} />
             <Route path="/provider-absences" element={<ProviderAbsences />} />
             <Route path="/care-teams" element={<CareTeams />} />
+            <Route path="/admin/blog" element={<BlogAdmin />} />
+            <Route path="/semantic-search" element={<SemanticSearchPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <ChatWidget />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
