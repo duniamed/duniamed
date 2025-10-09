@@ -760,6 +760,57 @@ export type Database = {
           },
         ]
       }
+      blog_posts: {
+        Row: {
+          author_id: string | null
+          content: string
+          created_at: string | null
+          excerpt: string | null
+          featured_image_url: string | null
+          id: string
+          published_at: string | null
+          reading_time_minutes: number | null
+          seo_description: string | null
+          slug: string
+          status: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          content: string
+          created_at?: string | null
+          excerpt?: string | null
+          featured_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          reading_time_minutes?: number | null
+          seo_description?: string | null
+          slug: string
+          status?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          content?: string
+          created_at?: string | null
+          excerpt?: string | null
+          featured_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          reading_time_minutes?: number | null
+          seo_description?: string | null
+          slug?: string
+          status?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       booking_attempts: {
         Row: {
           booked: boolean | null
@@ -2197,6 +2248,72 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      content_drafts: {
+        Row: {
+          ai_metadata: Json | null
+          content: string | null
+          created_at: string | null
+          id: string
+          length: string | null
+          title: string | null
+          tone: string | null
+          topic: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          ai_metadata?: Json | null
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          length?: string | null
+          title?: string | null
+          tone?: string | null
+          topic?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          ai_metadata?: Json | null
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          length?: string | null
+          title?: string | null
+          tone?: string | null
+          topic?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      conversations: {
+        Row: {
+          created_at: string | null
+          id: string
+          messages: Json | null
+          title: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          messages?: Json | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          messages?: Json | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       cost_estimate_locks: {
         Row: {
@@ -7168,6 +7285,30 @@ export type Database = {
         }
         Relationships: []
       }
+      semantic_search_cache: {
+        Row: {
+          created_at: string | null
+          id: string
+          query_embedding: string | null
+          query_text: string
+          results: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          query_embedding?: string | null
+          query_text: string
+          results?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          query_embedding?: string | null
+          query_text?: string
+          results?: Json | null
+        }
+        Relationships: []
+      }
       sensitive_access_alerts: {
         Row: {
           access_type: string
@@ -8706,6 +8847,39 @@ export type Database = {
         }
         Relationships: []
       }
+      user_embeddings: {
+        Row: {
+          content_text: string
+          content_type: string
+          created_at: string | null
+          embedding: string | null
+          id: string
+          metadata: Json | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          content_text: string
+          content_type: string
+          created_at?: string | null
+          embedding?: string | null
+          id?: string
+          metadata?: Json | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          content_text?: string
+          content_type?: string
+          created_at?: string | null
+          embedding?: string | null
+          id?: string
+          metadata?: Json | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_locale_preferences: {
         Row: {
           created_at: string | null
@@ -9467,6 +9641,10 @@ export type Database = {
       }
     }
     Functions: {
+      binary_quantize: {
+        Args: { "": string } | { "": unknown }
+        Returns: unknown
+      }
       get_user_clinic_ids: {
         Args: { _user_id: string }
         Returns: string[]
@@ -9475,12 +9653,44 @@ export type Database = {
         Args: { _granted_by?: string; _user_id: string }
         Returns: boolean
       }
+      halfvec_avg: {
+        Args: { "": number[] }
+        Returns: unknown
+      }
+      halfvec_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      halfvec_send: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      halfvec_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      hnsw_bit_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnsw_halfvec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnsw_sparsevec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnswhandler: {
+        Args: { "": unknown }
+        Returns: unknown
       }
       is_clinic_owner: {
         Args: { _clinic_id: string; _user_id: string }
@@ -9489,6 +9699,26 @@ export type Database = {
       is_clinic_staff: {
         Args: { _clinic_id: string; _user_id: string }
         Returns: boolean
+      }
+      ivfflat_bit_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflat_halfvec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflathandler: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      l2_norm: {
+        Args: { "": unknown } | { "": unknown }
+        Returns: number
+      }
+      l2_normalize: {
+        Args: { "": string } | { "": unknown } | { "": unknown }
+        Returns: unknown
       }
       refresh_availability_cache: {
         Args: {
@@ -9501,6 +9731,42 @@ export type Database = {
       revoke_admin_role: {
         Args: { _revoked_by?: string; _user_id: string }
         Returns: boolean
+      }
+      sparsevec_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      sparsevec_send: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      sparsevec_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
+      }
+      vector_avg: {
+        Args: { "": number[] }
+        Returns: string
+      }
+      vector_dims: {
+        Args: { "": string } | { "": unknown }
+        Returns: number
+      }
+      vector_norm: {
+        Args: { "": string }
+        Returns: number
+      }
+      vector_out: {
+        Args: { "": string }
+        Returns: unknown
+      }
+      vector_send: {
+        Args: { "": string }
+        Returns: string
+      }
+      vector_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
       }
     }
     Enums: {
