@@ -49,6 +49,7 @@ import UploadMedicalRecord from "./pages/UploadMedicalRecord";
 import Favorites from "./pages/Favorites";
 import Analytics from "./pages/Analytics";
 import AdminPanel from "./pages/AdminPanel";
+import AdminUserManagement from "./pages/AdminUserManagement";
 import AuditLogs from "./pages/AuditLogs";
 import SessionManagement from "./pages/SessionManagement";
 import NotFound from "./pages/NotFound";
@@ -147,6 +148,7 @@ import VirtualClinicQueuePage from './pages/VirtualClinicQueue';
 import AITriage from './pages/AITriage';
 import GoogleBusinessProfile from './pages/GoogleBusinessProfile';
 import ClinicalFocus from './pages/ClinicalFocus';
+import AIGovernance from './pages/AIGovernance';
 import WorkQueue from './pages/WorkQueue';
 import ComplianceDashboard from './pages/ComplianceDashboard';
 
@@ -308,9 +310,11 @@ const App = () => (
             
             {/* ADMIN */}
             <Route path="/admin/dashboard" element={<AdminPanel />} />
+            <Route path="/admin/users" element={<AdminUserManagement />} />
             <Route path="/admin/audit-logs" element={<AuditLogs />} />
             <Route path="/admin/sessions" element={<SessionManagement />} />
             <Route path="/admin/implementation-status" element={<ImplementationStatus />} />
+            <Route path="/admin/ai-governance" element={<AIGovernance />} />
             
             {/* C25-C30 INTEGRATIONS */}
           <Route path="/icd-codes" element={<ICDCodeSearch />} />
@@ -336,6 +340,8 @@ const App = () => (
             <Route path="/finance/ai-insights" element={<AIFinance />} />
             <Route path="/clinic/queue" element={<VirtualClinicQueuePage />} />
             <Route path="/triage" element={<AITriage />} />
+          <Route path="/ai-symptom-checker" element={<AISymptomChecker />} />
+          <Route path="/ai-triage" element={<AITriage />} />
             
             {/* LEGAL */}
             <Route path="/legal/privacy" element={<PrivacyPolicy />} />

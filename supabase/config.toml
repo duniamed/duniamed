@@ -51,6 +51,18 @@ verify_jwt = true
 [functions.ai-symptom-checker]
 verify_jwt = false
 
+[functions.ai-symptom-check]
+verify_jwt = true
+
+[functions.ai-config-manage]
+verify_jwt = true
+
+[functions.ai-source-validate]
+verify_jwt = true
+
+[functions.ai-meta-instruction]
+verify_jwt = true
+
 [functions.ai-soap-note]
 verify_jwt = false
 
@@ -209,3 +221,21 @@ verify_jwt = true
 
 [functions.map-fhir-resources]
 verify_jwt = true
+
+[functions.log-security-event]
+verify_jwt = true
+
+[functions.check-rate-limit]
+verify_jwt = false
+
+[functions.ai-clinic-triage]
+verify_jwt = true
+
+[functions.medical-knowledge-search]
+verify_jwt = true
+
+[functions.ai-sandbox-execute]
+verify_jwt = true
+
+[functions.ai-source-freshness-check]
+verify_jwt = false

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { loginSchema, signupSchema, LoginFormData, SignupFormData } from '@/lib/validations/auth';
@@ -21,6 +22,7 @@ import { PatientSignupForm } from '@/components/auth/PatientSignupForm';
 import { ClinicSignupForm } from '@/components/auth/ClinicSignupForm';
 
 export default function Auth() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user, profile, loading: authLoading } = useAuth();

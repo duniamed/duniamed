@@ -47,6 +47,281 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_config_profiles: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          change_note: string | null
+          compliance_layers: Json
+          context: Database["public"]["Enums"]["ai_context"]
+          created_at: string
+          created_by: string
+          data_access_scope: Json
+          id: string
+          is_active: boolean
+          name: string
+          responsiveness: Json
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          change_note?: string | null
+          compliance_layers?: Json
+          context: Database["public"]["Enums"]["ai_context"]
+          created_at?: string
+          created_by: string
+          data_access_scope?: Json
+          id?: string
+          is_active?: boolean
+          name: string
+          responsiveness?: Json
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          change_note?: string | null
+          compliance_layers?: Json
+          context?: Database["public"]["Enums"]["ai_context"]
+          created_at?: string
+          created_by?: string
+          data_access_scope?: Json
+          id?: string
+          is_active?: boolean
+          name?: string
+          responsiveness?: Json
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
+      ai_policy_audit: {
+        Row: {
+          action: Database["public"]["Enums"]["ai_audit_action"]
+          actor_id: string
+          config_id: string | null
+          diff: Json | null
+          id: string
+          ip_address: string | null
+          justification: string
+          timestamp: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: Database["public"]["Enums"]["ai_audit_action"]
+          actor_id: string
+          config_id?: string | null
+          diff?: Json | null
+          id?: string
+          ip_address?: string | null
+          justification: string
+          timestamp?: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: Database["public"]["Enums"]["ai_audit_action"]
+          actor_id?: string
+          config_id?: string | null
+          diff?: Json | null
+          id?: string
+          ip_address?: string | null
+          justification?: string
+          timestamp?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_policy_audit_config_id_fkey"
+            columns: ["config_id"]
+            isOneToOne: false
+            referencedRelation: "ai_config_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_sandbox_sessions: {
+        Row: {
+          config_snapshot: Json
+          config_version: number | null
+          created_at: string
+          ended_at: string | null
+          id: string
+          notes: string | null
+          source_scope_snapshot: Json
+          started_by: string
+          status: string
+          test_results: Json | null
+        }
+        Insert: {
+          config_snapshot: Json
+          config_version?: number | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          source_scope_snapshot: Json
+          started_by: string
+          status?: string
+          test_results?: Json | null
+        }
+        Update: {
+          config_snapshot?: Json
+          config_version?: number | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          source_scope_snapshot?: Json
+          started_by?: string
+          status?: string
+          test_results?: Json | null
+        }
+        Relationships: []
+      }
+      ai_source_registry: {
+        Row: {
+          checksum: string | null
+          created_at: string
+          id: string
+          metadata: Json | null
+          name: string
+          retrieval_method: string | null
+          source_key: string
+          source_type: Database["public"]["Enums"]["ai_source_type"]
+          status: Database["public"]["Enums"]["ai_source_status"]
+          updated_at: string
+          uri: string
+          valid_from: string
+          valid_to: string | null
+          version: string
+        }
+        Insert: {
+          checksum?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          name: string
+          retrieval_method?: string | null
+          source_key: string
+          source_type: Database["public"]["Enums"]["ai_source_type"]
+          status?: Database["public"]["Enums"]["ai_source_status"]
+          updated_at?: string
+          uri: string
+          valid_from?: string
+          valid_to?: string | null
+          version: string
+        }
+        Update: {
+          checksum?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          name?: string
+          retrieval_method?: string | null
+          source_key?: string
+          source_type?: Database["public"]["Enums"]["ai_source_type"]
+          status?: Database["public"]["Enums"]["ai_source_status"]
+          updated_at?: string
+          uri?: string
+          valid_from?: string
+          valid_to?: string | null
+          version?: string
+        }
+        Relationships: []
+      }
+      ai_symptom_checker_modules: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          last_validated_at: string | null
+          module_key: string
+          owning_team: string | null
+          status: string
+          storage_ref: string
+          version: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_validated_at?: string | null
+          module_key: string
+          owning_team?: string | null
+          status?: string
+          storage_ref: string
+          version: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_validated_at?: string | null
+          module_key?: string
+          owning_team?: string | null
+          status?: string
+          storage_ref?: string
+          version?: string
+        }
+        Relationships: []
+      }
+      ai_symptom_logs: {
+        Row: {
+          citations: Json
+          context: Database["public"]["Enums"]["ai_context"]
+          evaluator_scores: Json | null
+          flags: Json | null
+          geo_region: string | null
+          id: string
+          inputs_hash: string
+          inputs_schema: Json | null
+          latency_ms: number | null
+          output_schema: Json | null
+          output_summary: string | null
+          request_id: string
+          retrieved_sources: Json
+          timestamp: string
+          user_role: string | null
+        }
+        Insert: {
+          citations?: Json
+          context: Database["public"]["Enums"]["ai_context"]
+          evaluator_scores?: Json | null
+          flags?: Json | null
+          geo_region?: string | null
+          id?: string
+          inputs_hash: string
+          inputs_schema?: Json | null
+          latency_ms?: number | null
+          output_schema?: Json | null
+          output_summary?: string | null
+          request_id?: string
+          retrieved_sources?: Json
+          timestamp?: string
+          user_role?: string | null
+        }
+        Update: {
+          citations?: Json
+          context?: Database["public"]["Enums"]["ai_context"]
+          evaluator_scores?: Json | null
+          flags?: Json | null
+          geo_region?: string | null
+          id?: string
+          inputs_hash?: string
+          inputs_schema?: Json | null
+          latency_ms?: number | null
+          output_schema?: Json | null
+          output_summary?: string | null
+          request_id?: string
+          retrieved_sources?: Json
+          timestamp?: string
+          user_role?: string | null
+        }
+        Relationships: []
+      }
       appointment_compliance_rules: {
         Row: {
           action_required: Json
@@ -1923,6 +2198,39 @@ export type Database = {
           },
         ]
       }
+      cost_estimate_locks: {
+        Row: {
+          created_at: string | null
+          currency: string
+          estimate_id: string
+          expires_at: string
+          id: string
+          is_active: boolean | null
+          locked_price: number
+          patient_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          currency?: string
+          estimate_id: string
+          expires_at: string
+          id?: string
+          is_active?: boolean | null
+          locked_price: number
+          patient_id: string
+        }
+        Update: {
+          created_at?: string | null
+          currency?: string
+          estimate_id?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean | null
+          locked_price?: number
+          patient_id?: string
+        }
+        Relationships: []
+      }
       cost_estimates: {
         Row: {
           appointment_id: string | null
@@ -3229,6 +3537,42 @@ export type Database = {
           },
         ]
       }
+      group_booking_sessions: {
+        Row: {
+          confirmed_slots: Json | null
+          created_at: string | null
+          duration_minutes: number
+          id: string
+          organizer_id: string
+          preferred_date: string
+          specialist_ids: string[]
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          confirmed_slots?: Json | null
+          created_at?: string | null
+          duration_minutes?: number
+          id?: string
+          organizer_id: string
+          preferred_date: string
+          specialist_ids: string[]
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          confirmed_slots?: Json | null
+          created_at?: string | null
+          duration_minutes?: number
+          id?: string
+          organizer_id?: string
+          preferred_date?: string
+          specialist_ids?: string[]
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       insurance_claims: {
         Row: {
           adjudication_date: string | null
@@ -4040,6 +4384,42 @@ export type Database = {
           retry_count?: number | null
           sent_at?: string | null
           status?: string | null
+        }
+        Relationships: []
+      }
+      message_delivery_status: {
+        Row: {
+          created_at: string | null
+          error_code: string | null
+          error_message: string | null
+          id: string
+          message_id: string
+          profile_name: string | null
+          status: string
+          updated_at: string | null
+          wa_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          message_id: string
+          profile_name?: string | null
+          status: string
+          updated_at?: string | null
+          wa_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          message_id?: string
+          profile_name?: string | null
+          status?: string
+          updated_at?: string | null
+          wa_id?: string | null
         }
         Relationships: []
       }
@@ -5869,6 +6249,42 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limits: {
+        Row: {
+          created_at: string | null
+          endpoint: string
+          id: string
+          identifier: string
+          max_requests: number | null
+          request_count: number | null
+          updated_at: string | null
+          window_duration: unknown | null
+          window_start: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          endpoint: string
+          id?: string
+          identifier: string
+          max_requests?: number | null
+          request_count?: number | null
+          updated_at?: string | null
+          window_duration?: unknown | null
+          window_start?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          endpoint?: string
+          id?: string
+          identifier?: string
+          max_requests?: number | null
+          request_count?: number | null
+          updated_at?: string | null
+          window_duration?: unknown | null
+          window_start?: string | null
+        }
+        Relationships: []
+      }
       referral_networks: {
         Row: {
           active_referrals: number | null
@@ -6710,6 +7126,45 @@ export type Database = {
           read_at?: string | null
           recipient_id?: string
           sender_id?: string
+        }
+        Relationships: []
+      }
+      security_audit_log: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          ip_address: unknown | null
+          metadata: Json | null
+          resource_id: string | null
+          resource_type: string
+          severity: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          resource_id?: string | null
+          resource_type: string
+          severity?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          resource_id?: string | null
+          resource_type?: string
+          severity?: string | null
+          user_agent?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -8343,6 +8798,8 @@ export type Database = {
           assigned_at: string | null
           assigned_by: string | null
           expires_at: string | null
+          granted_at: string | null
+          granted_by: string | null
           id: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
@@ -8351,6 +8808,8 @@ export type Database = {
           assigned_at?: string | null
           assigned_by?: string | null
           expires_at?: string | null
+          granted_at?: string | null
+          granted_by?: string | null
           id?: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
@@ -8359,6 +8818,8 @@ export type Database = {
           assigned_at?: string | null
           assigned_by?: string | null
           expires_at?: string | null
+          granted_at?: string | null
+          granted_by?: string | null
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
@@ -9010,6 +9471,10 @@ export type Database = {
         Args: { _user_id: string }
         Returns: string[]
       }
+      grant_master_admin: {
+        Args: { _granted_by?: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -9033,8 +9498,28 @@ export type Database = {
         }
         Returns: number
       }
+      revoke_admin_role: {
+        Args: { _revoked_by?: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
+      ai_audit_action:
+        | "create"
+        | "update"
+        | "approve"
+        | "rollback"
+        | "retire"
+        | "deploy"
+      ai_context: "patient" | "clinic" | "internal" | "specialist"
+      ai_source_status: "approved" | "pending" | "retired" | "under_review"
+      ai_source_type:
+        | "guideline"
+        | "ontology"
+        | "formulary"
+        | "internal_protocol"
+        | "journal_api"
+        | "fhir_resource"
       app_role:
         | "patient"
         | "specialist"
@@ -9201,6 +9686,24 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      ai_audit_action: [
+        "create",
+        "update",
+        "approve",
+        "rollback",
+        "retire",
+        "deploy",
+      ],
+      ai_context: ["patient", "clinic", "internal", "specialist"],
+      ai_source_status: ["approved", "pending", "retired", "under_review"],
+      ai_source_type: [
+        "guideline",
+        "ontology",
+        "formulary",
+        "internal_protocol",
+        "journal_api",
+        "fhir_resource",
+      ],
       app_role: [
         "patient",
         "specialist",

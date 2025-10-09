@@ -1,0 +1,265 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "language": "Language",
+    "email": "Email",
+    "password": "Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone",
+    "address": "Address",
+    "city": "City",
+    "state": "State",
+    "country": "Country",
+    "zipCode": "Zip Code",
+    "startNow": "Start Now",
+    "bookAppointment": "Book Appointment",
+    "viewDetails": "View Details"
+  },
+  "nav": {
+    "home": "Home",
+    "urgentCare": "Urgent Care",
+    "findSpecialists": "Find Specialists",
+    "forPatients": "For Patients",
+    "forSpecialists": "For Specialists",
+    "forClinics": "For Clinics",
+    "howItWorks": "How It Works",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Login",
+    "signup": "Sign Up",
+    "dashboard": "Dashboard",
+    "logout": "Logout",
+    "profile": "Profile",
+    "myAppointments": "My Appointments",
+    "messages": "Messages",
+    "settings": "Settings",
+    "searchClinics": "Search Clinics",
+    "prescriptions": "Prescriptions",
+    "medicalRecords": "Medical Records",
+    "payments": "Payments",
+    "familyMembers": "Family Members",
+    "notifications": "Notifications"
+  },
+  "home": {
+    "hero": {
+      "badge": "500K+ patients this year",
+      "title": "See a Doctor in",
+      "titleHighlight": "Under 5 Minutes",
+      "subtitle": "No waiting rooms. No commute. Just instant access to verified specialists from $0-79.",
+      "ctaPrimary": "Get Care Now",
+      "ctaSecondary": "Find Specialist"
+    },
+    "trust": {
+      "hipaa": "HIPAA Compliant",
+      "verified": "Verified Doctors",
+      "secure": "Bank-Level Security"
+    },
+    "services": {
+      "urgentCare": {
+        "title": "Urgent Care",
+        "description": "24/7 online doctors for immediate medical needs",
+        "conditions": {
+          "0": "Cold & flu",
+          "1": "Infections",
+          "2": "Allergies",
+          "3": "Minor injuries"
+        }
+      },
+      "mentalHealth": {
+        "title": "Mental Health",
+        "description": "Licensed therapists and psychiatrists available",
+        "conditions": {
+          "0": "Anxiety",
+          "1": "Depression",
+          "2": "Stress",
+          "3": "Counseling"
+        }
+      },
+      "primaryCare": {
+        "title": "Primary Care",
+        "description": "Ongoing care and chronic condition management",
+        "conditions": {
+          "0": "Check-ups",
+          "1": "Prescriptions",
+          "2": "Lab orders",
+          "3": "Referrals"
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "step1": {
+        "title": "Choose your care",
+        "description": "Select the type of medical care you need"
+      },
+      "step2": {
+        "title": "Connect instantly",
+        "description": "See a doctor via video in minutes or schedule ahead"
+      },
+      "step3": {
+        "title": "Get treatment",
+        "description": "Receive diagnosis, prescriptions, and follow-up care"
+      }
+    }
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "emailPlaceholder": "Enter your email",
+    "passwordPlaceholder": "Enter your password",
+    "rememberMe": "Remember me",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signupAsPatient": "Sign up as Patient",
+    "signupAsSpecialist": "Sign up as Specialist",
+    "signupAsClinic": "Sign up as Clinic"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcomeBack": "Welcome back",
+    "patientPortal": "Patient Portal",
+    "specialistPortal": "Specialist Portal",
+    "clinicPortal": "Clinic Portal",
+    "manageHealthcare": "Manage your healthcare appointments and records",
+    "upcomingAppointments": "Upcoming Appointments",
+    "recentMessages": "Recent Messages",
+    "quickActions": "Quick Actions",
+    "instantVideoCall": "Instant Video Call",
+    "talkToDoctor": "Talk to a doctor right now",
+    "findSpecialists": "Find Specialists",
+    "searchProviders": "Search for healthcare providers",
+    "searchBySpecialty": "By Specialty",
+    "searchByCondition": "By Condition",
+    "viewMedicalRecords": "Medical Records",
+    "viewPrescriptions": "View Prescriptions",
+    "bookAppointment": "Book Appointment",
+    "analytics": "Analytics",
+    "availability": "Availability",
+    "myProfile": "My Profile"
+  },
+  "search": {
+    "title": "Find Healthcare Providers",
+    "searchPlaceholder": "Search by specialty, condition, or doctor name",
+    "resultsCount": "Showing {{count}} specialists",
+    "noResults": "No specialists found matching your criteria",
+    "loading": "Searching...",
+    "filters": {
+      "title": "Filters",
+      "specialty": "Specialty",
+      "allSpecialties": "All Specialties",
+      "language": "Language",
+      "allLanguages": "All Languages",
+      "sortBy": "Sort By",
+      "rating": "Rating",
+      "price": "Price",
+      "experience": "Experience",
+      "availability": "Availability",
+      "minFee": "Min Fee",
+      "maxFee": "Max Fee",
+      "verifiedOnly": "Verified Only",
+      "advanced": "Advanced Filters",
+      "condition": "Condition",
+      "timezone": "Time Zone",
+      "acceptsInsurance": "Accepts Insurance",
+      "consultationType": "Consultation Type",
+      "all": "All",
+      "video": "Video",
+      "inPerson": "In-Person",
+      "availableNow": "Available Now"
+    },
+    "specialist": {
+      "online": "Online",
+      "offline": "Offline",
+      "yearsExp": "{{years}} years experience",
+      "reviews": "{{count}} reviews",
+      "videoConsultation": "Video Consultation",
+      "inPerson": "In-Person",
+      "acceptsInsurance": "Accepts Insurance",
+      "viewProfile": "View Profile",
+      "bookNow": "Book Now",
+      "from": "From",
+      "perSession": "per session",
+      "verified": "Verified"
+    }
+  },
+  "booking": {
+    "title": "Book Appointment",
+    "with": "Book with",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time",
+    "consultationType": "Consultation Type",
+    "video": "Video Consultation",
+    "inPerson": "In-Person Visit",
+    "reason": "Reason for Visit",
+    "symptoms": "Describe your symptoms",
+    "confirm": "Confirm Booking",
+    "confirmPayment": "Confirm & Pay",
+    "success": "Appointment booked successfully!",
+    "error": "Failed to book appointment",
+    "fee": "Consultation Fee",
+    "total": "Total"
+  },
+  "profile": {
+    "title": "Profile",
+    "myProfile": "My Profile",
+    "personalInfo": "Personal Information",
+    "medicalHistory": "Medical History",
+    "insuranceInfo": "Insurance Information",
+    "edit": "Edit Profile",
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "viewProfile": "View Profile",
+    "editProfile": "Edit Profile"
+  },
+  "appointments": {
+    "title": "My Appointments",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "cancelled": "Cancelled",
+    "reschedule": "Reschedule",
+    "cancel": "Cancel Appointment",
+    "join": "Join Video Call",
+    "details": "Appointment Details",
+    "noAppointments": "No appointments found",
+    "bookNew": "Book New Appointment"
+  },
+  "messages": {
+    "title": "Messages",
+    "newMessage": "New Message",
+    "typeMessage": "Type a message...",
+    "send": "Send",
+    "noMessages": "No messages yet",
+    "startConversation": "Start a new conversation"
+  },
+  "prescriptions": {
+    "title": "Prescriptions",
+    "noPrescriptions": "No prescriptions found",
+    "active": "Active",
+    "expired": "Expired",
+    "requestRefill": "Request Refill"
+  },
+  "medicalRecords": {
+    "title": "Medical Records",
+    "upload": "Upload Record",
+    "noRecords": "No medical records found",
+    "viewDocument": "View Document",
+    "download": "Download"
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "common": {
+    "welcome": "Bienvenue",
+    "search": "Rechercher",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Sauvegarder",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre",
+    "language": "Langue",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "phone": "Téléphone",
+    "address": "Adresse",
+    "city": "Ville",
+    "state": "État",
+    "country": "Pays",
+    "zipCode": "Code postal"
+  },
+  "nav": {
+    "home": "Accueil",
+    "search": "Trouver un médecin",
+    "forPatients": "Pour les patients",
+    "forSpecialists": "Pour les spécialistes",
+    "forClinics": "Pour les cliniques",
+    "about": "À propos",
+    "contact": "Contact",
+    "login": "Connexion",
+    "signup": "S'inscrire",
+    "dashboard": "Tableau de bord",
+    "logout": "Déconnexion",
+    "profile": "Profil",
+    "appointments": "Rendez-vous",
+    "messages": "Messages",
+    "settings": "Paramètres"
+  },
+  "home": {
+    "hero": {
+      "badge": "500K+ patients cette année",
+      "title": "Consultez un médecin en",
+      "titleHighlight": "Moins de 5 minutes",
+      "subtitle": "Pas de salles d'attente. Pas de déplacement. Accès instantané aux spécialistes vérifiés à partir de $0-79.",
+      "ctaPrimary": "Obtenir des soins maintenant",
+      "ctaSecondary": "Trouver un spécialiste"
+    },
+    "trust": {
+      "hipaa": "Conforme HIPAA",
+      "verified": "Médecins vérifiés",
+      "secure": "Sécurité bancaire"
+    },
+    "services": {
+      "urgentCare": {
+        "title": "Soins urgents",
+        "description": "Médecins en ligne 24/7 pour besoins médicaux immédiats",
+        "conditions": {
+          "0": "Rhume et grippe",
+          "1": "Infections",
+          "2": "Allergies",
+          "3": "Blessures mineures"
+        }
+      },
+      "mentalHealth": {
+        "title": "Santé mentale",
+        "description": "Thérapeutes et psychiatres licenciés disponibles",
+        "conditions": {
+          "0": "Anxiété",
+          "1": "Dépression",
+          "2": "Stress",
+          "3": "Conseil"
+        }
+      },
+      "primaryCare": {
+        "title": "Soins primaires",
+        "description": "Soins continus et gestion des maladies chroniques",
+        "conditions": {
+          "0": "Examens",
+          "1": "Ordonnances",
+          "2": "Analyses de laboratoire",
+          "3": "Références"
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "Comment ça marche",
+      "step1": {
+        "title": "Choisissez vos soins",
+        "description": "Sélectionnez le type de soins médicaux dont vous avez besoin"
+      },
+      "step2": {
+        "title": "Connectez-vous instantanément",
+        "description": "Consultez un médecin par vidéo en quelques minutes ou planifiez à l'avance"
+      },
+      "step3": {
+        "title": "Recevez un traitement",
+        "description": "Obtenez un diagnostic, des ordonnances et un suivi"
+      }
+    }
+  },
+  "auth": {
+    "login": "Connexion",
+    "signup": "S'inscrire",
+    "logout": "Déconnexion",
+    "forgotPassword": "Mot de passe oublié ?",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "emailPlaceholder": "Entrez votre e-mail",
+    "passwordPlaceholder": "Entrez votre mot de passe",
+    "rememberMe": "Se souvenir de moi",
+    "noAccount": "Pas de compte ?",
+    "hasAccount": "Vous avez déjà un compte ?",
+    "signupAsPatient": "S'inscrire en tant que patient",
+    "signupAsSpecialist": "S'inscrire en tant que spécialiste",
+    "signupAsClinic": "S'inscrire en tant que clinique"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bon retour",
+    "upcomingAppointments": "Rendez-vous à venir",
+    "recentMessages": "Messages récents",
+    "quickActions": "Actions rapides",
+    "bookAppointment": "Prendre rendez-vous",
+    "viewMedicalRecords": "Dossiers médicaux",
+    "prescriptions": "Ordonnances",
+    "analytics": "Analyses"
+  },
+  "search": {
+    "title": "Trouvez votre professionnel de santé",
+    "placeholder": "Rechercher par spécialité, condition ou nom du médecin",
+    "filters": {
+      "specialty": "Spécialité",
+      "condition": "Condition",
+      "language": "Langue",
+      "timezone": "Fuseau horaire",
+      "insurance": "Assurance",
+      "consultationType": "Type de consultation",
+      "availability": "Disponibilité"
+    },
+    "results": {
+      "showing": "Affichage de {count} spécialistes",
+      "noResults": "Aucun spécialiste trouvé",
+      "loading": "Recherche..."
+    }
+  },
+  "booking": {
+    "title": "Prendre rendez-vous",
+    "selectDate": "Sélectionner la date",
+    "selectTime": "Sélectionner l'heure",
+    "consultationType": "Type de consultation",
+    "video": "Consultation vidéo",
+    "inPerson": "Visite en personne",
+    "reason": "Raison de la visite",
+    "symptoms": "Symptômes",
+    "confirm": "Confirmer la réservation",
+    "success": "Rendez-vous réservé avec succès",
+    "error": "Échec de la réservation"
+  },
+  "profile": {
+    "title": "Profil",
+    "personalInfo": "Informations personnelles",
+    "medicalHistory": "Antécédents médicaux",
+    "insuranceInfo": "Informations d'assurance",
+    "edit": "Modifier le profil",
+    "save": "Sauvegarder les modifications",
+    "cancel": "Annuler"
+  },
+  "appointments": {
+    "title": "Mes rendez-vous",
+    "upcoming": "À venir",
+    "past": "Passés",
+    "cancelled": "Annulés",
+    "reschedule": "Reprogrammer",
+    "cancel": "Annuler le rendez-vous",
+    "join": "Rejoindre l'appel vidéo",
+    "details": "Détails du rendez-vous"
+  },
+  "messages": {
+    "title": "Messages",
+    "newMessage": "Nouveau message",
+    "typeMessage": "Tapez un message...",
+    "send": "Envoyer",
+    "noMessages": "Aucun message pour le moment"
+  }
+}
