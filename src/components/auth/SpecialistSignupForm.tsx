@@ -109,17 +109,16 @@ export function SpecialistSignupForm({ form }: SpecialistSignupFormProps) {
           <div className="border rounded-md max-h-64 overflow-y-auto">
             <div className="p-2 space-y-1">
               {filteredSpecialties.map(specialty => (
-                <div
+                <label
                   key={specialty}
                   className="flex items-center space-x-2 p-2 hover:bg-accent rounded-sm cursor-pointer"
-                  onClick={() => toggleSpecialty(specialty)}
                 >
                   <Checkbox
                     checked={selectedSpecialties.includes(specialty)}
                     onCheckedChange={() => toggleSpecialty(specialty)}
                   />
                   <span className="text-sm">{specialty}</span>
-                </div>
+                </label>
               ))}
             </div>
           </div>
