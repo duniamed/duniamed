@@ -13,11 +13,12 @@ serve(async (req) => {
   }
 
   try {
-    const { topic, tone, length, saveDraft = true } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    
     if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+      return new Response(JSON.stringify({ error: 'Service configuration error' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     const supabase = createClient(
@@ -31,6 +32,49 @@ serve(async (req) => {
       const token = authHeader.replace('Bearer ', '');
       const { data: { user } } = await supabase.auth.getUser(token);
       userId = user?.id;
+    }
+
+    // Rate limiting check (strict for content generation)
+    const rateLimitResponse = await supabase.functions.invoke('check-rate-limit', {
+      body: { 
+        endpoint: 'generate-blog-content',
+        max_requests: 10,
+        window_duration: '1 hour'
+      }
+    });
+
+    if (rateLimitResponse.data?.rate_limited) {
+      return new Response(JSON.stringify({ 
+        error: 'Generation limit reached. Please try again later.',
+        retry_after: rateLimitResponse.data.retry_after_seconds
+      }), {
+        status: 429,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const { topic, tone, length, saveDraft = true } = await req.json();
+
+    // Input validation
+    if (!topic || typeof topic !== 'string' || topic.length < 5 || topic.length > 200) {
+      return new Response(JSON.stringify({ error: 'Invalid topic: must be 5-200 characters' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (!['professional', 'casual', 'formal', 'friendly'].includes(tone)) {
+      return new Response(JSON.stringify({ error: 'Invalid tone' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (!['short', 'medium', 'long'].includes(length)) {
+      return new Response(JSON.stringify({ error: 'Invalid length' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     console.log('Generate blog content:', { topic, tone, length });
@@ -149,7 +193,7 @@ Format the response as JSON with:
   } catch (error) {
     console.error('Error in generate-blog-content:', error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+      JSON.stringify({ error: 'Failed to generate content. Please try again.' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

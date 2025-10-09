@@ -12,8 +12,6 @@ serve(async (req) => {
   }
 
   try {
-    const { fieldName, partialValue, context } = await req.json();
-    
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')!;
@@ -25,7 +23,53 @@ serve(async (req) => {
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
     
     if (userError || !user) {
-      throw new Error('Unauthorized');
+      return new Response(JSON.stringify({ error: 'Authentication required' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Rate limiting check
+    const rateLimitResponse = await supabase.functions.invoke('check-rate-limit', {
+      body: { 
+        endpoint: 'ai-autofill',
+        max_requests: 50,
+        window_duration: '1 hour'
+      }
+    });
+
+    if (rateLimitResponse.data?.rate_limited) {
+      return new Response(JSON.stringify({ 
+        error: 'Too many requests. Please try again later.',
+        retry_after: rateLimitResponse.data.retry_after_seconds
+      }), {
+        status: 429,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const { fieldName, partialValue, context } = await req.json();
+
+    // Input validation
+    if (!fieldName || typeof fieldName !== 'string' || fieldName.length > 100) {
+      return new Response(JSON.stringify({ error: 'Invalid field name' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (!partialValue || typeof partialValue !== 'string' || partialValue.length > 500) {
+      return new Response(JSON.stringify({ error: 'Invalid input: must be 1-500 characters' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (context && (typeof context !== 'string' || context.length > 200)) {
+      return new Response(JSON.stringify({ error: 'Invalid context' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     console.log('Generating autofill suggestions for field:', fieldName);
@@ -115,7 +159,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error generating autofill suggestions:', error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+      JSON.stringify({ error: 'Failed to generate suggestions. Please try again.' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

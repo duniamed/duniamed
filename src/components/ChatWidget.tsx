@@ -56,11 +56,22 @@ export const ChatWidget = () => {
   };
 
   const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+    // Input validation
+    const trimmedInput = input.trim();
+    if (!trimmedInput || isLoading) return;
+    
+    if (trimmedInput.length > 4000) {
+      toast({
+        title: "Message too long",
+        description: "Please limit your message to 4000 characters.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const userMessage: Message = {
       role: 'user',
-      content: input.trim()
+      content: trimmedInput
     };
 
     setInput('');
@@ -134,12 +145,22 @@ export const ChatWidget = () => {
       }
 
     } catch (error) {
-      console.error('Chat error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-        variant: "destructive"
-      });
+      console.error('Chat error occurred');
+      
+      // Check if it's a rate limit error
+      if (error instanceof Response && error.status === 429) {
+        toast({
+          title: "Too many messages",
+          description: "Please wait a moment before sending more messages.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to send message. Please try again.",
+          variant: "destructive"
+        });
+      }
       setMessages(prev => prev.slice(0, -1));
     } finally {
       setIsLoading(false);

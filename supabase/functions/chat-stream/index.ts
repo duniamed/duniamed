@@ -13,11 +13,12 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, conversationId } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    
     if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+      return new Response(JSON.stringify({ error: 'Service configuration error' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     const supabase = createClient(
@@ -31,6 +32,51 @@ serve(async (req) => {
       const token = authHeader.replace('Bearer ', '');
       const { data: { user } } = await supabase.auth.getUser(token);
       userId = user?.id;
+    }
+
+    // Rate limiting check
+    const rateLimitResponse = await supabase.functions.invoke('check-rate-limit', {
+      body: { 
+        endpoint: 'chat-stream',
+        max_requests: 100,
+        window_duration: '1 hour'
+      }
+    });
+
+    if (rateLimitResponse.data?.rate_limited) {
+      return new Response(JSON.stringify({ 
+        error: 'Too many requests. Please try again later.',
+        retry_after: rateLimitResponse.data.retry_after_seconds
+      }), {
+        status: 429,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const { messages, conversationId } = await req.json();
+
+    // Input validation
+    if (!Array.isArray(messages) || messages.length === 0 || messages.length > 50) {
+      return new Response(JSON.stringify({ error: 'Invalid message count: must be 1-50 messages' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Validate each message
+    for (const msg of messages) {
+      if (!msg.role || !msg.content) {
+        return new Response(JSON.stringify({ error: 'Invalid message format' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+      if (msg.content.length > 4000) {
+        return new Response(JSON.stringify({ error: 'Message too long: maximum 4000 characters' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
     }
 
     console.log('Chat stream request:', messages.length, 'messages');
@@ -150,7 +196,7 @@ Keep responses concise (under 150 words) unless detailed instructions are needed
   } catch (error) {
     console.error('Error in chat-stream:', error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+      JSON.stringify({ error: 'Failed to process chat request. Please try again.' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
