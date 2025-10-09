@@ -19,6 +19,7 @@ interface SpecialistSignupFormProps {
 export function SpecialistSignupForm({ form }: SpecialistSignupFormProps) {
   const jurisdiction = form.watch('jurisdiction');
   const selectedSpecialties = form.watch('specialties') || [];
+  const specialtyLicenses = form.watch('specialtyLicenses') || {};
   const [specialtySearch, setSpecialtySearch] = useState('');
 
   const getJurisdictionInfo = () => {
@@ -48,6 +49,10 @@ export function SpecialistSignupForm({ form }: SpecialistSignupFormProps) {
     const current = selectedSpecialties;
     if (current.includes(specialty)) {
       form.setValue('specialties', current.filter(s => s !== specialty));
+      // Remove license entry when unchecking
+      const licenses = { ...specialtyLicenses };
+      delete licenses[specialty];
+      form.setValue('specialtyLicenses', licenses);
     } else {
       form.setValue('specialties', [...current, specialty]);
     }
@@ -55,6 +60,17 @@ export function SpecialistSignupForm({ form }: SpecialistSignupFormProps) {
 
   const removeSpecialty = (specialty: string) => {
     form.setValue('specialties', selectedSpecialties.filter(s => s !== specialty));
+    // Remove license entry when removing
+    const licenses = { ...specialtyLicenses };
+    delete licenses[specialty];
+    form.setValue('specialtyLicenses', licenses);
+  };
+
+  const updateLicenseNumber = (specialty: string, licenseNumber: string) => {
+    form.setValue('specialtyLicenses', {
+      ...specialtyLicenses,
+      [specialty]: licenseNumber
+    });
   };
 
   return (
@@ -81,51 +97,62 @@ export function SpecialistSignupForm({ form }: SpecialistSignupFormProps) {
         )}
       </div>
 
-      <div className="space-y-2">
-        <Label>Medical Specialties (Select all that apply)</Label>
-        <Input
-          placeholder="Search specialties..."
-          value={specialtySearch}
-          onChange={(e) => setSpecialtySearch(e.target.value)}
-        />
-        
-        {selectedSpecialties.length > 0 && (
-          <div className="flex flex-wrap gap-2 p-3 bg-muted rounded-md">
-            {selectedSpecialties.map(specialty => (
-              <Badge key={specialty} variant="secondary" className="gap-1">
-                {specialty}
-                <button
-                  type="button"
-                  onClick={() => removeSpecialty(specialty)}
-                  className="ml-1 hover:text-destructive"
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label>Medical Specialties (Select all that apply)</Label>
+          <Input
+            placeholder="Search specialties..."
+            value={specialtySearch}
+            onChange={(e) => setSpecialtySearch(e.target.value)}
+          />
+          
+          <div className="border rounded-md max-h-64 overflow-y-auto">
+            <div className="p-2 space-y-1">
+              {filteredSpecialties.map(specialty => (
+                <div
+                  key={specialty}
+                  className="flex items-center space-x-2 p-2 hover:bg-accent rounded-sm cursor-pointer"
+                  onClick={() => toggleSpecialty(specialty)}
                 >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            ))}
+                  <Checkbox
+                    checked={selectedSpecialties.includes(specialty)}
+                    onCheckedChange={() => toggleSpecialty(specialty)}
+                  />
+                  <span className="text-sm">{specialty}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        )}
+          <p className="text-xs text-muted-foreground">
+            Selected {selectedSpecialties.length} specialt{selectedSpecialties.length === 1 ? 'y' : 'ies'}
+          </p>
+        </div>
 
-        <div className="border rounded-md max-h-64 overflow-y-auto">
-          <div className="p-2 space-y-1">
-            {filteredSpecialties.map(specialty => (
-              <div
-                key={specialty}
-                className="flex items-center space-x-2 p-2 hover:bg-accent rounded-sm cursor-pointer"
-                onClick={() => toggleSpecialty(specialty)}
-              >
-                <Checkbox
-                  checked={selectedSpecialties.includes(specialty)}
-                  onCheckedChange={() => toggleSpecialty(specialty)}
+        {selectedSpecialties.length > 0 && (
+          <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <InfoIcon className="h-4 w-4 text-primary" />
+              <Label className="text-sm font-semibold">License Numbers for Selected Specialties</Label>
+            </div>
+            <p className="text-xs text-muted-foreground mb-3">
+              Enter your license number for each specialty you've selected
+            </p>
+            {selectedSpecialties.map(specialty => (
+              <div key={specialty} className="space-y-2">
+                <Label htmlFor={`license-${specialty}`} className="text-sm">
+                  {specialty}
+                </Label>
+                <Input
+                  id={`license-${specialty}`}
+                  placeholder={`License number for ${specialty}`}
+                  value={specialtyLicenses[specialty] || ''}
+                  onChange={(e) => updateLicenseNumber(specialty, e.target.value)}
+                  className="bg-background"
                 />
-                <span className="text-sm">{specialty}</span>
               </div>
             ))}
           </div>
-        </div>
-        <p className="text-xs text-muted-foreground">
-          Selected {selectedSpecialties.length} specialt{selectedSpecialties.length === 1 ? 'y' : 'ies'}
-        </p>
+        )}
       </div>
 
       {jurisdiction && (

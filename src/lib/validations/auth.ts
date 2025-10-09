@@ -13,6 +13,7 @@ export const signupSchema = z.object({
   // Specialist subtype
   specialistType: z.string().optional(),
   specialties: z.array(z.string()).optional(),
+  specialtyLicenses: z.record(z.string()).optional(), // Map of specialty -> license number
   
   // Basic info
   firstName: z.string()
