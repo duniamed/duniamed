@@ -251,3 +251,12 @@ verify_jwt = true
 
 [functions.generate-embeddings]
 verify_jwt = true
+
+[functions.ai-recommend]
+verify_jwt = true
+
+[functions.ai-autofill]
+verify_jwt = true
+
+[functions.generate-pdf]
+verify_jwt = true

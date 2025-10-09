@@ -722,6 +722,36 @@ export type Database = {
           },
         ]
       }
+      autofill_suggestions: {
+        Row: {
+          context: string | null
+          created_at: string
+          field_name: string
+          id: string
+          suggestions: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          context?: string | null
+          created_at?: string
+          field_name: string
+          id?: string
+          suggestions?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          context?: string | null
+          created_at?: string
+          field_name?: string
+          id?: string
+          suggestions?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       availability_schedules: {
         Row: {
           created_at: string | null
@@ -3129,6 +3159,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      exports: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          export_type: string
+          file_url: string | null
+          id: string
+          metadata: Json | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          export_type: string
+          file_url?: string | null
+          id?: string
+          metadata?: Json | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          export_type?: string
+          file_url?: string | null
+          id?: string
+          metadata?: Json | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       family_members: {
         Row: {
@@ -6399,6 +6462,42 @@ export type Database = {
           updated_at?: string | null
           window_duration?: unknown | null
           window_start?: string | null
+        }
+        Relationships: []
+      }
+      recommendations: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          item_id: string
+          item_type: string
+          metadata: Json | null
+          reason: string | null
+          score: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          item_id: string
+          item_type: string
+          metadata?: Json | null
+          reason?: string | null
+          score?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          item_id?: string
+          item_type?: string
+          metadata?: Json | null
+          reason?: string | null
+          score?: number
+          user_id?: string
         }
         Relationships: []
       }
