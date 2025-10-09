@@ -156,6 +156,8 @@ import WorkQueue from './pages/WorkQueue';
 import ComplianceDashboard from './pages/ComplianceDashboard';
 import FinanceDashboard from './pages/FinanceDashboard';
 import ActivityFeed from './pages/ActivityFeed';
+import AIBlogGenerator from './pages/AIBlogGenerator';
+import CSVImportExport from './pages/CSVImportExport';
 
 const queryClient = new QueryClient();
 
@@ -271,6 +273,12 @@ const App = () => (
             
             {/* ACTIVITY FEED */}
             <Route path="/activity-feed" element={<ActivityFeed />} />
+            
+            {/* AI BLOG GENERATOR */}
+            <Route path="/ai-blog-generator" element={<AIBlogGenerator />} />
+            
+            {/* CSV IMPORT/EXPORT */}
+            <Route path="/csv-import-export" element={<CSVImportExport />} />
             
             {/* EHDS COMPLIANCE */}
             <Route path="/ehds-compliance" element={<EHDSCompliance />} />

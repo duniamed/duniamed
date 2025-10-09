@@ -20,6 +20,11 @@ export const ChatWidget = () => {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  
+  // Client-side rate limiting: max 10 messages per minute
+  const [messageTimestamps, setMessageTimestamps] = useState<number[]>([]);
+  const RATE_LIMIT = 10;
+  const RATE_LIMIT_WINDOW = 60000; // 1 minute in ms
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -68,6 +73,21 @@ export const ChatWidget = () => {
       });
       return;
     }
+
+    // Client-side rate limiting
+    const now = Date.now();
+    const recentMessages = messageTimestamps.filter(ts => now - ts < RATE_LIMIT_WINDOW);
+    
+    if (recentMessages.length >= RATE_LIMIT) {
+      toast({
+        title: "Slow down",
+        description: `Please wait before sending more messages. Limit: ${RATE_LIMIT} messages per minute.`,
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setMessageTimestamps([...recentMessages, now]);
 
     const userMessage: Message = {
       role: 'user',

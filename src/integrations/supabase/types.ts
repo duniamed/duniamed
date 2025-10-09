@@ -406,6 +406,63 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_events: {
+        Row: {
+          created_at: string
+          event: string
+          id: string
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event: string
+          id?: string
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event?: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      api_keys: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          key: string
+          last_used_at: string | null
+          name: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          key: string
+          last_used_at?: string | null
+          name: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          key?: string
+          last_used_at?: string | null
+          name?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       appointment_compliance_rules: {
         Row: {
           action_required: Json
@@ -9902,6 +9959,10 @@ export type Database = {
         Args: { "": string } | { "": unknown }
         Returns: unknown
       }
+      generate_api_key: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_user_clinic_ids: {
         Args: { _user_id: string }
         Returns: string[]
@@ -10025,6 +10086,10 @@ export type Database = {
       sparsevec_typmod_in: {
         Args: { "": unknown[] }
         Returns: number
+      }
+      update_api_key_usage: {
+        Args: { p_key: string }
+        Returns: boolean
       }
       vector_avg: {
         Args: { "": number[] }
