@@ -1749,6 +1749,54 @@ export type Database = {
           },
         ]
       }
+      clinic_photos: {
+        Row: {
+          caption: string | null
+          category: string | null
+          clinic_id: string
+          created_at: string | null
+          display_order: number | null
+          id: string
+          photo_url: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          caption?: string | null
+          category?: string | null
+          clinic_id: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          photo_url: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          caption?: string | null
+          category?: string | null
+          clinic_id?: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          photo_url?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinic_photos_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinic_photos_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clinic_resources: {
         Row: {
           capacity: number | null
@@ -1880,8 +1928,10 @@ export type Database = {
           email: string | null
           emergency_services: boolean | null
           equipment_available: string[] | null
+          header_image_url: string | null
           id: string
           insurance_accepted: string[] | null
+          intro_video_url: string | null
           is_active: boolean | null
           languages_supported: string[] | null
           latitude: number | null
@@ -1926,8 +1976,10 @@ export type Database = {
           email?: string | null
           emergency_services?: boolean | null
           equipment_available?: string[] | null
+          header_image_url?: string | null
           id?: string
           insurance_accepted?: string[] | null
+          intro_video_url?: string | null
           is_active?: boolean | null
           languages_supported?: string[] | null
           latitude?: number | null
@@ -1972,8 +2024,10 @@ export type Database = {
           email?: string | null
           emergency_services?: boolean | null
           equipment_available?: string[] | null
+          header_image_url?: string | null
           id?: string
           insurance_accepted?: string[] | null
+          intro_video_url?: string | null
           is_active?: boolean | null
           languages_supported?: string[] | null
           latitude?: number | null
@@ -4061,6 +4115,66 @@ export type Database = {
             columns: ["specialist_id"]
             isOneToOne: false
             referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integration_configs: {
+        Row: {
+          clinic_id: string | null
+          created_at: string | null
+          credentials: Json | null
+          id: string
+          integration_type: string
+          is_active: boolean | null
+          last_sync_at: string | null
+          settings: Json | null
+          sync_error: string | null
+          sync_status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          clinic_id?: string | null
+          created_at?: string | null
+          credentials?: Json | null
+          id?: string
+          integration_type: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          settings?: Json | null
+          sync_error?: string | null
+          sync_status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          clinic_id?: string | null
+          created_at?: string | null
+          credentials?: Json | null
+          id?: string
+          integration_type?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          settings?: Json | null
+          sync_error?: string | null
+          sync_status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_configs_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_configs_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
             referencedColumns: ["id"]
           },
         ]
@@ -6255,6 +6369,48 @@ export type Database = {
           },
         ]
       }
+      profile_import_history: {
+        Row: {
+          clinic_id: string | null
+          id: string
+          imported_at: string | null
+          imported_by: string | null
+          imported_data: Json | null
+          source: string
+        }
+        Insert: {
+          clinic_id?: string | null
+          id?: string
+          imported_at?: string | null
+          imported_by?: string | null
+          imported_data?: Json | null
+          source: string
+        }
+        Update: {
+          clinic_id?: string | null
+          id?: string
+          imported_at?: string | null
+          imported_by?: string | null
+          imported_data?: Json | null
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_import_history_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_import_history_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_verifications: {
         Row: {
           created_at: string | null
@@ -7324,6 +7480,7 @@ export type Database = {
           administrative_feedback: string | null
           appeal_status: string | null
           appointment_id: string
+          clinic_id: string | null
           clinical_feedback: string | null
           comment: string | null
           created_at: string | null
@@ -7347,6 +7504,7 @@ export type Database = {
           administrative_feedback?: string | null
           appeal_status?: string | null
           appointment_id: string
+          clinic_id?: string | null
           clinical_feedback?: string | null
           comment?: string | null
           created_at?: string | null
@@ -7370,6 +7528,7 @@ export type Database = {
           administrative_feedback?: string | null
           appeal_status?: string | null
           appointment_id?: string
+          clinic_id?: string | null
           clinical_feedback?: string | null
           comment?: string | null
           created_at?: string | null
@@ -7395,6 +7554,20 @@ export type Database = {
             columns: ["appointment_id"]
             isOneToOne: true
             referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
             referencedColumns: ["id"]
           },
           {

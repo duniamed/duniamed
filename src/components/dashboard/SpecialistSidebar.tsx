@@ -91,10 +91,10 @@ const menuGroups: MenuGroup[] = [
         tooltip: 'Real-time queue of patients ready for consultation'
       },
       { 
-        title: 'Work Queue', 
+        title: 'Available Tasks', 
         url: '/work-queue', 
         icon: Inbox,
-        tooltip: 'Pending tasks, follow-ups, and action items'
+        tooltip: 'Pending action items like lab results to review, prescription renewals, and patient follow-ups that need your attention'
       },
       { 
         title: 'Patients', 
