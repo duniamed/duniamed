@@ -102,7 +102,7 @@ function CreateVirtualClinicContent() {
         title: 'Success',
         description: 'Virtual clinic created successfully!',
       });
-      navigate('/dashboard/clinic');
+      navigate(`/clinic/dashboard?new_clinic=${clinicData.id}`);
     }
 
     setIsLoading(false);

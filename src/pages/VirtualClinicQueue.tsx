@@ -58,10 +58,8 @@ export default function VirtualClinicQueue() {
         .select(`
           *,
           clinics(name, brand_color),
-          profiles!virtual_clinic_queue_patient_id_fkey(first_name, last_name),
-          specialists(
-            profiles!specialists_user_id_fkey(first_name, last_name)
-          )
+          patient:profiles!patient_id(first_name, last_name),
+          specialists(user_id, profiles(first_name, last_name))
         `)
         .in('clinic_id', clinicIds)
         .in('status', ['waiting', 'assigned'])
@@ -177,7 +175,7 @@ export default function VirtualClinicQueue() {
                         </Badge>
                         <div>
                           <p className="font-semibold">
-                            {entry.profiles.first_name} {entry.profiles.last_name}
+                            {entry.patient.first_name} {entry.patient.last_name}
                           </p>
                           <p className="text-sm text-muted-foreground">
                             {entry.clinics.name}
