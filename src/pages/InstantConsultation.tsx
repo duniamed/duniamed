@@ -14,13 +14,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 interface OnlineSpecialist {
   id: string;
   user_id: string;
-  specialties: string[];
+  specialty: string[];
   consultation_fee_min: number;
   currency: string;
   average_rating: number;
   total_reviews: number;
   years_experience: number;
-  profile: {
+  profiles: {
     first_name: string;
     last_name: string;
     avatar_url: string;
@@ -53,13 +53,13 @@ function InstantConsultationContent() {
       .select(`
         id,
         user_id,
-        specialties,
+        specialty,
         consultation_fee_min,
         currency,
         average_rating,
         total_reviews,
         years_experience,
-        profile:user_id (
+        profiles:user_id (
           first_name,
           last_name,
           avatar_url
@@ -233,9 +233,9 @@ function InstantConsultationContent() {
                   <CardHeader className="text-center pb-4">
                     <div className="mx-auto mb-4 relative">
                       <Avatar className="h-24 w-24 border-4 border-primary/20 ring-4 ring-primary/10">
-                        <AvatarImage src={specialist.profile?.avatar_url} />
+                      <AvatarImage src={specialist.profiles?.avatar_url} />
                         <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary to-primary/60 text-white">
-                          {specialist.profile?.first_name?.[0]}{specialist.profile?.last_name?.[0]}
+                          {specialist.profiles?.first_name?.[0]}{specialist.profiles?.last_name?.[0]}
                         </AvatarFallback>
                       </Avatar>
                       <div className="absolute -bottom-1 -right-1 p-1.5 rounded-full bg-green-500 border-4 border-background">
@@ -243,10 +243,10 @@ function InstantConsultationContent() {
                       </div>
                     </div>
                     <CardTitle className="text-xl">
-                      Dr. {specialist.profile?.first_name} {specialist.profile?.last_name}
+                      Dr. {specialist.profiles?.first_name} {specialist.profiles?.last_name}
                     </CardTitle>
                     <CardDescription className="text-base">
-                      {specialist.specialties?.[0] || 'General Practice'}
+                      {specialist.specialty?.[0] || 'General Practice'}
                     </CardDescription>
                   </CardHeader>
 

@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { VerificationReminders } from '@/components/VerificationReminders';
+import { useActivity } from '@/hooks/useActivity';
 
 interface SpecialistData {
   id: string;
@@ -48,6 +49,7 @@ function DashboardContent() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { logActivity } = useActivity();
   const [specialist, setSpecialist] = useState<SpecialistData | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,6 +60,20 @@ function DashboardContent() {
     totalPatients: 0,
     avgConsultation: 0,
   });
+
+  // Log activity every 5 minutes to keep specialist marked as online
+  useEffect(() => {
+    if (!user || !isOnline) return;
+
+    const activityInterval = setInterval(() => {
+      logActivity('dashboard_active', 'specialist', specialist?.id);
+    }, 5 * 60 * 1000); // Every 5 minutes
+
+    // Log initial activity
+    logActivity('dashboard_viewed', 'specialist', specialist?.id);
+
+    return () => clearInterval(activityInterval);
+  }, [user, isOnline, specialist?.id]);
 
   useEffect(() => {
     const loadData = async () => {

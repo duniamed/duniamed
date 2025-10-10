@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Search, User, Calendar, Phone, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PatientCareTimeline } from '@/components/patient/PatientCareTimeline';
+import { PatientCareTeam } from '@/components/patient/PatientCareTeam';
 
 interface Patient {
   id: string;
@@ -34,6 +36,7 @@ function SpecialistPatientsContent() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
   const { profile } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -238,6 +241,14 @@ function SpecialistPatientsContent() {
                 </div>
               </Card>
             ))}
+          </div>
+        )}
+
+        {/* Patient Detail View with Care Timeline & Team */}
+        {selectedPatient && (
+          <div className="grid gap-6 lg:grid-cols-2 mt-6">
+            <PatientCareTimeline patientId={selectedPatient} />
+            <PatientCareTeam patientId={selectedPatient} />
           </div>
         )}
       </div>

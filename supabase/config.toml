@@ -207,15 +207,6 @@ verify_jwt = true
 [functions.ai-moderate-review]
 verify_jwt = true
 
-[functions.coordinate-group-booking]
-verify_jwt = true
-
-[functions.lock-cost-estimate]
-verify_jwt = true
-
-[functions.whatsapp-webhook]
-verify_jwt = false
-
 [functions.import-ehr-data]
 verify_jwt = true
 
@@ -274,4 +265,25 @@ verify_jwt = false
 verify_jwt = true
 
 [functions.create-stripe-checkout]
+verify_jwt = true
+
+[functions.admin-create-user]
+verify_jwt = true
+
+[functions.create-google-business-listing]
+verify_jwt = true
+
+[functions.auto-update-specialist-status]
+verify_jwt = false
+
+[functions.update-specialist-profile]
+verify_jwt = true
+
+[functions.oauth-universal]
+verify_jwt = true
+
+[functions.send-whatsapp-business]
+verify_jwt = true
+
+[functions.import-from-google-maps]
 verify_jwt = true
