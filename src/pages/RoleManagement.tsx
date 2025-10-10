@@ -80,7 +80,7 @@ function RoleManagementContent() {
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-6">
             <h2 className="text-2xl font-bold">Your Account Roles</h2>
-            <InfoTooltip content="Roles determine what actions you can perform in the system. Contact an administrator to request additional roles." />
+            <InfoTooltip>Roles determine what actions you can perform in the system. Contact an administrator to request additional roles.</InfoTooltip>
           </div>
 
           {roles.length === 0 ? (
@@ -104,7 +104,7 @@ function RoleManagementContent() {
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-6">
             <h2 className="text-2xl font-bold">Sensitive Data Access Alerts</h2>
-            <InfoTooltip content="Get notified when healthcare providers access your sensitive medical information. This helps you stay informed about who is viewing your data." />
+            <InfoTooltip>Get notified when healthcare providers access your sensitive medical information. This helps you stay informed about who is viewing your data.</InfoTooltip>
           </div>
 
           {accessAlerts.length === 0 ? (
@@ -141,7 +141,7 @@ function RoleManagementContent() {
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-6">
             <h2 className="text-2xl font-bold">Complete Access Log</h2>
-            <InfoTooltip content="A complete audit trail of everyone who has accessed your data, when they accessed it, and what action they performed. This log is immutable and maintained for compliance." />
+            <InfoTooltip>A complete audit trail of everyone who has accessed your data, when they accessed it, and what action they performed. This log is immutable and maintained for compliance.</InfoTooltip>
           </div>
 
           {loading ? (

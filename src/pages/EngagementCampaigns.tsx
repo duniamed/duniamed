@@ -86,7 +86,7 @@ function EngagementCampaignsContent() {
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-6">
             <h2 className="text-2xl font-bold">Your Health Tasks</h2>
-            <InfoTooltip content="Complete these personalized tasks to stay on top of your health. You'll receive reminders through your preferred channels." />
+            <InfoTooltip>Complete these personalized tasks to stay on top of your health. You'll receive reminders through your preferred channels.</InfoTooltip>
           </div>
 
           <div className="mb-6">
@@ -142,7 +142,7 @@ function EngagementCampaignsContent() {
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-6">
               <h2 className="text-2xl font-bold">Completed Tasks</h2>
-              <InfoTooltip content="Your health journey progress. Keep up the great work!" />
+              <InfoTooltip>Your health journey progress. Keep up the great work!</InfoTooltip>
             </div>
 
             <div className="space-y-2">

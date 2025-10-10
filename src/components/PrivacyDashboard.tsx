@@ -157,7 +157,7 @@ export function PrivacyDashboard() {
           <CardTitle className="flex items-center gap-2">
             <Eye className="h-5 w-5" />
             Data Use Summary
-            <InfoTooltip content="A yearly report showing how your data was used and shared. This transparency report helps you understand where your information went and why." />
+            <InfoTooltip>A yearly report showing how your data was used and shared. This transparency report helps you understand where your information went and why.</InfoTooltip>
           </CardTitle>
           <CardDescription>
             Overview of how your data has been accessed and used
@@ -208,7 +208,7 @@ export function PrivacyDashboard() {
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
                 Access Logs
-                <InfoTooltip content="See a complete history of when and why your medical data was viewed. This helps you stay informed about who's accessing your information." />
+                <InfoTooltip>See a complete history of when and why your medical data was viewed. This helps you stay informed about who's accessing your information.</InfoTooltip>
               </CardTitle>
               <CardDescription>
                 Recent access to your protected health information
@@ -252,7 +252,7 @@ export function PrivacyDashboard() {
           <CardTitle className="flex items-center gap-2">
             <Trash2 className="h-5 w-5" />
             Data Rights
-            <InfoTooltip content="Request to permanently delete your medical records and personal information. This is your right under privacy laws. Note: Some records may need to be kept for legal or medical safety reasons." />
+            <InfoTooltip>Request to permanently delete your medical records and personal information. This is your right under privacy laws. Note: Some records may need to be kept for legal or medical safety reasons.</InfoTooltip>
           </CardTitle>
           <CardDescription>
             Request deletion or anonymization of your data

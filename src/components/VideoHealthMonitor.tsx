@@ -188,7 +188,7 @@ export function VideoHealthMonitor({
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5" />
               Pre-Session Health Check
-              <InfoTooltip content="Run this test before your video call to make sure everything works properly. We'll check your internet speed, camera, and microphone to prevent issues during your appointment." />
+              <InfoTooltip>Run this test before your video call to make sure everything works properly. We'll check your internet speed, camera, and microphone to prevent issues during your appointment.</InfoTooltip>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -217,7 +217,7 @@ export function VideoHealthMonitor({
                 <AlertTriangle className="h-5 w-5 text-amber-600" />
               )}
               Connection Status
-              <InfoTooltip content="We continuously monitor your video call quality. If issues are detected, we'll automatically suggest alternatives like phone backup or rescheduling to ensure you don't miss your appointment." />
+              <InfoTooltip>We continuously monitor your video call quality. If issues are detected, we'll automatically suggest alternatives like phone backup or rescheduling to ensure you don't miss your appointment.</InfoTooltip>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">

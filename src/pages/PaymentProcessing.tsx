@@ -115,7 +115,7 @@ function PaymentProcessingContent() {
             <div className="flex items-center gap-2 mb-2">
               <DollarSign className="w-4 h-4 text-green-600" />
               <span className="text-sm text-muted-foreground">Total Paid</span>
-              <InfoTooltip content="Total amount you've paid for healthcare services" />
+              <InfoTooltip>Total amount you've paid for healthcare services</InfoTooltip>
             </div>
             <p className="text-2xl font-bold">${totalPaid.toFixed(2)}</p>
           </Card>
@@ -124,7 +124,7 @@ function PaymentProcessingContent() {
             <div className="flex items-center gap-2 mb-2">
               <FileText className="w-4 h-4 text-blue-600" />
               <span className="text-sm text-muted-foreground">Invoices</span>
-              <InfoTooltip content="Number of invoices issued to you" />
+              <InfoTooltip>Number of invoices issued to you</InfoTooltip>
             </div>
             <p className="text-2xl font-bold">{invoices.length}</p>
           </Card>
@@ -133,7 +133,7 @@ function PaymentProcessingContent() {
             <div className="flex items-center gap-2 mb-2">
               <CreditCard className="w-4 h-4 text-purple-600" />
               <span className="text-sm text-muted-foreground">Refunds</span>
-              <InfoTooltip content="Total amount refunded to you" />
+              <InfoTooltip>Total amount refunded to you</InfoTooltip>
             </div>
             <p className="text-2xl font-bold">${totalRefunded.toFixed(2)}</p>
           </Card>
@@ -142,7 +142,7 @@ function PaymentProcessingContent() {
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-6">
             <h2 className="text-2xl font-bold">Payment History</h2>
-            <InfoTooltip content="All your payment transactions. You can request refunds within 24 hours of payment for eligible services." />
+            <InfoTooltip>All your payment transactions. You can request refunds within 24 hours of payment for eligible services.</InfoTooltip>
           </div>
 
           {loading ? (
@@ -188,7 +188,7 @@ function PaymentProcessingContent() {
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-6">
             <h2 className="text-2xl font-bold">Invoices</h2>
-            <InfoTooltip content="Detailed invoices for all your healthcare services. Click download to save a copy." />
+            <InfoTooltip>Detailed invoices for all your healthcare services. Click download to save a copy.</InfoTooltip>
           </div>
 
           {invoices.length === 0 ? (
@@ -226,7 +226,7 @@ function PaymentProcessingContent() {
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-6">
               <h2 className="text-2xl font-bold">Refund Requests</h2>
-              <InfoTooltip content="Track the status of your refund requests. Refunds are typically processed within 5-7 business days." />
+              <InfoTooltip>Track the status of your refund requests. Refunds are typically processed within 5-7 business days.</InfoTooltip>
             </div>
 
             <div className="space-y-3">

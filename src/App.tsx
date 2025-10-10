@@ -58,6 +58,7 @@ import SessionManagement from "./pages/SessionManagement";
 import NotFound from "./pages/NotFound";
 import SpecialistProfileEdit from "./pages/SpecialistProfileEdit";
 import ClinicProfileEdit from "./pages/ClinicProfileEdit";
+import ClinicProfileMediaEdit from "./pages/ClinicProfileMediaEdit";
 import CreateVirtualClinic from "./pages/CreateVirtualClinic";
 import PatientProfileEdit from "./pages/PatientProfileEdit";
 import AISymptomChecker from "./pages/AISymptomChecker";

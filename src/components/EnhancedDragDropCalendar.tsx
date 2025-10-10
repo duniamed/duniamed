@@ -130,7 +130,7 @@ export function EnhancedDragDropCalendar() {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center">
             Drag & Drop Schedule
-            <InfoTooltip content="Drag time slots to reorder your schedule. Delete slots you don't need. Use the undo button if you make a mistake. Your changes sync automatically across all your devices!" />
+            <InfoTooltip>Drag time slots to reorder your schedule. Delete slots you don't need. Use the undo button if you make a mistake. Your changes sync automatically across all your devices!</InfoTooltip>
           </CardTitle>
           <Button
             variant="outline"

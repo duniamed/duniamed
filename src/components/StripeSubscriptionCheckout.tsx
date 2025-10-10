@@ -133,7 +133,7 @@ export function StripeSubscriptionCheckout() {
           Annual
           <span className="ml-2 text-xs">(Save 17%)</span>
         </Button>
-        <InfoTooltip content="Annual plans save you money! Pay for 10 months and get 2 months free compared to monthly pricing." />
+        <InfoTooltip>Annual plans save you money! Pay for 10 months and get 2 months free compared to monthly pricing.</InfoTooltip>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
@@ -183,7 +183,7 @@ export function StripeSubscriptionCheckout() {
         <CardHeader>
           <CardTitle className="flex items-center text-lg">
             About Pricing
-            <InfoTooltip content="All prices shown include applicable taxes. You can cancel anytime and you'll keep access until the end of your billing period. No hidden fees!" />
+            <InfoTooltip>All prices shown include applicable taxes. You can cancel anytime and you'll keep access until the end of your billing period. No hidden fees!</InfoTooltip>
           </CardTitle>
         </CardHeader>
         <CardContent className="text-sm space-y-2">

@@ -139,7 +139,7 @@ export function SubscriptionManager() {
             <CardTitle className="flex items-center gap-2">
               <Bell className="h-5 w-5 text-amber-600" />
               Price Change Notice
-              <InfoTooltip content="We're legally required to notify you 30 days before any price changes. This gives you time to decide if you want to keep your current plan or switch to a different one." />
+              <InfoTooltip>We're legally required to notify you 30 days before any price changes. This gives you time to decide if you want to keep your current plan or switch to a different one.</InfoTooltip>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -171,7 +171,7 @@ export function SubscriptionManager() {
               <div>
                 <CardTitle className="flex items-center gap-2">
                   Current Plan: {currentTier.tier_name}
-                  <InfoTooltip content="Your current plan determines which features you can access. You can upgrade or downgrade at any time, and changes take effect immediately." />
+                  <InfoTooltip>Your current plan determines which features you can access. You can upgrade or downgrade at any time, and changes take effect immediately.</InfoTooltip>
                 </CardTitle>
                 <CardDescription>
                   ${currentTier.monthly_price}/month • {subscription.status}
@@ -187,7 +187,7 @@ export function SubscriptionManager() {
             <div className="space-y-3">
               <h4 className="text-sm font-medium flex items-center">
                 Usage This Month
-                <InfoTooltip content="See how many appointments, messages, and other features you've used. We'll notify you when you're getting close to your limits so you can upgrade if needed." />
+                <InfoTooltip>See how many appointments, messages, and other features you've used. We'll notify you when you're getting close to your limits so you can upgrade if needed.</InfoTooltip>
               </h4>
               {Object.entries(currentTier.usage_limits || {}).map(([key, limit]: [string, any]) => {
                 const current = subscription.usage_current?.[key] || 0;

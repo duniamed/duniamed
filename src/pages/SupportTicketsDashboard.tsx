@@ -110,7 +110,7 @@ function SupportTicketsDashboardContent() {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <h2 className="text-2xl font-bold">My Support Tickets</h2>
-              <InfoTooltip content="Create and track support tickets. Our team typically responds within 24 hours. You can escalate to a supervisor if needed." />
+              <InfoTooltip>Create and track support tickets. Our team typically responds within 24 hours. You can escalate to a supervisor if needed.</InfoTooltip>
             </div>
             <Dialog>
               <DialogTrigger asChild>
@@ -123,7 +123,7 @@ function SupportTicketsDashboardContent() {
                 <DialogHeader>
                   <DialogTitle className="flex items-center gap-2">
                     Create Support Ticket
-                    <InfoTooltip content="Describe your issue and we'll get back to you within 24 hours" />
+                    <InfoTooltip>Describe your issue and we'll get back to you within 24 hours</InfoTooltip>
                   </DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">

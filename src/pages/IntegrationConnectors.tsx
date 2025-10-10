@@ -156,7 +156,7 @@ function IntegrationConnectorsContent() {
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-6">
             <h2 className="text-2xl font-bold">Available Connectors</h2>
-            <InfoTooltip content="Connect your account to external systems for seamless data sharing. You control what data is shared and can revoke access anytime." />
+            <InfoTooltip>Connect your account to external systems for seamless data sharing. You control what data is shared and can revoke access anytime.</InfoTooltip>
           </div>
 
           <div className="grid gap-4">
@@ -218,7 +218,7 @@ function IntegrationConnectorsContent() {
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-6">
             <h2 className="text-2xl font-bold">Recent Sync Activity</h2>
-            <InfoTooltip content="Monitor your data synchronization activity. All syncs are logged for your records." />
+            <InfoTooltip>Monitor your data synchronization activity. All syncs are logged for your records.</InfoTooltip>
           </div>
 
           {syncLogs.length === 0 ? (
