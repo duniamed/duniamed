@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { InfoTooltip } from '@/components/ui/info-tooltip';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { Clock, User, AlertCircle, ArrowRight, CheckCircle, TrendingUp } from 'lucide-react';
@@ -228,7 +229,7 @@ export default function WorkQueue() {
 
   return (
     <DashboardLayout 
-      title="Work Queue"
+      title="Available Tasks"
       description="Manage your clinical workload with real-time updates"
     >
       <div className="space-y-6">
@@ -277,9 +278,18 @@ export default function WorkQueue() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Clock className="w-5 h-5" />
-                Available Items ({pendingItems.length})
+                Unassigned Tasks ({pendingItems.length})
+                <InfoTooltip>
+                  <p className="font-medium mb-2">What are Unassigned Tasks?</p>
+                  <ul className="text-sm space-y-1">
+                    <li>• Tasks not yet claimed by a provider</li>
+                    <li>• Includes: referral reviews, test results, messages</li>
+                    <li>• Click "Claim" to assign a task to yourself</li>
+                    <li>• Tasks auto-expire after 24 hours</li>
+                  </ul>
+                </InfoTooltip>
               </CardTitle>
-              <CardDescription>Unclaimed work items</CardDescription>
+              <CardDescription>Pending action items available to claim</CardDescription>
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[600px]">
@@ -332,9 +342,13 @@ export default function WorkQueue() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User className="w-5 h-5" />
-                My Items ({myItems.length})
+                My Tasks ({myItems.length})
+                <InfoTooltip>
+                  <p className="font-medium mb-2">My Tasks</p>
+                  <p className="text-sm">Pending action items like lab results to review, prescription renewals, and patient follow-ups that need your attention</p>
+                </InfoTooltip>
               </CardTitle>
-              <CardDescription>Items assigned to you</CardDescription>
+              <CardDescription>Tasks currently assigned to you</CardDescription>
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[600px]">

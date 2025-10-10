@@ -239,7 +239,9 @@ const App = () => (
           <Route path="/specialist/create-patient" element={<CreatePatientAccount />} />
           <Route path="/integrations" element={<IntegrationHub />} />
           <Route path="/clinic/import-profile" element={<ClinicImportProfile />} />
-          <Route path="/specialist/create-patient" element={<CreatePatientAccount />} />
+          <Route path="/work-queue" element={<WorkQueue />} />
+          <Route path="/clinic/profile/edit" element={<ClinicProfileEdit />} />
+          <Route path="/clinic/profile/media-edit" element={<ClinicProfileMediaEdit />} />
             <Route path="/specialist/analytics" element={<Analytics />} />
             <Route path="/specialist/advanced-search" element={<AdvancedSpecialistSearch />} />
             
