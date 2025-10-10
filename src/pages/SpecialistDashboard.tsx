@@ -60,18 +60,37 @@ function DashboardContent() {
   });
 
   useEffect(() => {
-    fetchSpecialistData();
-    fetchAppointments();
-    fetchOnlineStatus();
+    const loadData = async () => {
+      try {
+        await Promise.all([
+          fetchSpecialistData(),
+          fetchOnlineStatus(),
+          fetchAppointments()
+        ]);
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    if (user) {
+      loadData();
+    }
   }, [user]);
 
   const fetchOnlineStatus = async () => {
     if (!user) return;
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('specialists')
       .select('is_online')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
+    
+    if (error) {
+      console.error('Error fetching online status:', error);
+      return;
+    }
     if (data) setIsOnline(data.is_online || false);
   };
 
@@ -82,13 +101,20 @@ function DashboardContent() {
       .update({ is_online: checked })
       .eq('user_id', user.id);
     
-    if (!error) {
-      setIsOnline(checked);
+    if (error) {
       toast({
-        title: checked ? '🟢 You\'re Online' : '⚫ You\'re Offline',
-        description: checked ? 'Patients can now request instant consultations' : 'You won\'t receive instant consultation requests',
+        title: 'Error',
+        description: 'Failed to update online status. Please try again.',
+        variant: 'destructive',
       });
+      return;
     }
+    
+    setIsOnline(checked);
+    toast({
+      title: checked ? '🟢 You\'re Online' : '⚫ You\'re Offline',
+      description: checked ? 'Patients can now request instant consultations' : 'You won\'t receive instant consultation requests',
+    });
   };
 
   const fetchSpecialistData = async () => {
@@ -98,9 +124,14 @@ function DashboardContent() {
       .from('specialists')
       .select('*')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
-    if (!error && data) {
+    if (error) {
+      console.error('Error fetching specialist data:', error);
+      throw error;
+    }
+    
+    if (data) {
       setSpecialist(data);
     }
   };
@@ -108,13 +139,21 @@ function DashboardContent() {
   const fetchAppointments = async () => {
     if (!user) return;
 
-    const { data: specialistData } = await supabase
+    const { data: specialistData, error: specialistError } = await supabase
       .from('specialists')
       .select('id')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
-    if (!specialistData) return;
+    if (specialistError) {
+      console.error('Error fetching specialist ID:', specialistError);
+      throw specialistError;
+    }
+
+    if (!specialistData) {
+      console.warn('No specialist record found for user');
+      return;
+    }
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -138,7 +177,12 @@ function DashboardContent() {
       .order('scheduled_at', { ascending: true })
       .limit(10);
 
-    if (!error && data) {
+    if (error) {
+      console.error('Error fetching appointments:', error);
+      throw error;
+    }
+
+    if (data) {
       setAppointments(data as any);
       
       // Calculate stats
@@ -160,8 +204,6 @@ function DashboardContent() {
         avgConsultation: specialist?.consultation_fee_min || 0,
       });
     }
-
-    setLoading(false);
   };
 
   const getStatusColor = (status: string) => {
@@ -184,6 +226,33 @@ function DashboardContent() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
+    );
+  }
+
+  if (!specialist) {
+    return (
+      <DashboardLayout 
+        title="Specialist Dashboard"
+        description="Complete your profile setup"
+        showBackButton={false}
+      >
+        <Card className="max-w-2xl mx-auto mt-8">
+          <CardHeader>
+            <CardTitle>Profile Setup Required</CardTitle>
+            <CardDescription>
+              Your specialist profile needs to be completed before you can access the dashboard.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="mb-4">
+              It looks like your specialist profile hasn't been created yet. This usually happens automatically during signup.
+            </p>
+            <Button onClick={() => navigate('/specialist/profile/edit')}>
+              Complete Your Profile
+            </Button>
+          </CardContent>
+        </Card>
+      </DashboardLayout>
     );
   }
 
