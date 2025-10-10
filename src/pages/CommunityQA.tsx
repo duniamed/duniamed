@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { MessageCircle, ThumbsUp, CheckCircle } from 'lucide-react';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 
 interface Question {
   id: string;
@@ -155,16 +155,13 @@ export default function CommunityQA() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16 max-w-6xl">
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold">Community Q&A</h1>
-              <p className="text-muted-foreground">Ask questions and get expert answers</p>
-            </div>
-            <Dialog open={isAskDialogOpen} onOpenChange={setIsAskDialogOpen}>
+    <DashboardLayout 
+      title="Community Q&A"
+      description="Ask questions and get expert answers"
+    >
+      <div className="space-y-6">
+        <div className="flex justify-end items-center">
+          <Dialog open={isAskDialogOpen} onOpenChange={setIsAskDialogOpen}>
               <DialogTrigger asChild>
                 <Button>
                   <MessageCircle className="mr-2 h-4 w-4" />
@@ -322,11 +319,10 @@ export default function CommunityQA() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-          )}
-        </div>
-      </main>
-    </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </DashboardLayout>
   );
 }

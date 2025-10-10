@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -111,9 +111,11 @@ function CreateReviewContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16 max-w-2xl">
+    <DashboardLayout 
+      title="Leave a Review"
+      description={`Share your experience with Dr. ${appointment.specialists.profiles.first_name} ${appointment.specialists.profiles.last_name}`}
+    >
+      <div className="max-w-2xl">
         <Card>
           <CardHeader>
             <CardTitle>Leave a Review</CardTitle>
@@ -184,7 +186,7 @@ function CreateReviewContent() {
             </form>
           </CardContent>
         </Card>
-      </main>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }

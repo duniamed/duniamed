@@ -14,7 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 import { AlertCircle, User, Lock, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 
 export default function Profile() {
   return (
@@ -119,14 +119,11 @@ function ProfileContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container max-w-4xl py-8 px-4 mt-16">
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold">Profile Settings</h1>
-            <p className="text-muted-foreground">Manage your account settings and preferences</p>
-          </div>
+    <DashboardLayout 
+      title="Profile Settings"
+      description="Manage your account settings and preferences"
+    >
+      <div className="max-w-4xl space-y-6">
 
           {error && (
             <Alert variant="destructive">
@@ -329,8 +326,7 @@ function ProfileContent() {
               </AlertDialog>
             </CardContent>
           </Card>
-        </div>
-      </main>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }

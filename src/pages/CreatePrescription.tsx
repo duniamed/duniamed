@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -112,9 +112,11 @@ function CreatePrescriptionContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16 max-w-3xl">
+    <DashboardLayout 
+      title="Create Prescription"
+      description="Fill in the prescription details for your patient"
+    >
+      <div className="max-w-3xl">
         <Card>
           <CardHeader>
             <CardTitle>Create Prescription</CardTitle>
@@ -240,7 +242,7 @@ function CreatePrescriptionContent() {
             </form>
           </CardContent>
         </Card>
-      </main>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
@@ -141,12 +141,11 @@ function PaymentsContent() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
-        <h1 className="text-3xl font-bold mb-6">Payment History</h1>
-
-        <Tabs defaultValue="all" className="space-y-6">
+    <DashboardLayout 
+      title="Payment History"
+      description="View and manage your payment transactions"
+    >
+      <Tabs defaultValue="all" className="space-y-6">
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="completed">Completed</TabsTrigger>
@@ -198,7 +197,6 @@ function PaymentsContent() {
             )}
           </TabsContent>
         </Tabs>
-      </main>
-    </div>
+    </DashboardLayout>
   );
 }

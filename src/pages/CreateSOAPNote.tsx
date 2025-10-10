@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -109,9 +109,11 @@ function CreateSOAPNoteContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16 max-w-4xl">
+    <DashboardLayout 
+      title="Create SOAP Note"
+      description={`Patient: ${(appointment as { patient: { first_name: string; last_name: string } }).patient.first_name} ${(appointment as { patient: { first_name: string; last_name: string } }).patient.last_name}`}
+    >
+      <div className="max-w-4xl space-y-6">
         <Card>
           <CardHeader>
             <div className="flex items-center gap-3">
@@ -202,11 +204,9 @@ function CreateSOAPNoteContent() {
         </Card>
 
         {savedNoteId && (
-          <div className="mt-6">
-            <SOAPBillingCodes soapNoteId={savedNoteId} appointmentId={appointmentId!} />
-          </div>
+          <SOAPBillingCodes soapNoteId={savedNoteId} appointmentId={appointmentId!} />
         )}
-      </main>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }

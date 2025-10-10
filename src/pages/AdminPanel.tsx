@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -120,12 +120,11 @@ function AdminPanelContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
-        <h1 className="text-3xl font-bold mb-6">Admin Panel</h1>
-
-        {/* Admin Navigation Cards */}
+    <DashboardLayout 
+      title="Admin Panel"
+      description="Manage users, AI governance, and system settings"
+    >
+      {/* Admin Navigation Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => navigate('/admin/ai-governance')}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -296,7 +295,6 @@ function AdminPanelContent() {
             </Card>
           </TabsContent>
         </Tabs>
-      </main>
-    </div>
+    </DashboardLayout>
   );
 }

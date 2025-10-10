@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -147,16 +147,16 @@ function AppointmentDetailsContent() {
 
   if (!appointment) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 container py-8 px-4 mt-16">
-          <Card>
-            <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground">Appointment not found</p>
-            </CardContent>
-          </Card>
-        </main>
-      </div>
+      <DashboardLayout 
+        title="Appointment Details"
+        description="View appointment information"
+      >
+        <Card>
+          <CardContent className="py-12 text-center">
+            <p className="text-muted-foreground">Appointment not found</p>
+          </CardContent>
+        </Card>
+      </DashboardLayout>
     );
   }
 
@@ -165,26 +165,23 @@ function AppointmentDetailsContent() {
                     new Date(appointment.scheduled_at) > new Date();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
-        <div className="max-w-3xl mx-auto space-y-6">
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Appointment Details</h1>
-              <p className="text-muted-foreground">View your appointment information</p>
-            </div>
-            <Badge className={
+    <DashboardLayout 
+      title="Appointment Details"
+      description="View your appointment information"
+    >
+      <div className="max-w-3xl space-y-6">
+        <div className="flex items-start justify-end">
+          <Badge className={
               appointment.status === 'confirmed' ? 'bg-blue-500' :
               appointment.status === 'completed' ? 'bg-green-500' :
               appointment.status === 'cancelled' ? 'bg-red-500' :
               'bg-yellow-500'
             }>
-              {appointment.status}
-            </Badge>
-          </div>
+            {appointment.status}
+          </Badge>
+        </div>
 
-          <Card>
+        <Card>
             <CardHeader>
               <CardTitle>
                 Dr. {appointment.specialists.profiles?.first_name}{' '}
@@ -350,11 +347,10 @@ function AppointmentDetailsContent() {
             </CardContent>
           </Card>
 
-          <Button variant="outline" onClick={() => navigate('/appointments')}>
-            Back to Appointments
-          </Button>
-        </div>
-      </main>
-    </div>
+        <Button variant="outline" onClick={() => navigate('/appointments')}>
+          Back to Appointments
+        </Button>
+      </div>
+    </DashboardLayout>
   );
 }

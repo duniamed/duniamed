@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
@@ -76,18 +76,11 @@ function AuditLogsContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
-        <div className="flex items-center gap-3 mb-6">
-          <Shield className="h-8 w-8" />
-          <div>
-            <h1 className="text-3xl font-bold">Audit Logs</h1>
-            <p className="text-muted-foreground">Track all activities in your account</p>
-          </div>
-        </div>
-
-        <Card>
+    <DashboardLayout 
+      title="Audit Logs"
+      description="Track all activities in your account"
+    >
+      <Card>
           <CardHeader>
             <CardTitle>Activity History</CardTitle>
             <CardDescription>Recent actions performed in your account</CardDescription>
@@ -137,7 +130,6 @@ function AuditLogsContent() {
             )}
           </CardContent>
         </Card>
-      </main>
-    </div>
+    </DashboardLayout>
   );
 }
