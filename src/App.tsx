@@ -66,6 +66,7 @@ import ClinicStaff from "./pages/ClinicStaff";
 import WaitlistManagement from "./pages/WaitlistManagement";
 import VirtualClinicQueue from "./pages/VirtualClinicQueue";
 import SpecialistPatients from "./pages/SpecialistPatients";
+import CreatePatientAccount from "./pages/CreatePatientAccount";
 import ClinicBranding from "./pages/ClinicBranding";
 import ClinicIntegrations from "./pages/ClinicIntegrations";
 import ClinicRevenueSplits from "./pages/ClinicRevenueSplits";
@@ -232,7 +233,8 @@ const App = () => (
             <Route path="/specialist/availability" element={<SpecialistAvailability />} />
             <Route path="/specialist/waitlist" element={<WaitlistManagement />} />
             <Route path="/specialist/virtual-clinic-queue" element={<VirtualClinicQueue />} />
-            <Route path="/specialist/patients" element={<SpecialistPatients />} />
+          <Route path="/specialist/patients" element={<SpecialistPatients />} />
+          <Route path="/specialist/create-patient" element={<CreatePatientAccount />} />
             <Route path="/specialist/analytics" element={<Analytics />} />
             <Route path="/specialist/advanced-search" element={<AdvancedSpecialistSearch />} />
             

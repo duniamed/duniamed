@@ -19,6 +19,7 @@ interface Patient {
   patient_number?: string;
   last_appointment?: string;
   appointment_count?: number;
+  date_of_birth?: string;
 }
 
 export default function SpecialistPatients() {
@@ -69,7 +70,8 @@ function SpecialistPatientsContent() {
             last_name,
             email,
             phone,
-            patient_number
+            patient_number,
+            date_of_birth
           )
         `)
         .eq('specialist_id', specialistData.id)
@@ -130,15 +132,21 @@ function SpecialistPatientsContent() {
       description="View and manage your patient list"
     >
       <div className="space-y-6">
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search by name, email, phone, or patient ID..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-          />
+        {/* Actions Bar */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by name, email, phone, or patient ID..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          <Button onClick={() => navigate('/specialist/create-patient')}>
+            <User className="mr-2 h-4 w-4" />
+            Create Patient
+          </Button>
         </div>
 
         {/* Stats */}
@@ -190,11 +198,9 @@ function SpecialistPatientsContent() {
                         <h3 className="font-semibold">
                           {patient.first_name} {patient.last_name}
                         </h3>
-                        {patient.patient_number && (
-                          <p className="text-sm text-muted-foreground">
-                            ID: {patient.patient_number}
-                          </p>
-                        )}
+                        <p className="text-sm text-muted-foreground">
+                          {patient.patient_number ? `ID: ${patient.patient_number}` : 'No patient ID assigned'}
+                        </p>
                       </div>
                     </div>
 

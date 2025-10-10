@@ -692,6 +692,7 @@ export type Database = {
           patient_confirmed: boolean | null
           patient_confirmed_at: string | null
           patient_id: string
+          patient_number: string | null
           payment_id: string | null
           reminder_sent: boolean | null
           reminder_sent_at: string | null
@@ -726,6 +727,7 @@ export type Database = {
           patient_confirmed?: boolean | null
           patient_confirmed_at?: string | null
           patient_id: string
+          patient_number?: string | null
           payment_id?: string | null
           reminder_sent?: boolean | null
           reminder_sent_at?: string | null
@@ -760,6 +762,7 @@ export type Database = {
           patient_confirmed?: boolean | null
           patient_confirmed_at?: string | null
           patient_id?: string
+          patient_number?: string | null
           payment_id?: string | null
           reminder_sent?: boolean | null
           reminder_sent_at?: string | null
@@ -4230,6 +4233,7 @@ export type Database = {
           order_type: string
           ordered_at: string | null
           patient_id: string
+          patient_number: string | null
           priority: string | null
           result_data: Json | null
           result_pdf_url: string | null
@@ -4252,6 +4256,7 @@ export type Database = {
           order_type: string
           ordered_at?: string | null
           patient_id: string
+          patient_number?: string | null
           priority?: string | null
           result_data?: Json | null
           result_pdf_url?: string | null
@@ -4274,6 +4279,7 @@ export type Database = {
           order_type?: string
           ordered_at?: string | null
           patient_id?: string
+          patient_number?: string | null
           priority?: string | null
           result_data?: Json | null
           result_pdf_url?: string | null
@@ -4432,6 +4438,7 @@ export type Database = {
           is_fhir_compliant: boolean | null
           metadata: Json | null
           patient_id: string
+          patient_number: string | null
           record_type: string
           recorded_at: string | null
           specialist_id: string | null
@@ -4450,6 +4457,7 @@ export type Database = {
           is_fhir_compliant?: boolean | null
           metadata?: Json | null
           patient_id: string
+          patient_number?: string | null
           record_type: string
           recorded_at?: string | null
           specialist_id?: string | null
@@ -4468,6 +4476,7 @@ export type Database = {
           is_fhir_compliant?: boolean | null
           metadata?: Json | null
           patient_id?: string
+          patient_number?: string | null
           record_type?: string
           recorded_at?: string | null
           specialist_id?: string | null
@@ -5091,6 +5100,77 @@ export type Database = {
           },
         ]
       }
+      patient_care_team: {
+        Row: {
+          clinic_id: string | null
+          created_at: string | null
+          ended_at: string | null
+          id: string
+          notes: string | null
+          patient_id: string
+          relationship_type: string
+          role: string
+          specialist_id: string | null
+          started_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          clinic_id?: string | null
+          created_at?: string | null
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          patient_id: string
+          relationship_type?: string
+          role: string
+          specialist_id?: string | null
+          started_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          clinic_id?: string | null
+          created_at?: string | null
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          relationship_type?: string
+          role?: string
+          specialist_id?: string | null
+          started_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_care_team_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_care_team_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_care_team_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_care_team_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       patient_search_preferences: {
         Row: {
           accessibility_requirements: Json | null
@@ -5568,6 +5648,7 @@ export type Database = {
           medication_name: string
           patient_country: string
           patient_id: string
+          patient_number: string | null
           pharmacy_id: string | null
           prescription_number: string
           quantity: number | null
@@ -5598,6 +5679,7 @@ export type Database = {
           medication_name: string
           patient_country: string
           patient_id: string
+          patient_number?: string | null
           pharmacy_id?: string | null
           prescription_number: string
           quantity?: number | null
@@ -5628,6 +5710,7 @@ export type Database = {
           medication_name?: string
           patient_country?: string
           patient_id?: string
+          patient_number?: string | null
           pharmacy_id?: string | null
           prescription_number?: string
           quantity?: number | null
@@ -6232,11 +6315,14 @@ export type Database = {
           allergies: string[] | null
           avatar_url: string | null
           blood_type: string | null
+          can_self_login: boolean | null
           chronic_conditions: string[] | null
           city: string | null
           communication_preferences: Json | null
           country: string | null
           created_at: string | null
+          created_by_clinic_id: string | null
+          created_by_specialist_id: string | null
           current_medications: string[] | null
           date_of_birth: string | null
           email: string
@@ -6251,6 +6337,8 @@ export type Database = {
           insurance_provider: string | null
           language_preference: string | null
           last_name: string
+          patient_number: string | null
+          patient_number_counter: number | null
           phone: string | null
           postal_code: string | null
           preferred_insurance: string | null
@@ -6271,11 +6359,14 @@ export type Database = {
           allergies?: string[] | null
           avatar_url?: string | null
           blood_type?: string | null
+          can_self_login?: boolean | null
           chronic_conditions?: string[] | null
           city?: string | null
           communication_preferences?: Json | null
           country?: string | null
           created_at?: string | null
+          created_by_clinic_id?: string | null
+          created_by_specialist_id?: string | null
           current_medications?: string[] | null
           date_of_birth?: string | null
           email: string
@@ -6290,6 +6381,8 @@ export type Database = {
           insurance_provider?: string | null
           language_preference?: string | null
           last_name: string
+          patient_number?: string | null
+          patient_number_counter?: number | null
           phone?: string | null
           postal_code?: string | null
           preferred_insurance?: string | null
@@ -6310,11 +6403,14 @@ export type Database = {
           allergies?: string[] | null
           avatar_url?: string | null
           blood_type?: string | null
+          can_self_login?: boolean | null
           chronic_conditions?: string[] | null
           city?: string | null
           communication_preferences?: Json | null
           country?: string | null
           created_at?: string | null
+          created_by_clinic_id?: string | null
+          created_by_specialist_id?: string | null
           current_medications?: string[] | null
           date_of_birth?: string | null
           email?: string
@@ -6329,6 +6425,8 @@ export type Database = {
           insurance_provider?: string | null
           language_preference?: string | null
           last_name?: string
+          patient_number?: string | null
+          patient_number_counter?: number | null
           phone?: string | null
           postal_code?: string | null
           preferred_insurance?: string | null
@@ -6343,7 +6441,29 @@ export type Database = {
           two_factor_secret?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_created_by_clinic_id_fkey"
+            columns: ["created_by_clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_created_by_clinic_id_fkey"
+            columns: ["created_by_clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_created_by_specialist_id_fkey"
+            columns: ["created_by_specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       provider_absences: {
         Row: {
@@ -9963,6 +10083,10 @@ export type Database = {
         Returns: unknown
       }
       generate_api_key: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      generate_patient_number: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
