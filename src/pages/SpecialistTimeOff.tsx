@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -144,19 +144,16 @@ function TimeOffContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16 max-w-4xl">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold">Time Off</h1>
-            <p className="text-muted-foreground">Manage your unavailable dates</p>
-          </div>
-          <Button onClick={() => setShowAddForm(!showAddForm)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Time Off
-          </Button>
-        </div>
+    <DashboardLayout 
+      title="Time Off Management"
+      description="Manage your unavailable dates and block times"
+    >
+      <div className="flex items-center justify-end mb-6">
+        <Button onClick={() => setShowAddForm(!showAddForm)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Add Time Off
+        </Button>
+      </div>
 
         {showAddForm && (
           <Card className="mb-6">
@@ -267,7 +264,6 @@ function TimeOffContent() {
             ))
           )}
         </div>
-      </main>
-    </div>
+    </DashboardLayout>
   );
 }

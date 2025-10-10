@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -143,17 +143,11 @@ function ClinicSettingsContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container py-8 px-4 mt-16">
-        <div className="max-w-3xl mx-auto space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Building2 className="h-8 w-8" />
-              Clinic Settings
-            </h1>
-            <p className="text-muted-foreground">Manage your clinic information</p>
-          </div>
+    <DashboardLayout 
+      title="Clinic Settings"
+      description="Manage your clinic information and configuration"
+    >
+      <div className="max-w-3xl mx-auto space-y-6">
 
           <form onSubmit={handleSubmit}>
             <Card>
@@ -336,7 +330,6 @@ function ClinicSettingsContent() {
             </div>
           </form>
         </div>
-      </main>
-    </div>
+    </DashboardLayout>
   );
 }

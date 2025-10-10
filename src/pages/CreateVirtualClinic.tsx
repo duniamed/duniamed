@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Plus, Check } from 'lucide-react';
-import Header from '@/components/layout/Header';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { MEDICAL_SPECIALTIES } from '@/lib/constants/specialties';
 import { Badge } from '@/components/ui/badge';
 
@@ -109,16 +109,11 @@ function CreateVirtualClinicContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container max-w-4xl py-8 px-4 mt-16">
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold">Create Virtual Clinic</h1>
-            <p className="text-muted-foreground">
-              Start your own virtual healthcare practice and invite other specialists to join
-            </p>
-          </div>
+    <DashboardLayout 
+      title="Create Virtual Clinic"
+      description="Start your own virtual healthcare practice and invite other specialists to join"
+    >
+      <div className="max-w-4xl space-y-6">
 
           <Card className="bg-soft-purple border-primary/20">
             <CardHeader>
@@ -251,7 +246,6 @@ function CreateVirtualClinicContent() {
             </div>
           </form>
         </div>
-      </main>
-    </div>
+    </DashboardLayout>
   );
 }
