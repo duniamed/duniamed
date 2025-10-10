@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { Building2, Users, Calendar, DollarSign } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { VirtualClinicWelcomeDialog } from '@/components/clinic/VirtualClinicWelcomeDialog';
 
 export default function ClinicDashboard() {
   return (
@@ -111,7 +112,9 @@ function ClinicDashboardContent() {
   }
 
   return (
-    <DashboardLayout 
+    <>
+      <VirtualClinicWelcomeDialog />
+      <DashboardLayout
       title={clinic.name} 
       description={clinic.description}
       showBackButton={false}
@@ -230,5 +233,6 @@ function ClinicDashboardContent() {
         </div>
       </div>
     </DashboardLayout>
+    </>
   );
 }

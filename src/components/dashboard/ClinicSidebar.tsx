@@ -168,6 +168,24 @@ const menuGroups: MenuGroup[] = [
         tooltip: 'Update clinic information and contact details'
       },
       { 
+        title: 'Media', 
+        url: '/clinic/profile/media-edit', 
+        icon: Package,
+        tooltip: 'Manage clinic photos, videos, and media assets'
+      },
+      { 
+        title: 'Integrations', 
+        url: '/integrations', 
+        icon: Package,
+        tooltip: 'Connect to 50+ external services and platforms'
+      },
+      { 
+        title: 'Import Profile', 
+        url: '/clinic/import-profile', 
+        icon: Package,
+        tooltip: 'Import clinic data from Google Maps, Yelp, and more'
+      },
+      { 
         title: 'Settings', 
         url: '/clinic/settings', 
         icon: Settings,

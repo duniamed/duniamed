@@ -58,7 +58,7 @@ export default function VirtualClinicQueue() {
         .select(`
           *,
           clinics(name, brand_color),
-          patient:profiles!patient_id(first_name, last_name),
+          patient:profiles!virtual_clinic_queue_patient_id_fkey(first_name, last_name),
           specialists(user_id, profiles(first_name, last_name))
         `)
         .in('clinic_id', clinicIds)
