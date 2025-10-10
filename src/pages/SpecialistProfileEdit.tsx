@@ -79,18 +79,16 @@ function SpecialistProfileEditContent() {
       ...formData,
       specialty: selectedSpecialties,
       languages: selectedLanguages,
-      updated_at: new Date().toISOString(),
     };
 
-    const { error } = await supabase
-      .from('specialists')
-      .update(updates)
-      .eq('user_id', profile?.id);
+    const { data, error } = await supabase.functions.invoke('update-specialist-profile', {
+      body: updates
+    });
 
-    if (error) {
+    if (error || !data?.success) {
       toast({
         title: 'Error',
-        description: error.message,
+        description: error?.message || data?.error || 'Failed to update profile',
         variant: 'destructive',
       });
     } else {
