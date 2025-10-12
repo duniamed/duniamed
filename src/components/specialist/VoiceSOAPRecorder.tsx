@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Mic, Square, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -16,35 +16,65 @@ export function VoiceSOAPRecorder({ appointmentId, onTranscriptionComplete }: Vo
   const [isProcessing, setIsProcessing] = useState(false);
   const [transcription, setTranscription] = useState('');
   const [recordingTime, setRecordingTime] = useState(0);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
+  const recognitionRef = useRef<any>(null);
   const timerRef = useRef<number | null>(null);
   const { toast } = useToast();
 
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
-      chunksRef.current = [];
+  useEffect(() => {
+    // Initialize Web Speech API
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = 'en-US';
 
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunksRef.current.push(event.data);
+      recognitionRef.current.onresult = (event: any) => {
+        let finalTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript + ' ';
+          }
+        }
+        if (finalTranscript) {
+          setTranscription(prev => prev + finalTranscript);
         }
       };
 
-      mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
-        await processAudio(audioBlob);
-        stream.getTracks().forEach(track => track.stop());
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        toast({
+          title: "Recognition Error",
+          description: event.error,
+          variant: "destructive"
+        });
       };
+    }
 
-      mediaRecorder.start(1000); // Collect data every second
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, []);
+
+  const startRecording = () => {
+    if (!recognitionRef.current) {
+      toast({
+        title: "Not Supported",
+        description: "Speech recognition not supported in this browser",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      setTranscription('');
+      recognitionRef.current.start();
       setIsRecording(true);
       setRecordingTime(0);
 
-      // Start timer
       timerRef.current = window.setInterval(() => {
         setRecordingTime(prev => prev + 1);
       }, 1000);
@@ -57,60 +87,51 @@ export function VoiceSOAPRecorder({ appointmentId, onTranscriptionComplete }: Vo
       console.error('Recording error:', error);
       toast({
         title: "Recording Failed",
-        description: "Unable to access microphone",
+        description: "Unable to start speech recognition",
         variant: "destructive"
       });
     }
   };
 
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
+  const stopRecording = async () => {
+    if (recognitionRef.current && isRecording) {
+      recognitionRef.current.stop();
       setIsRecording(false);
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
+
+      // Process the transcription
+      if (transcription.trim()) {
+        await processTranscription(transcription);
+      }
     }
   };
 
-  const processAudio = async (audioBlob: Blob) => {
+  const processTranscription = async (text: string) => {
     setIsProcessing(true);
     try {
-      // Convert blob to base64
-      const reader = new FileReader();
-      reader.readAsDataURL(audioBlob);
-      
-      reader.onloadend = async () => {
-        const base64Audio = reader.result?.toString().split(',')[1];
-        
-        if (!base64Audio) {
-          throw new Error('Failed to convert audio');
+      const { data, error } = await supabase.functions.invoke('voice-to-soap-realtime', {
+        body: {
+          transcriptionText: text,
+          appointmentId
         }
+      });
 
-        // Send to voice-to-soap function
-        const { data, error } = await supabase.functions.invoke('voice-to-soap-realtime', {
-          body: {
-            audioBase64: base64Audio,
-            appointmentId
-          }
+      if (error) throw error;
+
+      if (data?.success) {
+        onTranscriptionComplete(data.transcription, data.soap);
+        toast({
+          title: "SOAP Note Generated",
+          description: "Review and edit the auto-populated fields",
         });
-
-        if (error) throw error;
-
-        if (data?.success) {
-          setTranscription(data.transcription);
-          onTranscriptionComplete(data.transcription, data.soap);
-          toast({
-            title: "Transcription Complete",
-            description: "SOAP note has been auto-populated",
-          });
-        }
-      };
+      }
     } catch (error: any) {
       console.error('Processing error:', error);
       toast({
         title: "Processing Failed",
-        description: error.message || "Unable to process audio",
+        description: error.message || "Unable to generate SOAP note",
         variant: "destructive"
       });
     } finally {

@@ -45,7 +45,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-pro', // Use pro model for medical accuracy
+        model: 'google/gemini-2.0-flash-exp',
         messages: [
           {
             role: 'system',
