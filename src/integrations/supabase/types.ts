@@ -8353,6 +8353,56 @@ export type Database = {
           },
         ]
       }
+      soap_templates: {
+        Row: {
+          common_prescriptions: Json | null
+          condition: string
+          created_at: string | null
+          created_by: string | null
+          icd10_codes: string[] | null
+          id: string
+          is_public: boolean | null
+          specialty: string
+          template_content: Json
+          updated_at: string | null
+          usage_count: number | null
+        }
+        Insert: {
+          common_prescriptions?: Json | null
+          condition: string
+          created_at?: string | null
+          created_by?: string | null
+          icd10_codes?: string[] | null
+          id?: string
+          is_public?: boolean | null
+          specialty: string
+          template_content: Json
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Update: {
+          common_prescriptions?: Json | null
+          condition?: string
+          created_at?: string | null
+          created_by?: string | null
+          icd10_codes?: string[] | null
+          id?: string
+          is_public?: boolean | null
+          specialty?: string
+          template_content?: Json
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "soap_templates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       specialist_availability_cache: {
         Row: {
           available_slots: Json
@@ -10172,6 +10222,58 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      voice_transcriptions: {
+        Row: {
+          appointment_id: string | null
+          audio_duration_seconds: number | null
+          created_at: string | null
+          id: string
+          soap_note_id: string | null
+          specialist_id: string | null
+          transcription_text: string | null
+        }
+        Insert: {
+          appointment_id?: string | null
+          audio_duration_seconds?: number | null
+          created_at?: string | null
+          id?: string
+          soap_note_id?: string | null
+          specialist_id?: string | null
+          transcription_text?: string | null
+        }
+        Update: {
+          appointment_id?: string | null
+          audio_duration_seconds?: number | null
+          created_at?: string | null
+          id?: string
+          soap_note_id?: string | null
+          specialist_id?: string | null
+          transcription_text?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voice_transcriptions_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voice_transcriptions_soap_note_id_fkey"
+            columns: ["soap_note_id"]
+            isOneToOne: false
+            referencedRelation: "soap_notes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voice_transcriptions_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       waitlist_matches: {
         Row: {

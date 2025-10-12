@@ -1,0 +1,129 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    const authHeader = req.headers.get('Authorization')!;
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user } } = await supabase.auth.getUser(token);
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { audioBase64, appointmentId } = await req.json();
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+
+    if (!lovableApiKey) {
+      throw new Error('LOVABLE_API_KEY not configured');
+    }
+
+    console.log(`Processing voice transcription for appointment: ${appointmentId}`);
+
+    // Convert base64 audio to binary
+    const audioData = Uint8Array.from(atob(audioBase64), c => c.charCodeAt(0));
+
+    // Step 1: Transcribe audio using Lovable AI (Gemini for audio)
+    const transcriptionResponse = await fetch('https://ai.gateway.lovable.dev/v1/audio/transcriptions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${lovableApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        audio: audioBase64,
+        model: 'google/gemini-2.5-flash',
+        response_format: 'json'
+      })
+    });
+
+    if (!transcriptionResponse.ok) {
+      const error = await transcriptionResponse.text();
+      console.error('Transcription error:', error);
+      throw new Error('Transcription failed');
+    }
+
+    const { text: transcribedText } = await transcriptionResponse.json();
+
+    // Step 2: Use AI to extract SOAP structure from transcription
+    const soapExtractionResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${lovableApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          {
+            role: 'system',
+            content: `You are a medical transcription AI. Extract SOAP note components from consultation transcripts.
+Return a JSON object with these fields:
+- subjective: Patient's chief complaint and symptoms
+- objective: Physical examination findings
+- assessment: Preliminary diagnosis
+- plan: Treatment recommendations
+- icd10_suggestions: Array of relevant ICD-10 codes with descriptions
+- prescription_suggestions: Array of medication recommendations`
+          },
+          {
+            role: 'user',
+            content: `Extract SOAP note from this consultation transcript:\n\n${transcribedText}`
+          }
+        ],
+        response_format: { type: 'json_object' }
+      })
+    });
+
+    if (!soapExtractionResponse.ok) {
+      throw new Error('SOAP extraction failed');
+    }
+
+    const soapData = await soapExtractionResponse.json();
+    const extractedSOAP = JSON.parse(soapData.choices[0].message.content);
+
+    // Log transcription
+    await supabase.from('voice_transcriptions').insert({
+      appointment_id: appointmentId,
+      specialist_id: (await supabase
+        .from('appointments')
+        .select('specialist_id')
+        .eq('id', appointmentId)
+        .single()).data?.specialist_id,
+      transcription_text: transcribedText,
+      audio_duration_seconds: Math.floor(audioData.length / 16000) // Estimate
+    });
+
+    return new Response(JSON.stringify({
+      success: true,
+      transcription: transcribedText,
+      soap: extractedSOAP
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+
+  } catch (error: any) {
+    console.error('Voice-to-SOAP error:', error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+});

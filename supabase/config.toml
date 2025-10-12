@@ -3,6 +3,15 @@ project_id = "knybxihimqrqwzkdeaio"
 [functions.unified-patient-search]
 verify_jwt = true
 
+[functions.voice-to-soap-realtime]
+verify_jwt = true
+
+[functions.ai-consultation-assistant]
+verify_jwt = true
+
+[functions.clinic-financial-dashboard]
+verify_jwt = true
+
 [functions.ai-moderate-content]
 verify_jwt = true
 
