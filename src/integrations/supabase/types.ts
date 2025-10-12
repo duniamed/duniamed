@@ -5396,6 +5396,100 @@ export type Database = {
           },
         ]
       }
+      patient_identifiers: {
+        Row: {
+          country_code: string
+          created_at: string | null
+          id: string
+          identifier_type: string
+          identifier_value: string
+          patient_id: string
+          verified: boolean | null
+          verified_at: string | null
+        }
+        Insert: {
+          country_code: string
+          created_at?: string | null
+          id?: string
+          identifier_type: string
+          identifier_value: string
+          patient_id: string
+          verified?: boolean | null
+          verified_at?: string | null
+        }
+        Update: {
+          country_code?: string
+          created_at?: string | null
+          id?: string
+          identifier_type?: string
+          identifier_value?: string
+          patient_id?: string
+          verified?: boolean | null
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_identifiers_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_medical_summary: {
+        Row: {
+          allergies: Json | null
+          chronic_conditions: Json | null
+          created_at: string | null
+          current_medications: Json | null
+          has_active_prescriptions: boolean | null
+          insurance_status: Json | null
+          last_appointment_date: string | null
+          last_prescription_date: string | null
+          last_updated: string | null
+          patient_id: string
+          recent_diagnoses: Json | null
+          total_appointments: number | null
+        }
+        Insert: {
+          allergies?: Json | null
+          chronic_conditions?: Json | null
+          created_at?: string | null
+          current_medications?: Json | null
+          has_active_prescriptions?: boolean | null
+          insurance_status?: Json | null
+          last_appointment_date?: string | null
+          last_prescription_date?: string | null
+          last_updated?: string | null
+          patient_id: string
+          recent_diagnoses?: Json | null
+          total_appointments?: number | null
+        }
+        Update: {
+          allergies?: Json | null
+          chronic_conditions?: Json | null
+          created_at?: string | null
+          current_medications?: Json | null
+          has_active_prescriptions?: boolean | null
+          insurance_status?: Json | null
+          last_appointment_date?: string | null
+          last_prescription_date?: string | null
+          last_updated?: string | null
+          patient_id?: string
+          recent_diagnoses?: Json | null
+          total_appointments?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_medical_summary_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       patient_search_preferences: {
         Row: {
           accessibility_requirements: Json | null
@@ -10466,6 +10560,10 @@ export type Database = {
           p_start_date: string
         }
         Returns: number
+      }
+      refresh_patient_medical_summary: {
+        Args: { p_patient_id: string }
+        Returns: undefined
       }
       revoke_admin_role: {
         Args: { _revoked_by?: string; _user_id: string }

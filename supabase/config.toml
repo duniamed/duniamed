@@ -1,5 +1,8 @@
 project_id = "knybxihimqrqwzkdeaio"
 
+[functions.unified-patient-search]
+verify_jwt = true
+
 [functions.ai-moderate-content]
 verify_jwt = true
 
