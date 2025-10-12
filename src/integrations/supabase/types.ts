@@ -1686,6 +1686,63 @@ export type Database = {
           },
         ]
       }
+      clinic_inventory: {
+        Row: {
+          clinic_id: string | null
+          created_at: string | null
+          current_stock: number | null
+          id: string
+          item_category: string | null
+          item_name: string
+          last_restocked: string | null
+          min_stock_threshold: number | null
+          supplier_info: Json | null
+          unit_cost: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          clinic_id?: string | null
+          created_at?: string | null
+          current_stock?: number | null
+          id?: string
+          item_category?: string | null
+          item_name: string
+          last_restocked?: string | null
+          min_stock_threshold?: number | null
+          supplier_info?: Json | null
+          unit_cost?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          clinic_id?: string | null
+          created_at?: string | null
+          current_stock?: number | null
+          id?: string
+          item_category?: string | null
+          item_name?: string
+          last_restocked?: string | null
+          min_stock_threshold?: number | null
+          supplier_info?: Json | null
+          unit_cost?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinic_inventory_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinic_inventory_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clinic_invitations: {
         Row: {
           accepted_at: string | null
@@ -7346,6 +7403,51 @@ export type Database = {
             columns: ["payment_intent_id"]
             isOneToOne: false
             referencedRelation: "payment_intents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      resource_allocations: {
+        Row: {
+          allocated_at: string | null
+          appointment_id: string | null
+          duration_minutes: number
+          id: string
+          notes: string | null
+          released_at: string | null
+          resource_id: string | null
+        }
+        Insert: {
+          allocated_at?: string | null
+          appointment_id?: string | null
+          duration_minutes: number
+          id?: string
+          notes?: string | null
+          released_at?: string | null
+          resource_id?: string | null
+        }
+        Update: {
+          allocated_at?: string | null
+          appointment_id?: string | null
+          duration_minutes?: number
+          id?: string
+          notes?: string | null
+          released_at?: string | null
+          resource_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_allocations_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "resource_allocations_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "clinic_resources"
             referencedColumns: ["id"]
           },
         ]

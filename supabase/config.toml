@@ -299,3 +299,9 @@ verify_jwt = true
 
 [functions.import-from-google-maps]
 verify_jwt = true
+
+[functions.smart-specialist-matcher]
+verify_jwt = false
+
+[functions.one-tap-reschedule]
+verify_jwt = true
