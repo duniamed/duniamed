@@ -98,6 +98,42 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_audit_log: {
+        Row: {
+          action: string
+          admin_id: string
+          changes: Json | null
+          created_at: string | null
+          id: string
+          ip_address: string | null
+          target_id: string | null
+          target_type: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          changes?: Json | null
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          target_id?: string | null
+          target_type: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          changes?: Json | null
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          target_id?: string | null
+          target_type?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       ai_assistant_sessions: {
         Row: {
           ai_interactions: Json | null
@@ -403,6 +439,33 @@ export type Database = {
           retrieved_sources?: Json
           timestamp?: string
           user_role?: string | null
+        }
+        Relationships: []
+      }
+      alternative_slot_cache: {
+        Row: {
+          alternative_slots: Json
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          original_slot: string
+          specialist_id: string
+        }
+        Insert: {
+          alternative_slots: Json
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          original_slot: string
+          specialist_id: string
+        }
+        Update: {
+          alternative_slots?: Json
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          original_slot?: string
+          specialist_id?: string
         }
         Relationships: []
       }
@@ -3948,6 +4011,42 @@ export type Database = {
           specialist_ids?: string[]
           status?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      import_comparison: {
+        Row: {
+          applied: boolean | null
+          applied_at: string | null
+          applied_by: string | null
+          clinic_id: string
+          created_at: string | null
+          current_data: Json
+          id: string
+          imported_data: Json
+          source: string
+        }
+        Insert: {
+          applied?: boolean | null
+          applied_at?: string | null
+          applied_by?: string | null
+          clinic_id: string
+          created_at?: string | null
+          current_data: Json
+          id?: string
+          imported_data: Json
+          source: string
+        }
+        Update: {
+          applied?: boolean | null
+          applied_at?: string | null
+          applied_by?: string | null
+          clinic_id?: string
+          created_at?: string | null
+          current_data?: Json
+          id?: string
+          imported_data?: Json
+          source?: string
         }
         Relationships: []
       }

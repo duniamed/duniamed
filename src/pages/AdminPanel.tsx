@@ -10,10 +10,12 @@ import { useToast } from '@/hooks/use-toast';
 import { Users, Shield, Calendar, AlertTriangle, CheckCircle, XCircle, Brain, Database, Settings, FileText } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useNavigate } from 'react-router-dom';
+import { UserManagementTab } from '@/components/admin/UserManagementTab';
+import { SpecialistManagementTab } from '@/components/admin/SpecialistManagementTab';
 
 export default function AdminPanel() {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={['admin']}>
       <AdminPanelContent />
     </ProtectedRoute>
   );
@@ -275,10 +277,10 @@ function AdminPanelContent() {
             <Card>
               <CardHeader>
                 <CardTitle>User Management</CardTitle>
-                <CardDescription>View and manage all users</CardDescription>
+                <CardDescription>Manage user accounts and permissions</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">User management interface coming soon</p>
+                <UserManagementTab />
               </CardContent>
             </Card>
           </TabsContent>
@@ -287,10 +289,10 @@ function AdminPanelContent() {
             <Card>
               <CardHeader>
                 <CardTitle>Specialist Management</CardTitle>
-                <CardDescription>View and manage all specialists</CardDescription>
+                <CardDescription>Review and manage specialist profiles</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">Specialist management interface coming soon</p>
+                <SpecialistManagementTab />
               </CardContent>
             </Card>
           </TabsContent>

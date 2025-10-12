@@ -17,14 +17,16 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import { useFormAutosave } from '@/hooks/useFormAutosave';
 import { GuidedRecovery } from '@/components/GuidedRecovery';
-
 import { SlotCountdown } from '@/components/SlotCountdown';
+import { AlternativeSlotsDialog } from '@/components/booking/AlternativeSlotsDialog';
+import { format } from 'date-fns';
 
 interface Specialist {
   id: string;
   consultation_fee_min: number;
   consultation_fee_max: number;
   currency: string;
+  specialty?: string[];
   profiles: {
     first_name: string;
     last_name: string;
@@ -48,6 +50,8 @@ function BookAppointmentContent() {
   const [step, setStep] = useState(1);
   const [specialist, setSpecialist] = useState<Specialist | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showAlternatives, setShowAlternatives] = useState(false);
+  const [alternatives, setAlternatives] = useState<any[]>([]);
   
   // Step 1: Date & Time
   const [selectedDate, setSelectedDate] = useState<Date>();
@@ -308,7 +312,21 @@ function BookAppointmentContent() {
           variant: 'destructive',
         });
         setSubmitting(false);
-        // TODO: Show alternative slots
+        
+        // Fetch alternative slots
+        const { data: altData } = await supabase.functions.invoke('find-alternative-slots', {
+          body: {
+            specialist_id: specialistId,
+            requested_time: scheduledAt.toISOString(),
+            specialty: specialist?.specialty,
+            duration_minutes: 30,
+          },
+        });
+        
+        if (altData?.alternatives) {
+          setAlternatives(altData.alternatives);
+          setShowAlternatives(true);
+        }
         return;
       }
 
@@ -770,6 +788,21 @@ function BookAppointmentContent() {
           }}
         />
       )}
+
+      <AlternativeSlotsDialog
+        open={showAlternatives}
+        onOpenChange={setShowAlternatives}
+        alternatives={alternatives}
+        onSelectSlot={(slot) => {
+          setSelectedDate(new Date(slot.time));
+          setSelectedTime(format(new Date(slot.time), 'HH:mm'));
+          setShowAlternatives(false);
+          toast({
+            title: "Slot Selected",
+            description: "Continue booking with the selected alternative slot",
+          });
+        }}
+      />
     </Layout>
   );
 }
