@@ -498,9 +498,13 @@ export type Database = {
           created_at: string
           expires_at: string | null
           id: string
-          key: string
+          key_hash: string
+          key_prefix: string
           last_used_at: string | null
           name: string
+          permissions: Json | null
+          revoked_at: string | null
+          revoked_by: string | null
           status: string
           user_id: string
         }
@@ -508,9 +512,13 @@ export type Database = {
           created_at?: string
           expires_at?: string | null
           id?: string
-          key: string
+          key_hash: string
+          key_prefix: string
           last_used_at?: string | null
           name: string
+          permissions?: Json | null
+          revoked_at?: string | null
+          revoked_by?: string | null
           status?: string
           user_id: string
         }
@@ -518,9 +526,13 @@ export type Database = {
           created_at?: string
           expires_at?: string | null
           id?: string
-          key?: string
+          key_hash?: string
+          key_prefix?: string
           last_used_at?: string | null
           name?: string
+          permissions?: Json | null
+          revoked_at?: string | null
+          revoked_by?: string | null
           status?: string
           user_id?: string
         }

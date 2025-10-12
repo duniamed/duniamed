@@ -12,13 +12,16 @@ serve(async (req) => {
   }
 
   try {
-    const { sessionId, message, action = 'chat' } = await req.json();
-    
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
+    // Rate limiting check (using IP for anonymous users)
+    const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0] || 
+                     req.headers.get('x-real-ip') || 
+                     'unknown';
+    
     const authHeader = req.headers.get('Authorization');
     let userId = null;
 
@@ -26,6 +29,39 @@ serve(async (req) => {
       const token = authHeader.replace('Bearer ', '');
       const { data: { user } } = await supabase.auth.getUser(token);
       userId = user?.id;
+    }
+
+    // Apply rate limiting
+    const identifier = userId || clientIP;
+    const maxRequests = userId ? 100 : 20; // Authenticated: 100/hour, Anonymous: 20/hour
+    
+    const { data: rateLimit, error: rateLimitError } = await supabase.functions.invoke('check-rate-limit', {
+      body: { 
+        endpoint: 'ai-chatbot',
+        max_requests: maxRequests,
+        window_duration: '1 hour'
+      }
+    });
+
+    if (rateLimit?.rate_limited) {
+      return new Response(JSON.stringify({ 
+        error: 'Too many requests. Please try again later.',
+        retry_after: rateLimit.retry_after_seconds
+      }), {
+        status: 429,
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json',
+          'Retry-After': String(rateLimit.retry_after_seconds)
+        }
+      });
+    }
+
+    const { sessionId, message, action = 'chat' } = await req.json();
+    
+    // Validate input
+    if (message && message.length > 2000) {
+      throw new Error('Message too long: maximum 2000 characters');
     }
 
     // Get or create session

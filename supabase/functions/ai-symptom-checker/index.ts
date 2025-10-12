@@ -13,13 +13,68 @@ serve(async (req) => {
 
   try {
     const { symptoms, patientInfo } = await req.json();
+    
+    // Validate input
+    if (!symptoms || typeof symptoms !== 'string') {
+      throw new Error('Invalid symptoms data');
+    }
+    if (symptoms.length > 2000) {
+      throw new Error('Symptoms description too long: maximum 2000 characters');
+    }
+
+    // Rate limiting check (using IP for anonymous users)
+    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0] || 
+                     req.headers.get('x-real-ip') || 
+                     'unknown';
+    
+    const authHeader = req.headers.get('Authorization');
+    let userId = null;
+
+    if (authHeader) {
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user } } = await supabase.auth.getUser(token);
+      userId = user?.id;
+    }
+
+    // Apply rate limiting
+    const identifier = userId || clientIP;
+    const maxRequests = userId ? 50 : 10; // Authenticated: 50/hour, Anonymous: 10/hour (medical AI is expensive)
+    
+    const { data: rateLimit } = await supabase.functions.invoke('check-rate-limit', {
+      body: { 
+        endpoint: 'ai-symptom-checker',
+        max_requests: maxRequests,
+        window_duration: '1 hour'
+      }
+    });
+
+    if (rateLimit?.rate_limited) {
+      return new Response(JSON.stringify({ 
+        error: 'Too many symptom checks. Please try again later.',
+        retry_after: rateLimit.retry_after_seconds
+      }), {
+        status: 429,
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json',
+          'Retry-After': String(rateLimit.retry_after_seconds)
+        }
+      });
+    }
+    
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
     if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+      throw new Error('Service configuration error');
     }
 
-    console.log('Analyzing symptoms:', symptoms);
+    console.log('Analyzing symptoms for:', userId || 'anonymous');
 
     const systemPrompt = `You are a medical AI triage assistant. Analyze patient symptoms and provide:
 1. Possible conditions (ranked by likelihood)

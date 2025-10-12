@@ -45,6 +45,14 @@ Deno.serve(async (req) => {
     const verification_status = url.searchParams.get('verification_status') || '';
     const specialty = url.searchParams.get('specialty') || '';
 
+    // Validate and sanitize search input
+    if (search && search.length > 100) {
+      throw new Error('Search query too long');
+    }
+    if (search && !/^[a-zA-Z0-9\s@.\-_]*$/.test(search)) {
+      throw new Error('Invalid characters in search query');
+    }
+
     const offset = (page - 1) * limit;
 
     let query = supabase
@@ -57,7 +65,9 @@ Deno.serve(async (req) => {
       `, { count: 'exact' });
 
     if (search) {
-      query = query.or(`profiles.first_name.ilike.%${search}%,profiles.last_name.ilike.%${search}%,license_number.ilike.%${search}%`);
+      // Escape wildcards to prevent SQL injection
+      const sanitized = search.replace(/[%_]/g, '\\$&');
+      query = query.or(`profiles.first_name.ilike.%${sanitized}%,profiles.last_name.ilike.%${sanitized}%,license_number.ilike.%${sanitized}%`);
     }
 
     if (verification_status) {

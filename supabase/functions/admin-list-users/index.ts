@@ -45,6 +45,14 @@ Deno.serve(async (req) => {
     const role = url.searchParams.get('role') || '';
     const status = url.searchParams.get('status') || '';
 
+    // Validate and sanitize search input
+    if (search && search.length > 100) {
+      throw new Error('Search query too long');
+    }
+    if (search && !/^[a-zA-Z0-9\s@.\-_]*$/.test(search)) {
+      throw new Error('Invalid characters in search query');
+    }
+
     const offset = (page - 1) * limit;
 
     let query = supabase
@@ -55,7 +63,9 @@ Deno.serve(async (req) => {
       `, { count: 'exact' });
 
     if (search) {
-      query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%,email.ilike.%${search}%`);
+      // Escape wildcards to prevent SQL injection
+      const sanitized = search.replace(/[%_]/g, '\\$&');
+      query = query.or(`first_name.ilike.%${sanitized}%,last_name.ilike.%${sanitized}%,email.ilike.%${sanitized}%`);
     }
 
     if (role) {
