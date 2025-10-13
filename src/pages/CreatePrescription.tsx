@@ -85,7 +85,7 @@ function CreatePrescriptionContent() {
         refills_remaining: parseInt(formData.refills_allowed),
         instructions: formData.instructions || null,
         warnings: formData.warnings || null,
-        status: 'active',
+        status: 'approved',
         specialist_country: specialist.license_country,
         patient_country: patientProfile?.country || 'Unknown',
         expires_at: new Date(Date.now() + parseInt(formData.duration_days) * 24 * 60 * 60 * 1000).toISOString(),

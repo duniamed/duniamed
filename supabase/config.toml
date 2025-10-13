@@ -1,5 +1,14 @@
 project_id = "knybxihimqrqwzkdeaio"
 
+[functions.scan-health-card-vision]
+verify_jwt = true
+
+[functions.ai-icd-suggester]
+verify_jwt = true
+
+[functions.import-from-google-maps]
+verify_jwt = true
+
 [functions.unified-patient-search]
 verify_jwt = true
 

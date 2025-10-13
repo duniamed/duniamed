@@ -14,12 +14,6 @@ serve(async (req) => {
   try {
     const { source, url } = await req.json();
 
-    // Extract place ID from Google Maps URL
-    const placeIdMatch = url.match(/place\/([^\/]+)/);
-    if (!placeIdMatch && source === 'google') {
-      throw new Error('Invalid Google Maps URL');
-    }
-
     // For Google Maps, use Places API
     if (source === 'google') {
       const GOOGLE_PLACES_API_KEY = Deno.env.get('GOOGLE_PLACES_API_KEY');
@@ -28,9 +22,43 @@ serve(async (req) => {
         throw new Error('Google Places API key not configured');
       }
 
-      const placeId = placeIdMatch[1];
-      
-      // Fetch place details
+      let placeId: string | null = null;
+
+      // Handle different Google Maps URL formats
+      // Format 1: https://maps.google.com/maps?cid=1234567890
+      const cidMatch = url.match(/[?&]cid=(\d+)/);
+      // Format 2: https://www.google.com/maps/place/.../@lat,lng,zoom/data=!4m5!3m4!...
+      const placeMatch = url.match(/place\/([^\/]+)/);
+      // Format 3: https://goo.gl/maps/... or https://share.google/... (shortened URLs)
+      const isShortUrl = url.match(/(?:goo\.gl\/maps|share\.google|g\.page)\//);
+
+      if (cidMatch) {
+        placeId = cidMatch[1];
+      } else if (placeMatch) {
+        placeId = placeMatch[1];
+      } else if (isShortUrl) {
+        // Follow redirect to get the actual place URL
+        try {
+          const redirectResponse = await fetch(url, { redirect: 'follow' });
+          const actualUrl = redirectResponse.url;
+          const actualCidMatch = actualUrl.match(/[?&]cid=(\d+)/);
+          const actualPlaceMatch = actualUrl.match(/place\/([^\/]+)/);
+          
+          if (actualCidMatch) {
+            placeId = actualCidMatch[1];
+          } else if (actualPlaceMatch) {
+            placeId = actualPlaceMatch[1];
+          }
+        } catch (error) {
+          console.error('Error following redirect:', error);
+        }
+      }
+
+      if (!placeId) {
+        throw new Error('Could not extract Place ID from Google Maps URL. Please use a direct Maps link.');
+      }
+
+      // Fetch place details using Place ID
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,formatted_phone_number,website,opening_hours,photos,rating,user_ratings_total,geometry&key=${GOOGLE_PLACES_API_KEY}`
       );

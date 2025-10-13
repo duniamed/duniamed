@@ -225,7 +225,7 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
                       <div>
                         <p className="text-xs text-muted-foreground">Active Rx</p>
                         <p className="text-2xl font-bold">
-                          {medicalHistory?.prescriptions?.filter((rx: any) => rx.status === 'active').length || 0}
+                          {medicalHistory?.prescriptions?.filter((rx: any) => rx.status === 'approved').length || 0}
                         </p>
                       </div>
                     </div>

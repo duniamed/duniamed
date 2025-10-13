@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { VoiceSOAPRecorder } from '@/components/specialist/VoiceSOAPRecorder';
 import { AIAssistantPanel } from '@/components/specialist/AIAssistantPanel';
+import { LiveICD10Suggestions } from '@/components/specialist/LiveICD10Suggestions';
 import { useToast } from '@/hooks/use-toast';
 import { Save, Send, Calendar, FileCheck } from 'lucide-react';
 
@@ -249,6 +250,22 @@ export default function ConsultationRoom() {
                   </div>
                 </div>
               )}
+
+              {/* Live ICD-10 Suggestions */}
+              <div className="pt-4 border-t">
+                <LiveICD10Suggestions
+                  soapText={`${soapData.subjective}\n${soapData.objective}\n${soapData.assessment}\n${soapData.plan}`}
+                  chiefComplaint={transcription}
+                  onAddCode={(code, description) => {
+                    setSoapData(prev => ({
+                      ...prev,
+                      icd10Codes: [...prev.icd10Codes, code],
+                      assessment: prev.assessment + (prev.assessment ? '\n' : '') + `${description} (${code})`,
+                    }));
+                  }}
+                  addedCodes={soapData.icd10Codes}
+                />
+              </div>
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-3 pt-4">
