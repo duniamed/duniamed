@@ -5,7 +5,7 @@ import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Building2, Users, Calendar, DollarSign } from 'lucide-react';
+import { Building2, Users, Calendar, DollarSign, TrendingUp, Package, AlertTriangle, BarChart3, Activity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { VirtualClinicWelcomeDialog } from '@/components/clinic/VirtualClinicWelcomeDialog';
 
@@ -28,6 +28,7 @@ function ClinicDashboardContent() {
     monthlyAppointments: 0,
     monthlyRevenue: 0,
   });
+  const [lowStockItems, setLowStockItems] = useState<any[]>([]);
 
   useEffect(() => {
     fetchClinicData();
@@ -72,6 +73,19 @@ function ClinicDashboardContent() {
         monthlyAppointments: appointmentCount || 0,
         monthlyRevenue: 0,
       });
+
+      // Fetch low stock inventory items
+      const { data: inventory } = await supabase
+        .from('clinic_inventory')
+        .select('*')
+        .eq('clinic_id', clinicData.id)
+        .lte('current_stock', 20)
+        .order('current_stock', { ascending: true })
+        .limit(5);
+
+      if (inventory) {
+        setLowStockItems(inventory);
+      }
     }
 
     setLoading(false);
@@ -175,6 +189,98 @@ function ClinicDashboardContent() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Automation Command Center */}
+        <Card className="border-2 border-primary/30">
+          <CardHeader className="bg-gradient-to-r from-primary/10 to-transparent">
+            <CardTitle className="text-2xl">Automation Command Center</CardTitle>
+            <CardDescription className="text-base">Zero-touch financial & operations management</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <div className="grid gap-4 md:grid-cols-3">
+              <Card className="hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50" onClick={() => navigate('/clinic/financial-dashboard')}>
+                <CardContent className="pt-6">
+                  <div className="flex flex-col items-center text-center gap-4">
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-green-500 to-green-600">
+                      <TrendingUp className="h-8 w-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold mb-1">Financial Dashboard</h3>
+                      <p className="text-sm text-muted-foreground">Real-time revenue & payments</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50" onClick={() => navigate('/clinic/operations')}>
+                <CardContent className="pt-6">
+                  <div className="flex flex-col items-center text-center gap-4">
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600">
+                      <BarChart3 className="h-8 w-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold mb-1">Operations Panel</h3>
+                      <p className="text-sm text-muted-foreground">Rooms & inventory management</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50" onClick={() => navigate('/compliance-dashboard')}>
+                <CardContent className="pt-6">
+                  <div className="flex flex-col items-center text-center gap-4">
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600">
+                      <Activity className="h-8 w-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold mb-1">Compliance Dashboard</h3>
+                      <p className="text-sm text-muted-foreground">Multi-jurisdiction automation</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Critical Inventory Alerts */}
+        {lowStockItems.length > 0 && (
+          <Card className="border-2 border-destructive/30 bg-destructive/5">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="h-6 w-6 text-destructive" />
+                <div>
+                  <CardTitle className="text-xl">Critical Inventory Alerts</CardTitle>
+                  <CardDescription>Items running low - reorder now</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {lowStockItems.map((item) => (
+                  <div key={item.id} className="flex items-center justify-between p-4 border rounded-lg bg-background">
+                    <div className="flex items-center gap-4">
+                      <Package className="h-5 w-5 text-muted-foreground" />
+                      <div>
+                        <p className="font-medium">{item.item_name}</p>
+                        <p className="text-sm text-muted-foreground">{item.item_category}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Current Stock</p>
+                        <p className="font-bold text-destructive">{item.current_stock} / {item.min_stock_threshold}</p>
+                      </div>
+                      <Button size="sm" variant="destructive" onClick={() => navigate('/clinic/operations')}>
+                        Reorder
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Quick Actions & Info */}
         <div className="grid md:grid-cols-2 gap-6">

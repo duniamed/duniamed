@@ -5,9 +5,10 @@ import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Heart, FileText, Activity, Search } from 'lucide-react';
+import { Calendar, Clock, Heart, FileText, Activity, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { SmartSpecialistRecommendations } from '@/components/patient/SmartSpecialistRecommendations';
 
 export default function PatientDashboardHome() {
   const { profile } = useAuth();
@@ -65,21 +66,26 @@ export default function PatientDashboardHome() {
       showBackButton={false}
     >
       <div className="space-y-6">
+        {/* Smart Specialist Finder */}
+        <Card className="border-2 border-primary/30 shadow-xl">
+          <CardHeader className="bg-gradient-to-r from-primary/10 to-transparent">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-primary/20">
+                <Sparkles className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl">Smart Specialist Finder</CardTitle>
+                <CardDescription className="text-base">AI-powered matching finds the perfect doctor for your symptoms</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <SmartSpecialistRecommendations />
+          </CardContent>
+        </Card>
+
         {/* Quick Actions */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link to="/search/specialists">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Find a Doctor</CardTitle>
-                <Search className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">Search Now</div>
-                <p className="text-xs text-muted-foreground">Book your next appointment</p>
-              </CardContent>
-            </Link>
-          </Card>
-
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
             <Link to="/patient/appointments">
               <CardHeader className="flex flex-row items-center justify-between pb-2">

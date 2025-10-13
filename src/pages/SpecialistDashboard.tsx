@@ -5,7 +5,7 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, Users, DollarSign, Clock, TrendingUp, MessageSquare, Video, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Calendar, Users, DollarSign, Clock, TrendingUp, MessageSquare, Video, CheckCircle2, AlertCircle, Search } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
@@ -13,6 +13,8 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { VerificationReminders } from '@/components/VerificationReminders';
 import { useActivity } from '@/hooks/useActivity';
+import { UnifiedPatientSearch } from '@/components/specialist/UnifiedPatientSearch';
+import { PatientDetailPanel } from '@/components/specialist/PatientDetailPanel';
 
 interface SpecialistData {
   id: string;
@@ -60,6 +62,13 @@ function DashboardContent() {
     totalPatients: 0,
     avgConsultation: 0,
   });
+  const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
+  const [showPatientPanel, setShowPatientPanel] = useState(false);
+
+  const handlePatientSelect = (patientId: string) => {
+    setSelectedPatient(patientId);
+    setShowPatientPanel(true);
+  };
 
   // Log activity every 5 minutes to keep specialist marked as online
   useEffect(() => {
@@ -310,6 +319,24 @@ function DashboardContent() {
           </div>
         </div>
 
+        {/* Instant Patient Intelligence */}
+        <Card className="border-2 border-primary/30 shadow-xl">
+          <CardHeader className="bg-gradient-to-r from-primary/10 to-transparent">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-primary/20">
+                <Search className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl">Instant Patient Intelligence</CardTitle>
+                <CardDescription className="text-base">Search by name, CPF, SSN, or NHS number - all patient data loads automatically</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <UnifiedPatientSearch onSelectPatient={handlePatientSelect} />
+          </CardContent>
+        </Card>
+
         {/* Quick Actions */}
         <div className="grid gap-4 md:grid-cols-3">
           <Card className="group hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50" onClick={() => navigate('/appointments')}>
@@ -486,6 +513,19 @@ function DashboardContent() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Patient Detail Panel Sidebar */}
+      {showPatientPanel && selectedPatient && (
+        <div className="fixed right-0 top-14 bottom-0 w-full md:w-[600px] bg-background border-l shadow-2xl z-50 overflow-y-auto">
+          <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background">
+            <h2 className="text-xl font-bold">Patient Details</h2>
+            <Button variant="ghost" onClick={() => setShowPatientPanel(false)}>
+              Close
+            </Button>
+          </div>
+          <PatientDetailPanel patientId={selectedPatient} />
+        </div>
+      )}
     </DashboardLayout>
   );
 }

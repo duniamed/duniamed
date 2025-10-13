@@ -28,6 +28,9 @@ import Dashboard from "./pages/Dashboard";
 import PatientDashboardHome from "./pages/PatientDashboardHome";
 import Profile from "./pages/Profile";
 import Search from "./pages/Search";
+import ConsultationRoom from "./pages/ConsultationRoom";
+import ClinicFinancialDashboard from "./pages/ClinicFinancialDashboard";
+import ClinicOperations from "./pages/ClinicOperations";
 import SpecialistProfile from "./pages/SpecialistProfile";
 import BookAppointment from "./pages/BookAppointment";
 import Appointments from "./pages/Appointments";
@@ -219,7 +222,10 @@ const App = () => (
             <Route path="/patient/group-booking" element={<GroupBooking />} />
             
             {/* SPECIALIST PORTAL */}
-            <Route path="/specialist/dashboard" element={<SpecialistDashboard />} />
+          <Route path="/specialist/dashboard" element={<SpecialistDashboard />} />
+          <Route path="/consultation/start/:patientId" element={<ConsultationRoom />} />
+          <Route path="/clinic/financial-dashboard" element={<ClinicFinancialDashboard />} />
+          <Route path="/clinic/operations" element={<ClinicOperations />} />
             <Route path="/specialist/profile" element={<Profile />} />
             <Route path="/specialist/profile/edit" element={<SpecialistProfileEdit />} />
             <Route path="/specialist/create-virtual-clinic" element={<CreateVirtualClinic />} />
