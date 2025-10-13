@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Lightbulb, Pill, FileText, FlaskConical, Calendar, Plus } from 'lucide-react';
+import { Lightbulb, Pill, FileText, FlaskConical, Calendar, Plus, AlertCircle } from 'lucide-react';
 
 interface AISuggestion {
   type: 'icd10' | 'prescription' | 'protocol' | 'lab' | 'followup';
@@ -10,6 +10,7 @@ interface AISuggestion {
   description: string;
   code?: string;
   confidence?: number;
+  interaction_warning?: string;
 }
 
 interface AIAssistantPanelProps {
@@ -115,12 +116,23 @@ export function AIAssistantPanel({ suggestions, onAddSuggestion }: AIAssistantPa
                         <Plus className="h-4 w-4 mr-1" />
                         Add
                       </Button>
-                    </div>
+                     </div>
                     <h4 className="font-semibold mb-1 text-sm">{suggestion.title}</h4>
                     {suggestion.code && (
                       <p className="text-xs font-mono text-muted-foreground mb-2">{suggestion.code}</p>
                     )}
                     <p className="text-xs text-muted-foreground leading-relaxed">{suggestion.description}</p>
+                    
+                    {/* Drug Interaction Warning */}
+                    {suggestion.type === 'prescription' && suggestion.interaction_warning && (
+                      <div className="mt-3 p-2 bg-orange-500/10 border border-orange-500/30 rounded-md flex items-start gap-2">
+                        <AlertCircle className="h-4 w-4 text-orange-500 shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs font-semibold text-orange-500 mb-1">⚠️ Interaction Warning</p>
+                          <p className="text-xs text-orange-500">{suggestion.interaction_warning}</p>
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))

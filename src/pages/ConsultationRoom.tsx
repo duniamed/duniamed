@@ -70,22 +70,38 @@ export default function ConsultationRoom() {
         icd10Codes: [...prev.icd10Codes, suggestion.code],
         assessment: prev.assessment + (prev.assessment ? '\n' : '') + `${suggestion.title} (${suggestion.code})`,
       }));
+      toast({
+        title: '✅ ICD-10 Code Added',
+        description: `${suggestion.code} - ${suggestion.title}`,
+      });
     } else if (suggestion.type === 'prescription') {
       setSoapData(prev => ({
         ...prev,
-        plan: prev.plan + (prev.plan ? '\n' : '') + suggestion.title,
+        plan: prev.plan + (prev.plan ? '\n' : '') + `Rx: ${suggestion.title}`,
       }));
+      toast({
+        title: '💊 Prescription Template Added',
+        description: suggestion.title,
+      });
     } else if (suggestion.type === 'protocol') {
       setSoapData(prev => ({
         ...prev,
-        plan: prev.plan + (prev.plan ? '\n' : '') + suggestion.description,
+        plan: prev.plan + (prev.plan ? '\n' : '') + `Protocol: ${suggestion.description}`,
       }));
+      toast({
+        title: '📋 Treatment Protocol Added',
+        description: suggestion.title,
+      });
+    } else if (suggestion.type === 'lab') {
+      setSoapData(prev => ({
+        ...prev,
+        plan: prev.plan + (prev.plan ? '\n' : '') + `Labs: ${suggestion.description}`,
+      }));
+      toast({
+        title: '🔬 Lab Order Added',
+        description: suggestion.title,
+      });
     }
-    
-    toast({
-      title: 'Suggestion added',
-      description: `${suggestion.title} added to SOAP note`,
-    });
   };
 
   const handleSave = () => {
@@ -120,8 +136,27 @@ export default function ConsultationRoom() {
           {/* Voice Recorder */}
           <Card className="border-2 border-primary/30">
             <CardHeader className="bg-gradient-to-r from-primary/10 to-transparent">
-              <CardTitle className="text-xl">Voice Recording</CardTitle>
-              <p className="text-sm text-muted-foreground">Start recording to capture the conversation</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    🎤 Voice Consultation
+                    {isRecording && (
+                      <span className="flex items-center gap-1 text-sm font-normal text-red-500">
+                        <span className="h-2 w-2 bg-red-500 rounded-full animate-pulse"></span>
+                        Recording
+                      </span>
+                    )}
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground">Speak naturally - AI captures everything in real-time</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-muted-foreground">Auto-saves every 30s</p>
+                  <p className="text-xs text-green-500 flex items-center gap-1">
+                    <span className="h-2 w-2 bg-green-500 rounded-full"></span>
+                    Draft saved
+                  </p>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="pt-6">
             <VoiceSOAPRecorder 

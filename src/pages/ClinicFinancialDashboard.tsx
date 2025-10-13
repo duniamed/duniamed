@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { TrendingUp, DollarSign, Users, FileText, Download, Send, AlertCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { FinancialForecast } from '@/components/clinic/FinancialForecast';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
@@ -23,6 +24,7 @@ export default function ClinicFinancialDashboard() {
   });
   const [revenueByProvider, setRevenueByProvider] = useState<any[]>([]);
   const [revenueByType, setRevenueByType] = useState<any[]>([]);
+  const [bookedAppointments, setBookedAppointments] = useState<any[]>([]);
 
   useEffect(() => {
     fetchFinancialData();
@@ -39,6 +41,15 @@ export default function ClinicFinancialDashboard() {
         setRevenueByProvider(data.byProvider);
         setRevenueByType(data.byType);
       }
+
+      // Fetch booked appointments for forecast
+      const { data: appointments } = await supabase
+        .from('appointments')
+        .select('*')
+        .gte('scheduled_at', new Date().toISOString())
+        .order('scheduled_at');
+      
+      setBookedAppointments(appointments || []);
     } catch (error) {
       console.error('Error fetching financial data:', error);
       toast({
@@ -200,11 +211,14 @@ export default function ClinicFinancialDashboard() {
           </Card>
         </div>
 
+        {/* Revenue Forecast */}
+        <FinancialForecast bookedAppointments={bookedAppointments} />
+
         {/* Smart Actions */}
         <Card>
           <CardHeader>
             <CardTitle>One-Click Actions</CardTitle>
-            <CardDescription>Automated financial operations</CardDescription>
+            <CardDescription>Automated financial operations - zero manual work</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-3">
@@ -214,11 +228,15 @@ export default function ClinicFinancialDashboard() {
               </Button>
               <Button onClick={handleExportStatement} variant="outline" size="lg">
                 <Download className="mr-2 h-4 w-4" />
-                Export Financial Statement
+                Export Financial Statement (CSV)
               </Button>
               <Button variant="outline" size="lg">
                 <Send className="mr-2 h-4 w-4" />
                 Submit Insurance Claims
+              </Button>
+              <Button variant="outline" size="lg">
+                <TrendingUp className="mr-2 h-4 w-4" />
+                Generate Commission Report
               </Button>
             </div>
           </CardContent>

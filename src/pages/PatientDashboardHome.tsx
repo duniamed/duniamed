@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, Heart, FileText, Activity, Sparkles, MessageSquare } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { SmartSpecialistRecommendations } from '@/components/patient/SmartSpecialistRecommendations';
+import { SmartSpecialistRecommendationsEnhanced } from '@/components/patient/SmartSpecialistRecommendationsEnhanced';
 
 export default function PatientDashboardHome() {
   const { profile } = useAuth();
@@ -270,6 +270,10 @@ export default function PatientDashboardHome() {
         </div>
 
         {/* Health Tips */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Health Tips</CardTitle>
+          </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-2">

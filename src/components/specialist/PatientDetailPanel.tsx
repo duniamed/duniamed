@@ -127,15 +127,61 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
                 )}
               </div>
 
+              {/* Allergy Warnings - RED ALERT */}
               {medicalHistory?.summary?.allergies?.length > 0 && (
-                <div className="flex gap-2 flex-wrap">
-                  <span className="text-sm font-medium">Allergies:</span>
-                  {medicalHistory.summary.allergies.map((allergy: any, idx: number) => (
-                    <Badge key={idx} variant="destructive">
-                      <AlertCircle className="h-3 w-3 mr-1" />
-                      {typeof allergy === 'string' ? allergy : allergy.name}
-                    </Badge>
-                  ))}
+                <div className="p-3 bg-destructive/10 border border-destructive/30 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <AlertCircle className="h-4 w-4 text-destructive" />
+                    <span className="text-sm font-bold text-destructive">ALLERGY WARNINGS</span>
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
+                    {medicalHistory.summary.allergies.map((allergy: any, idx: number) => (
+                      <Badge key={idx} variant="destructive" className="text-xs">
+                        ⚠️ {typeof allergy === 'string' ? allergy : allergy.name}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Chronic Conditions - BLUE INFO */}
+              {medicalHistory?.summary?.chronic_conditions?.length > 0 && (
+                <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Shield className="h-4 w-4 text-blue-500" />
+                    <span className="text-sm font-semibold text-blue-500">Chronic Conditions</span>
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
+                    {medicalHistory.summary.chronic_conditions.map((condition: any, idx: number) => (
+                      <Badge key={idx} variant="outline" className="border-blue-500 text-blue-500 text-xs">
+                        {typeof condition === 'string' ? condition : condition.name}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Insurance Status - Color Coded */}
+              {patient.insurance_status && (
+                <div className={`p-3 rounded-lg border ${
+                  patient.insurance_status === 'active' ? 'bg-green-500/10 border-green-500/30' :
+                  patient.insurance_status === 'expiring' ? 'bg-yellow-500/10 border-yellow-500/30' :
+                  'bg-red-500/10 border-red-500/30'
+                }`}>
+                  <div className="flex items-center gap-2">
+                    <Shield className={`h-4 w-4 ${
+                      patient.insurance_status === 'active' ? 'text-green-500' :
+                      patient.insurance_status === 'expiring' ? 'text-yellow-500' :
+                      'text-red-500'
+                    }`} />
+                    <span className={`text-sm font-semibold ${
+                      patient.insurance_status === 'active' ? 'text-green-500' :
+                      patient.insurance_status === 'expiring' ? 'text-yellow-500' :
+                      'text-red-500'
+                    }`}>
+                      Insurance: {patient.insurance_status?.toUpperCase()}
+                    </span>
+                  </div>
                 </div>
               )}
             </div>
@@ -158,27 +204,65 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
               <CardTitle>Medical Summary</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-3">
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Total Visits</p>
-                  <p className="text-2xl font-bold">
-                    {medicalHistory?.summary?.total_appointments || 0}
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Active Prescriptions</p>
-                  <p className="text-2xl font-bold">
-                    {medicalHistory?.summary?.has_active_prescriptions ? 'Yes' : 'No'}
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Last Visit</p>
-                  <p className="text-2xl font-bold">
-                    {medicalHistory?.summary?.last_appointment_date
-                      ? new Date(medicalHistory.summary.last_appointment_date).toLocaleDateString()
-                      : 'N/A'}
-                  </p>
-                </div>
+              {/* Quick Stats Cards */}
+              <div className="grid gap-4 md:grid-cols-4">
+                <Card className="bg-gradient-to-br from-blue-500/10 to-transparent border-blue-500/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5 text-blue-500" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Total Visits</p>
+                        <p className="text-2xl font-bold">{medicalHistory?.summary?.total_appointments || 0}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-green-500/10 to-transparent border-green-500/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <Pill className="h-5 w-5 text-green-500" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Active Rx</p>
+                        <p className="text-2xl font-bold">
+                          {medicalHistory?.prescriptions?.filter((rx: any) => rx.status === 'active').length || 0}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-purple-500/10 to-transparent border-purple-500/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-purple-500" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Last Visit</p>
+                        <p className="text-sm font-bold">
+                          {medicalHistory?.summary?.last_appointment_date
+                            ? new Date(medicalHistory.summary.last_appointment_date).toLocaleDateString()
+                            : 'Never'}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-orange-500/10 to-transparent border-orange-500/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <User className="h-5 w-5 text-orange-500" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Age</p>
+                        <p className="text-2xl font-bold">
+                          {patient.date_of_birth 
+                            ? new Date().getFullYear() - new Date(patient.date_of_birth).getFullYear()
+                            : 'N/A'}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
 
               <Separator />
