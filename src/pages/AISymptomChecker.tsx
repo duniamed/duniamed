@@ -66,7 +66,29 @@ export default function AISymptomChecker() {
     }
   };
 
-  const handleBookAppointment = () => {
+  const handleBookAppointment = async () => {
+    // Auto-add to waitlist if urgency detected
+    if (result?.urgency_level === 'urgent' || result?.urgency_level === 'emergency') {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user && result?.suggested_specialties?.length > 0) {
+          // Auto-insert to waiting list for first suggested specialist
+          await supabase.from('appointment_waitlist').insert({
+            patient_id: user.id,
+            specialist_id: result.suggested_specialties[0].specialist_id,
+            notes: `AI Symptom Checker - ${result.urgency_level}: ${symptoms.substring(0, 100)}`,
+            status: 'waiting'
+          });
+          
+          toast({
+            title: "Added to Priority Waitlist",
+            description: `You've been added to the urgent care queue for ${result.suggested_specialties[0].name}`,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to add to waitlist:', error);
+      }
+    }
     navigate('/book-appointment');
   };
 

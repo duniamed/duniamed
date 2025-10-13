@@ -40,7 +40,7 @@ export function DrugInteractionWarning({
       // Fetch patient's current medications
       const { data: prescriptions } = await supabase
         .from('prescriptions')
-        .select('medication, dosage')
+        .select('medication_name, dosage')
         .eq('patient_id', patientId)
         .in('status', ['approved', 'dispensed']);
 
@@ -54,7 +54,7 @@ export function DrugInteractionWarning({
       setAllergies(profile?.allergies || []);
 
       // Check for drug-drug interactions
-      const currentMeds = prescriptions?.map(p => p.medication) || [];
+      const currentMeds = prescriptions?.map(p => p.medication_name) || [];
       
       const { data: interactionData, error } = await supabase.functions.invoke('check-drug-interactions', {
         body: {

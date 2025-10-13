@@ -177,14 +177,11 @@ export function EarningsForecastWidget() {
         <div className="bg-muted/50 p-4 rounded-lg text-sm">
           <p className="font-medium mb-2">💡 Optimization Tips:</p>
           <ul className="text-xs text-muted-foreground space-y-1">
-            {data.utilizationRate < 70 && (
-              <li>• Consider adding more available time slots</li>
-            )}
-            {data.noShowRate > 10 && (
-              <li>• High no-show rate detected - enable confirmation reminders</li>
-            )}
             {data.bookedAppointments < 5 && (
               <li>• Low future bookings - consider promotional pricing</li>
+            )}
+            {data.completedAppointments > 0 && (
+              <li>• Great work! {data.completedAppointments} consultations completed this month</li>
             )}
           </ul>
         </div>
