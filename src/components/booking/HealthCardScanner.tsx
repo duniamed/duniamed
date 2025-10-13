@@ -56,14 +56,23 @@ export function HealthCardScanner({ onDataScanned }: HealthCardScannerProps) {
 
         // Call OCR function
         const { data, error } = await supabase.functions.invoke('scan-health-card', {
-          body: { image: base64Image },
+          body: { imageBase64: base64Image },
         });
 
         if (error) throw error;
 
-        if (data?.success && data.patient) {
-          setScannedData(data.patient);
-          onDataScanned(data.patient);
+        if (data?.success && data.data) {
+          const cardData = data.data;
+          const formatted: ScannedData = {
+            name: cardData.patientName || '',
+            policyNumber: cardData.policyNumber || '',
+            insurer: cardData.insuranceProvider || '',
+            planType: cardData.planType || '',
+            validUntil: cardData.validUntil || '',
+            memberId: cardData.policyNumber || '',
+          };
+          setScannedData(formatted);
+          onDataScanned(formatted);
           toast({
             title: 'Card Scanned Successfully',
             description: 'Patient information has been extracted',

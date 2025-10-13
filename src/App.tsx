@@ -166,6 +166,7 @@ import FinanceDashboard from './pages/FinanceDashboard';
 import ActivityFeed from './pages/ActivityFeed';
 import AIBlogGenerator from './pages/AIBlogGenerator';
 import CSVImportExport from './pages/CSVImportExport';
+import WhatsAppBooking from "./pages/WhatsAppBooking";
 
 const queryClient = new QueryClient();
 
@@ -224,9 +225,10 @@ const App = () => (
             {/* SPECIALIST PORTAL */}
           <Route path="/specialist/dashboard" element={<SpecialistDashboard />} />
           <Route path="/consultation/start/:patientId" element={<ConsultationRoom />} />
-          <Route path="/clinic/financial-dashboard" element={<ClinicFinancialDashboard />} />
-          <Route path="/clinic/operations" element={<ClinicOperations />} />
-          <Route path="/compliance" element={<ComplianceDashboard />} />
+            <Route path="/clinic/financial-dashboard" element={<ClinicFinancialDashboard />} />
+            <Route path="/clinic/operations" element={<ClinicOperations />} />
+            <Route path="/compliance" element={<ComplianceDashboard />} />
+            <Route path="/whatsapp-booking" element={<WhatsAppBooking />} />
             <Route path="/specialist/profile" element={<Profile />} />
             <Route path="/specialist/profile/edit" element={<SpecialistProfileEdit />} />
             <Route path="/specialist/create-virtual-clinic" element={<CreateVirtualClinic />} />

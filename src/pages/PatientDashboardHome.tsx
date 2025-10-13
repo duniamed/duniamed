@@ -5,13 +5,14 @@ import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Heart, FileText, Activity, Sparkles } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Calendar, Clock, Heart, FileText, Activity, Sparkles, MessageSquare } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { SmartSpecialistRecommendations } from '@/components/patient/SmartSpecialistRecommendations';
 
 export default function PatientDashboardHome() {
   const { profile } = useAuth();
+  const navigate = useNavigate();
   const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -221,13 +222,54 @@ export default function PatientDashboardHome() {
         )}
 
         {/* Health Tips */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
-              Quick Health Tips
-            </CardTitle>
-          </CardHeader>
+        {/* Quick Actions */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" />
+                Book via WhatsApp
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                Chat with our AI to find the right doctor instantly
+              </p>
+              <Button onClick={() => navigate("/whatsapp-booking")} className="w-full">
+                Start WhatsApp Chat
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Quick Actions
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => navigate("/messages")}
+              >
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Message Doctor
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => navigate("/medical-records")}
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                View Records
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Health Tips */}
           <CardContent>
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-2">
