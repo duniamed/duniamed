@@ -54,28 +54,40 @@ export function HealthCardScanner({ onDataScanned }: HealthCardScannerProps) {
           throw new Error('Failed to process image');
         }
 
-        // Call OCR function
-        const { data, error } = await supabase.functions.invoke('scan-health-card', {
-          body: { imageBase64: base64Image },
+        // Call Vision OCR function
+        const { data, error } = await supabase.functions.invoke('scan-health-card-vision', {
+          body: { 
+            imageBase64: base64Image,
+            cardSide: 'front'
+          },
         });
 
         if (error) throw error;
 
-        if (data?.success && data.data) {
-          const cardData = data.data;
+        if (data?.fields) {
           const formatted: ScannedData = {
-            name: cardData.patientName || '',
-            policyNumber: cardData.policyNumber || '',
-            insurer: cardData.insuranceProvider || '',
-            planType: cardData.planType || '',
-            validUntil: cardData.validUntil || '',
-            memberId: cardData.policyNumber || '',
+            name: data.fields.patientName?.value || '',
+            policyNumber: data.fields.policyNumber?.value || '',
+            insurer: data.fields.insurerName?.value || '',
+            planType: 'Standard',
+            validUntil: data.fields.expirationDate?.value || '',
+            memberId: data.fields.memberId?.value || '',
           };
+          
+          // Show warnings if confidence is low
+          if (data.overallConfidence < 85 || data.needsManualReview) {
+            toast({
+              title: 'Low Confidence Scan',
+              description: 'Please review extracted data carefully',
+              variant: 'default',
+            });
+          }
+          
           setScannedData(formatted);
           onDataScanned(formatted);
           toast({
             title: 'Card Scanned Successfully',
-            description: 'Patient information has been extracted',
+            description: `Confidence: ${Math.round(data.overallConfidence)}%`,
           });
         } else {
           throw new Error('Failed to extract card information');
