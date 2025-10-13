@@ -81,7 +81,7 @@ export default function PatientDashboardHome() {
             </div>
           </CardHeader>
           <CardContent className="pt-6">
-            <SmartSpecialistRecommendations />
+            <SmartSpecialistRecommendationsEnhanced />
           </CardContent>
         </Card>
 
