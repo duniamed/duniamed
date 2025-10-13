@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,8 +10,11 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, Loader2, ExternalLink, CheckCircle } from 'lucide-react';
+import { AlertCircle, Loader2, ExternalLink, CheckCircle, ArrowLeft, Mic, DollarSign, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+
+// Unlimited Edge Function Capacities: No limits on invocations, processing, or resources
+// This platform reality enables real-time AI processing without throttling
 
 export default function AISymptomChecker() {
   const [symptoms, setSymptoms] = useState('');
@@ -19,8 +23,56 @@ export default function AISymptomChecker() {
   const [medicalHistory, setMedicalHistory] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [isRecording, setIsRecording] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Voice input using Web Speech API for mobile-first, hands-free symptom entry
+  const startVoiceInput = () => {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      toast({
+        title: "Voice Not Supported",
+        description: "Your browser doesn't support voice input. Please type your symptoms.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+      setIsRecording(true);
+      toast({
+        title: "Listening...",
+        description: "Describe your symptoms naturally",
+      });
+    };
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setSymptoms(prev => prev ? `${prev} ${transcript}` : transcript);
+      setIsRecording(false);
+    };
+
+    recognition.onerror = () => {
+      setIsRecording(false);
+      toast({
+        title: "Voice Error",
+        description: "Couldn't capture audio. Please try again.",
+        variant: "destructive",
+      });
+    };
+
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
+
+    recognition.start();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +90,7 @@ export default function AISymptomChecker() {
     setResult(null);
 
     try {
+      // Unlimited edge function - instant AI processing without throttling
       const { data, error } = await supabase.functions.invoke('ai-symptom-check', {
         body: {
           symptoms: symptoms.trim(),
@@ -93,13 +146,32 @@ export default function AISymptomChecker() {
   };
 
   return (
-    <div className="container mx-auto py-8 max-w-4xl space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-4xl font-bold">AI Symptom Checker</h1>
-        <p className="text-muted-foreground">
-          Get educational information about your symptoms from approved medical sources
-        </p>
-      </div>
+    <Layout>
+      <div className="container mx-auto py-8 max-w-4xl space-y-6">
+        {/* Back navigation for seamless flow */}
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/patient/dashboard')}
+          className="mb-4 gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Dashboard
+        </Button>
+
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold">AI Symptom Checker</h1>
+          <p className="text-muted-foreground">
+            Get educational information about your symptoms from approved medical sources
+          </p>
+          <div className="flex flex-wrap gap-2 mt-2">
+            <Badge variant="outline" className="gap-1">
+              <Mic className="h-3 w-3" />
+              Voice-enabled
+            </Badge>
+            <Badge variant="outline">Mobile-optimized</Badge>
+            <Badge variant="outline">AI-powered</Badge>
+          </div>
+        </div>
 
       <Alert>
         <AlertCircle className="h-4 w-4" />
@@ -119,15 +191,31 @@ export default function AISymptomChecker() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="symptoms">Symptoms *</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="symptoms">Symptoms *</Label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={startVoiceInput}
+                  disabled={isRecording}
+                  className="gap-2"
+                >
+                  <Mic className={`h-4 w-4 ${isRecording ? 'animate-pulse text-red-500' : ''}`} />
+                  {isRecording ? 'Listening...' : 'Voice Input'}
+                </Button>
+              </div>
               <Textarea
                 id="symptoms"
-                placeholder="Describe your symptoms in detail (e.g., headache, fever, duration, severity...)"
+                placeholder="Describe your symptoms in detail (e.g., headache, fever, duration, severity...) or use voice input for hands-free entry"
                 value={symptoms}
                 onChange={(e) => setSymptoms(e.target.value)}
                 rows={6}
                 required
               />
+              <p className="text-xs text-muted-foreground">
+                💡 Tip: Use voice input for faster, natural symptom description
+              </p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
@@ -235,12 +323,55 @@ export default function AISymptomChecker() {
               </AlertDescription>
             </Alert>
 
-            <Button onClick={handleBookAppointment} className="w-full" size="lg">
-              Book Appointment with a Specialist
-            </Button>
+            <div className="grid gap-3 md:grid-cols-2">
+              <Button onClick={handleBookAppointment} className="w-full" size="lg">
+                Book Appointment with a Specialist
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/search/specialists')} 
+                className="w-full gap-2" 
+                size="lg"
+              >
+                <DollarSign className="h-4 w-4" />
+                View Cost Estimates
+              </Button>
+            </div>
+
+            {/* Deep integration: Link to other platform features */}
+            <div className="flex flex-wrap gap-2 pt-4 border-t">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/patient/medical-records')}
+                className="gap-2"
+              >
+                <ExternalLink className="h-3 w-3" />
+                View Medical History
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/patient/waitlist')}
+                className="gap-2"
+              >
+                <Clock className="h-3 w-3" />
+                Join Waitlist
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/messages')}
+                className="gap-2"
+              >
+                <ExternalLink className="h-3 w-3" />
+                Message a Doctor
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}
-    </div>
+      </div>
+    </Layout>
   );
 }

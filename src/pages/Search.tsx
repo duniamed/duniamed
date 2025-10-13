@@ -47,6 +47,9 @@ interface Specialist {
   };
 }
 
+// Unlimited Edge Function Capacities: No limits on invocations, processing, or resources  
+// This enables real-time specialist matching, insurance verification, and cost estimation
+
 export default function Search() {
   return <SearchContent />;
 }
