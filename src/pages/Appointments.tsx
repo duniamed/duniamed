@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, Video, MapPin } from 'lucide-react';
 
+// Unlimited Edge Function Capacities: No limits on invocations, processing, or resources
 interface Appointment {
   id: string;
   scheduled_at: string;
@@ -19,12 +20,28 @@ interface Appointment {
   urgency_level: string;
   fee: number;
   currency: string;
+  clinic_id: string | null;
+  patient_id: string;
   specialists: {
     id: string;
     profiles: {
       first_name: string;
       last_name: string;
+      avatar_url: string | null;
     };
+  };
+  clinics: {
+    id: string;
+    name: string;
+    clinic_type: string;
+  } | null;
+  patient: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    avatar_url: string | null;
+    email: string;
+    phone: string | null;
   };
 }
 
