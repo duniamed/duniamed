@@ -329,3 +329,39 @@ verify_jwt = false
 
 [functions.one-tap-reschedule]
 verify_jwt = true
+
+[functions.waitlist-auto-insert]
+verify_jwt = false
+
+[functions.send-waitlist-notification]
+verify_jwt = false
+
+[functions.staff-invitation]
+verify_jwt = true
+
+[functions.generate-temp-email]
+verify_jwt = true
+
+[functions.qr-profile-export]
+verify_jwt = true
+
+[functions.qr-profile-import]
+verify_jwt = false
+
+[functions.voice-to-task]
+verify_jwt = true
+
+[functions.ai-team-insights]
+verify_jwt = true
+
+[functions.payment-per-booking]
+verify_jwt = true
+
+[functions.ai-generate-insights]
+verify_jwt = false
+
+[functions.health-record-request]
+verify_jwt = true
+
+[functions.prescription-external-receive]
+verify_jwt = false
