@@ -1,6 +1,6 @@
-// Unlimited Edge Function Capacities: No limits on invocations, processing, or resources
+// Unlimited Edge Function Capacities: QR Profile Import with HIPAA compliance
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,55 +13,71 @@ serve(async (req) => {
   }
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
+    const { exportToken, scannedBy } = await req.json();
+    
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { qr_token, scanned_by } = await req.json();
-
-    // Get QR export
-    const { data: qrExport, error: qrError } = await supabaseClient
+    // Fetch export record
+    const { data: exportRecord, error: fetchError } = await supabase
       .from('qr_profile_exports')
       .select('*')
-      .eq('qr_token', qr_token)
+      .eq('export_token', exportToken)
       .single();
 
-    if (qrError || !qrExport) {
-      throw new Error('Invalid or expired QR code');
+    if (fetchError || !exportRecord) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid or expired QR code' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    // Check if expired
-    if (new Date(qrExport.expires_at) < new Date()) {
-      throw new Error('QR code has expired');
+    // Check expiration
+    if (new Date(exportRecord.expires_at) < new Date()) {
+      return new Response(
+        JSON.stringify({ error: 'QR code has expired' }),
+        { status: 410, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Decrypt payload
-    const decryptedPayload = JSON.parse(atob(qrExport.encrypted_payload.data));
+    const decrypted = JSON.parse(atob(exportRecord.encrypted_payload));
 
     // Mark as scanned
-    await supabaseClient
+    await supabase
       .from('qr_profile_exports')
       .update({
         scanned_at: new Date().toISOString(),
-        scanned_by
+        scanned_by: scannedBy
       })
-      .eq('id', qrExport.id);
+      .eq('export_token', exportToken);
+
+    // Log audit trail
+    await supabase
+      .from('audit_logs')
+      .insert({
+        user_id: scannedBy,
+        action: 'qr_profile_import',
+        resource_type: exportRecord.export_type,
+        resource_id: exportRecord.user_id,
+        changes: { export_token: exportToken }
+      });
 
     return new Response(
       JSON.stringify({ 
         success: true,
-        data: decryptedPayload,
-        export_type: qrExport.export_type
+        profileData: decrypted,
+        exportType: exportRecord.export_type
       }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
-    console.error('Error:', error);
+  } catch (error: any) {
+    console.error('QR import error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
