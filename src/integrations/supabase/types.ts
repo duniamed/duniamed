@@ -534,6 +534,51 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_insights_ai: {
+        Row: {
+          actionable_items: Json | null
+          confidence_score: number | null
+          created_at: string
+          data_snapshot: Json
+          entity_id: string
+          entity_type: string
+          expires_at: string | null
+          id: string
+          insight_text: string
+          insight_type: string
+          priority: string | null
+          status: string
+        }
+        Insert: {
+          actionable_items?: Json | null
+          confidence_score?: number | null
+          created_at?: string
+          data_snapshot: Json
+          entity_id: string
+          entity_type: string
+          expires_at?: string | null
+          id?: string
+          insight_text: string
+          insight_type: string
+          priority?: string | null
+          status?: string
+        }
+        Update: {
+          actionable_items?: Json | null
+          confidence_score?: number | null
+          created_at?: string
+          data_snapshot?: Json
+          entity_id?: string
+          entity_type?: string
+          expires_at?: string | null
+          id?: string
+          insight_text?: string
+          insight_type?: string
+          priority?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       api_keys: {
         Row: {
           created_at: string
@@ -789,6 +834,9 @@ export type Database = {
       }
       appointments: {
         Row: {
+          ai_urgency_score: number | null
+          auto_inserted_from_symptom_checker: boolean | null
+          auto_inserted_from_voice: boolean | null
           cancellation_reason: string | null
           cancelled_at: string | null
           cancelled_by: string | null
@@ -802,6 +850,7 @@ export type Database = {
           duration_minutes: number | null
           fee: number
           id: string
+          installment_plan_id: string | null
           location_id: string | null
           modality: string | null
           notes: string | null
@@ -810,6 +859,8 @@ export type Database = {
           patient_id: string
           patient_number: string | null
           payment_id: string | null
+          payment_type: string | null
+          qr_share_token: string | null
           reminder_sent: boolean | null
           reminder_sent_at: string | null
           scheduled_at: string
@@ -822,8 +873,13 @@ export type Database = {
           urgency_level: Database["public"]["Enums"]["urgency_level"] | null
           video_room_id: string | null
           video_room_url: string | null
+          voice_billing_requested: boolean | null
+          voice_notes_url: string | null
         }
         Insert: {
+          ai_urgency_score?: number | null
+          auto_inserted_from_symptom_checker?: boolean | null
+          auto_inserted_from_voice?: boolean | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
           cancelled_by?: string | null
@@ -837,6 +893,7 @@ export type Database = {
           duration_minutes?: number | null
           fee: number
           id?: string
+          installment_plan_id?: string | null
           location_id?: string | null
           modality?: string | null
           notes?: string | null
@@ -845,6 +902,8 @@ export type Database = {
           patient_id: string
           patient_number?: string | null
           payment_id?: string | null
+          payment_type?: string | null
+          qr_share_token?: string | null
           reminder_sent?: boolean | null
           reminder_sent_at?: string | null
           scheduled_at: string
@@ -857,8 +916,13 @@ export type Database = {
           urgency_level?: Database["public"]["Enums"]["urgency_level"] | null
           video_room_id?: string | null
           video_room_url?: string | null
+          voice_billing_requested?: boolean | null
+          voice_notes_url?: string | null
         }
         Update: {
+          ai_urgency_score?: number | null
+          auto_inserted_from_symptom_checker?: boolean | null
+          auto_inserted_from_voice?: boolean | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
           cancelled_by?: string | null
@@ -872,6 +936,7 @@ export type Database = {
           duration_minutes?: number | null
           fee?: number
           id?: string
+          installment_plan_id?: string | null
           location_id?: string | null
           modality?: string | null
           notes?: string | null
@@ -880,6 +945,8 @@ export type Database = {
           patient_id?: string
           patient_number?: string | null
           payment_id?: string | null
+          payment_type?: string | null
+          qr_share_token?: string | null
           reminder_sent?: boolean | null
           reminder_sent_at?: string | null
           scheduled_at?: string
@@ -892,6 +959,8 @@ export type Database = {
           urgency_level?: Database["public"]["Enums"]["urgency_level"] | null
           video_room_id?: string | null
           video_room_url?: string | null
+          voice_billing_requested?: boolean | null
+          voice_notes_url?: string | null
         }
         Relationships: [
           {
@@ -4124,6 +4193,51 @@ export type Database = {
         }
         Relationships: []
       }
+      health_record_share_requests: {
+        Row: {
+          access_granted_until: string | null
+          approved_at: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          patient_id: string
+          reason: string | null
+          requested_records: string[]
+          requester_id: string
+          requester_type: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          access_granted_until?: string | null
+          approved_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          patient_id: string
+          reason?: string | null
+          requested_records: string[]
+          requester_id: string
+          requester_type: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          access_granted_until?: string | null
+          approved_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          patient_id?: string
+          reason?: string | null
+          requested_records?: string[]
+          requester_id?: string
+          requester_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       import_comparison: {
         Row: {
           applied: boolean | null
@@ -7173,6 +7287,45 @@ export type Database = {
         }
         Relationships: []
       }
+      qr_profile_exports: {
+        Row: {
+          created_at: string
+          encrypted_payload: Json
+          expires_at: string
+          export_type: string
+          id: string
+          metadata: Json | null
+          qr_token: string
+          scanned_at: string | null
+          scanned_by: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          encrypted_payload: Json
+          expires_at?: string
+          export_type: string
+          id?: string
+          metadata?: Json | null
+          qr_token?: string
+          scanned_at?: string | null
+          scanned_by?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          encrypted_payload?: Json
+          expires_at?: string
+          export_type?: string
+          id?: string
+          metadata?: Json | null
+          qr_token?: string
+          scanned_at?: string | null
+          scanned_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       rate_limits: {
         Row: {
           created_at: string | null
@@ -9186,6 +9339,63 @@ export type Database = {
           },
         ]
       }
+      staff_invitations: {
+        Row: {
+          accepted_at: string | null
+          clinic_id: string
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invite_token: string
+          invited_by: string
+          metadata: Json | null
+          role: string
+          status: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          clinic_id: string
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          invite_token?: string
+          invited_by: string
+          metadata?: Json | null
+          role: string
+          status?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          clinic_id?: string
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invite_token?: string
+          invited_by?: string
+          metadata?: Json | null
+          role?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_invitations_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_invitations_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stripe_customers: {
         Row: {
           created_at: string | null
@@ -9618,6 +9828,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      temp_prescription_emails: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          last_received_at: string | null
+          patient_id: string
+          qr_code_data: string | null
+          status: string
+          temp_email: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          last_received_at?: string | null
+          patient_id: string
+          qr_code_data?: string | null
+          status?: string
+          temp_email: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          last_received_at?: string | null
+          patient_id?: string
+          qr_code_data?: string | null
+          status?: string
+          temp_email?: string
+        }
+        Relationships: []
       }
       third_party_audits: {
         Row: {
