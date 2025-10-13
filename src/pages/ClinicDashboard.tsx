@@ -5,7 +5,7 @@ import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Building2, Users, Calendar, DollarSign, TrendingUp, Package, AlertTriangle, BarChart3, Activity } from 'lucide-react';
+import { Building2, Users, Calendar, DollarSign, TrendingUp, Package, AlertTriangle, BarChart3, Activity, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { VirtualClinicWelcomeDialog } from '@/components/clinic/VirtualClinicWelcomeDialog';
 
@@ -235,6 +235,20 @@ function ClinicDashboardContent() {
                     <div>
                       <h3 className="text-lg font-bold mb-1">Compliance Dashboard</h3>
                       <p className="text-sm text-muted-foreground">Multi-jurisdiction automation</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50" onClick={() => navigate('/compliance')}>
+                <CardContent className="pt-6">
+                  <div className="flex flex-col items-center text-center gap-4">
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600">
+                      <Shield className="h-8 w-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold mb-1">Compliance Center</h3>
+                      <p className="text-sm text-muted-foreground">ANS, HIPAA, GDPR automation</p>
                     </div>
                   </div>
                 </CardContent>

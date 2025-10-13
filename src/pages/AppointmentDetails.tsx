@@ -10,8 +10,9 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar, Clock, Video, MapPin, DollarSign, AlertCircle, XCircle } from 'lucide-react';
+import { Calendar, Clock, Video, MapPin, DollarSign, AlertCircle, XCircle, Mic, RefreshCw } from 'lucide-react';
 import { VisitConfirmationDialog } from '@/components/VisitConfirmationDialog';
+import { RescheduleDialog } from '@/components/booking/RescheduleDialog';
 
 interface Appointment {
   id: string;
@@ -50,6 +51,7 @@ function AppointmentDetailsContent() {
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
+  const [showRescheduleDialog, setShowRescheduleDialog] = useState(false);
 
   useEffect(() => {
     fetchAppointment();
@@ -287,6 +289,18 @@ function AppointmentDetailsContent() {
               <Separator />
               
               <div className="flex flex-col gap-2">
+                {/* Voice Consultation Button for Specialists */}
+                {(appointment.status === 'scheduled' || appointment.status === 'confirmed') && profile?.role === 'specialist' && (
+                  <Button 
+                    size="lg"
+                    className="bg-gradient-to-r from-primary to-primary-glow hover:shadow-lg transition-all"
+                    onClick={() => navigate(`/consultation/start/${appointment.id}`)}
+                  >
+                    <Mic className="mr-2 h-5 w-5" />
+                    Start Voice Consultation
+                  </Button>
+                )}
+
                 {appointment.status === 'completed' && (
                   <VisitConfirmationDialog
                     appointmentId={id!}
@@ -320,28 +334,39 @@ function AppointmentDetailsContent() {
                 )}
 
                 {canCancel && profile?.role === 'patient' && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="destructive">
-                        <XCircle className="mr-2 h-4 w-4" />
-                        Cancel Appointment
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Cancel Appointment?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Are you sure you want to cancel this appointment? This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Keep Appointment</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleCancel} disabled={cancelling} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                          {cancelling ? 'Cancelling...' : 'Cancel Appointment'}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <>
+                    <Button 
+                      variant="outline"
+                      onClick={() => setShowRescheduleDialog(true)}
+                      className="w-full"
+                    >
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                      Reschedule Appointment
+                    </Button>
+                    
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive">
+                          <XCircle className="mr-2 h-4 w-4" />
+                          Cancel Appointment
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Cancel Appointment?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to cancel this appointment? This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Keep Appointment</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleCancel} disabled={cancelling} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                            {cancelling ? 'Cancelling...' : 'Cancel Appointment'}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </>
                 )}
               </div>
             </CardContent>
@@ -350,6 +375,17 @@ function AppointmentDetailsContent() {
         <Button variant="outline" onClick={() => navigate('/appointments')}>
           Back to Appointments
         </Button>
+
+        {/* Reschedule Dialog */}
+        <RescheduleDialog
+          appointmentId={id!}
+          open={showRescheduleDialog}
+          onOpenChange={setShowRescheduleDialog}
+          onRescheduled={() => {
+            fetchAppointment();
+            setShowRescheduleDialog(false);
+          }}
+        />
       </div>
     </DashboardLayout>
   );

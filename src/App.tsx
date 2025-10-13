@@ -42,6 +42,7 @@ import VideoConsultation from "./pages/VideoConsultation";
 import InstantConsultation from "./pages/InstantConsultation";
 import ClinicDashboard from "./pages/ClinicDashboard";
 import ClinicSettings from "./pages/ClinicSettings";
+import ComplianceDashboard from './pages/ComplianceDashboard';
 import SearchClinics from "./pages/SearchClinics";
 import Prescriptions from "./pages/Prescriptions";
 import CreatePrescription from "./pages/CreatePrescription";
@@ -161,7 +162,6 @@ import GoogleBusinessProfile from './pages/GoogleBusinessProfile';
 import ClinicalFocus from './pages/ClinicalFocus';
 import AIGovernance from './pages/AIGovernance';
 import WorkQueue from './pages/WorkQueue';
-import ComplianceDashboard from './pages/ComplianceDashboard';
 import FinanceDashboard from './pages/FinanceDashboard';
 import ActivityFeed from './pages/ActivityFeed';
 import AIBlogGenerator from './pages/AIBlogGenerator';
@@ -226,6 +226,7 @@ const App = () => (
           <Route path="/consultation/start/:patientId" element={<ConsultationRoom />} />
           <Route path="/clinic/financial-dashboard" element={<ClinicFinancialDashboard />} />
           <Route path="/clinic/operations" element={<ClinicOperations />} />
+          <Route path="/compliance" element={<ComplianceDashboard />} />
             <Route path="/specialist/profile" element={<Profile />} />
             <Route path="/specialist/profile/edit" element={<SpecialistProfileEdit />} />
             <Route path="/specialist/create-virtual-clinic" element={<CreateVirtualClinic />} />
