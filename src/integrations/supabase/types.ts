@@ -167,6 +167,47 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_clinical_suggestions: {
+        Row: {
+          accepted: boolean | null
+          appointment_id: string | null
+          confidence_score: number | null
+          created_at: string | null
+          id: string
+          specialist_id: string | null
+          suggestion_data: Json
+          suggestion_type: string
+        }
+        Insert: {
+          accepted?: boolean | null
+          appointment_id?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          id?: string
+          specialist_id?: string | null
+          suggestion_data: Json
+          suggestion_type: string
+        }
+        Update: {
+          accepted?: boolean | null
+          appointment_id?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          id?: string
+          specialist_id?: string | null
+          suggestion_data?: Json
+          suggestion_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_appointment"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_config_profiles: {
         Row: {
           approved_at: string | null
@@ -10464,6 +10505,42 @@ export type Database = {
           status?: string | null
           user_id?: string | null
           webhook_data?: Json | null
+        }
+        Relationships: []
+      }
+      whatsapp_sessions: {
+        Row: {
+          context: Json | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          language: string | null
+          phone_number: string
+          state: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          context?: Json | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          language?: string | null
+          phone_number: string
+          state?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          context?: Json | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          language?: string | null
+          phone_number?: string
+          state?: string
+          updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
