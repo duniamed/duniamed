@@ -169,6 +169,7 @@ import ActivityFeed from './pages/ActivityFeed';
 import AIBlogGenerator from './pages/AIBlogGenerator';
 import CSVImportExport from './pages/CSVImportExport';
 import WhatsAppBooking from "./pages/WhatsAppBooking";
+import AdminFeatureManagement from './pages/AdminFeatureManagement';
 
 const queryClient = new QueryClient();
 
@@ -357,6 +358,7 @@ const App = () => (
             <Route path="/admin/sessions" element={<SessionManagement />} />
             <Route path="/admin/implementation-status" element={<ImplementationStatus />} />
             <Route path="/admin/ai-governance" element={<AIGovernance />} />
+            <Route path="/admin/features" element={<AdminFeatureManagement />} />
             
             {/* C25-C30 INTEGRATIONS */}
           <Route path="/icd-codes" element={<ICDCodeSearch />} />

@@ -55,7 +55,7 @@ export function useVoiceCommand({ onCommand, sessionType = 'general', autoStop =
             if (error) throw error;
 
             // Save session to database
-            await supabase.from('voice_ai_sessions').insert({
+            await (supabase as any).from('voice_ai_sessions').insert({
               user_id: (await supabase.auth.getUser()).data.user?.id,
               session_type: sessionType,
               transcript: transcriptText,
@@ -63,7 +63,7 @@ export function useVoiceCommand({ onCommand, sessionType = 'general', autoStop =
               confidence_score: data.confidence || 0.9,
               processed_at: new Date().toISOString(),
               metadata: { model: data.model }
-            } as any);
+            });
 
             // Execute command
             onCommand(transcriptText);

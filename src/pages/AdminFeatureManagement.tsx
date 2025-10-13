@@ -36,10 +36,10 @@ export default function AdminFeatureManagement() {
 
   async function loadFeatures() {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('admin_feature_flags')
         .select('*')
-        .order('feature_name') as any;
+        .order('feature_name');
 
       if (error) throw error;
       setFeatures((data || []) as FeatureFlag[]);
@@ -54,12 +54,12 @@ export default function AdminFeatureManagement() {
   async function toggleFeature(id: string, currentState: boolean) {
     setSaving(id);
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('admin_feature_flags')
         .update({ 
           is_enabled: !currentState,
           updated_at: new Date().toISOString()
-        } as any)
+        })
         .eq('id', id);
 
       if (error) throw error;
@@ -79,9 +79,9 @@ export default function AdminFeatureManagement() {
 
   async function updateAccessLevel(id: string, level: FeatureFlag['access_level']) {
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('admin_feature_flags')
-        .update({ access_level: level } as any)
+        .update({ access_level: level })
         .eq('id', id);
 
       if (error) throw error;
@@ -99,9 +99,9 @@ export default function AdminFeatureManagement() {
 
   async function updateAllowedRoles(id: string, roles: string[]) {
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('admin_feature_flags')
-        .update({ allowed_roles: roles } as any)
+        .update({ allowed_roles: roles })
         .eq('id', id);
 
       if (error) throw error;
