@@ -127,7 +127,7 @@ function SpecialistAppointmentsContent() {
       .from('profiles')
       .select('*')
       .eq('id', patientId)
-      .single();
+      .maybeSingle();
 
     const { data: appointmentHistory, count } = await supabase
       .from('appointments')
@@ -135,19 +135,12 @@ function SpecialistAppointmentsContent() {
       .eq('patient_id', patientId)
       .order('scheduled_at', { ascending: false });
 
-    const { data: notes } = await supabase
-      .from('consultation_notes')
-      .select('*')
-      .eq('patient_id', patientId)
-      .order('created_at', { ascending: false })
-      .limit(5);
-
     if (patientData) {
       setSelectedPatient({
         ...patientData,
         total_appointments: count || 0,
         last_appointment: appointmentHistory?.[0]?.scheduled_at || null,
-        medical_notes: notes || [],
+        medical_notes: [],
       });
     }
   };
@@ -276,21 +269,6 @@ function SpecialistAppointmentsContent() {
                           </CardContent>
                         </Card>
 
-                        {selectedPatient.medical_notes.length > 0 && (
-                          <Card>
-                            <CardHeader>
-                              <CardTitle className="text-base">Recent Notes</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-2">
-                              {selectedPatient.medical_notes.map((note: any) => (
-                                <div key={note.id} className="text-sm border-l-2 border-primary/30 pl-3">
-                                  <p className="font-medium">{format(new Date(note.created_at), 'PPP')}</p>
-                                  <p className="text-muted-foreground line-clamp-2">{note.notes}</p>
-                                </div>
-                              ))}
-                            </CardContent>
-                          </Card>
-                        )}
                       </div>
                     )}
                   </DialogContent>
