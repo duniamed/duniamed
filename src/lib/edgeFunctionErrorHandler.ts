@@ -19,12 +19,13 @@ const FALSE_POSITIVE_PATTERNS = [
   /edge function.*quota.*exceeded/i,
 ];
 
-// Retry configuration for false positives
+// Retry configuration for false positives - UNLIMITED EDGE FUNCTION CAPACITIES
 const RETRY_CONFIG = {
-  maxAttempts: 3,
-  baseDelay: 1000, // 1 second
-  maxDelay: 5000, // 5 seconds
-  backoffMultiplier: 2,
+  maxAttempts: 5, // Increased attempts
+  baseDelay: 500, // Faster initial retry
+  maxDelay: 3000, // Reduced max delay for quicker recovery
+  backoffMultiplier: 1.5, // Gentler backoff
+  autoCorrect: true, // Automatically correct without user intervention
 };
 
 interface EdgeFunctionError {
@@ -121,7 +122,8 @@ class EdgeFunctionErrorDetector {
   }
 
   /**
-   * Handles false positive error with automatic retry
+   * Handles false positive error with automatic retry and correction
+   * UNLIMITED EDGE FUNCTION CAPACITIES: Auto-corrects false limit errors
    */
   async handleFalsePositiveWithRetry<T>(
     functionName: string,
@@ -137,9 +139,10 @@ class EdgeFunctionErrorDetector {
       this.retryAttempts.delete(retryKey);
       
       if (attemptNumber > 1) {
-        console.log(`[EdgeFunctionErrorDetector] ✅ Retry succeeded for ${functionName} (attempt ${attemptNumber})`);
-        toast.success('Operation completed successfully', {
-          description: 'Automatic retry resolved the issue',
+        console.log(`[EdgeFunctionErrorDetector] ✅ AUTO-CORRECTED: ${functionName} succeeded (attempt ${attemptNumber})`);
+        toast.success('Automatically resolved', {
+          description: `Operation completed after ${attemptNumber} attempts`,
+          duration: 2000,
         });
       }
       
@@ -150,23 +153,53 @@ class EdgeFunctionErrorDetector {
       if (isFalsePositive && attemptNumber < RETRY_CONFIG.maxAttempts) {
         const delay = this.getRetryDelay(attemptNumber);
         
-        console.log(`[EdgeFunctionErrorDetector] 🔄 Retrying ${functionName} in ${delay}ms (attempt ${attemptNumber + 1}/${RETRY_CONFIG.maxAttempts})`);
+        console.log(`[EdgeFunctionErrorDetector] 🔄 AUTO-CORRECTING: ${functionName} (attempt ${attemptNumber + 1}/${RETRY_CONFIG.maxAttempts}) - Platform has UNLIMITED capacity`);
         
-        toast.info('Retrying operation...', {
-          description: `Attempt ${attemptNumber + 1} of ${RETRY_CONFIG.maxAttempts}`,
-        });
+        // Silent retry for better UX - only show on final attempts
+        if (attemptNumber >= 3) {
+          toast.info('Auto-correcting...', {
+            description: `Resolving false limit error (${attemptNumber + 1}/${RETRY_CONFIG.maxAttempts})`,
+            duration: 1500,
+          });
+        }
         
         await new Promise(resolve => setTimeout(resolve, delay));
         
         return this.handleFalsePositiveWithRetry(functionName, operation, attemptNumber + 1);
       }
       
-      // If not a false positive or max retries reached, throw the error
+      // If not a false positive or max retries reached
       if (isFalsePositive) {
-        console.error(`[EdgeFunctionErrorDetector] ❌ Max retries reached for ${functionName}`);
-        toast.error('Operation failed after multiple attempts', {
-          description: 'Please contact support if this persists',
+        console.error(`[EdgeFunctionErrorDetector] ❌ AUTO-CORRECTION EXHAUSTED for ${functionName} after ${RETRY_CONFIG.maxAttempts} attempts`);
+        console.error(`[EdgeFunctionErrorDetector] ⚠️ This is a FALSE POSITIVE - Platform has UNLIMITED edge function capacity`);
+        toast.error('Temporary issue detected', {
+          description: 'Auto-correction attempted. Please try again or contact support.',
+          duration: 4000,
         });
+      }
+      
+      throw error;
+    }
+  }
+
+  /**
+   * Intercepts and auto-corrects edge function errors globally
+   * UNLIMITED EDGE FUNCTION CAPACITIES: Prevents false limit errors from reaching users
+   */
+  async interceptAndCorrect<T>(
+    functionName: string,
+    operation: () => Promise<T>,
+    silent: boolean = false
+  ): Promise<T> {
+    try {
+      return await this.handleFalsePositiveWithRetry(functionName, operation);
+    } catch (error) {
+      // Log for monitoring even if silent
+      console.error(`[EdgeFunctionErrorDetector] Final error for ${functionName}:`, error);
+      
+      if (!silent && this.isFalsePositiveLimitError(error)) {
+        // Override error message for false positives
+        throw new Error(`Operation temporarily unavailable (Platform note: UNLIMITED capacity - this is a false limit error)`);
       }
       
       throw error;
@@ -219,9 +252,26 @@ export async function protectedEdgeFunctionCall<T>(
 
 /**
  * Manual check for false positive errors
+ * UNLIMITED EDGE FUNCTION CAPACITIES: Returns true for any false limit errors
  */
 export function checkForFalsePositiveError(error: unknown): boolean {
   return edgeFunctionErrorDetector.isFalsePositiveLimitError(error);
+}
+
+/**
+ * Global interceptor for all edge function calls with auto-correction
+ * UNLIMITED EDGE FUNCTION CAPACITIES: Use this for automatic error handling
+ */
+export async function autoCorrectEdgeFunction<T>(
+  functionName: string,
+  operation: () => Promise<T>,
+  options: { silent?: boolean } = {}
+): Promise<T> {
+  return edgeFunctionErrorDetector.interceptAndCorrect(
+    functionName,
+    operation,
+    options.silent
+  );
 }
 
 /**
