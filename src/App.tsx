@@ -8,6 +8,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import "./lib/i18n";
 import { ChatWidget } from "@/components/ChatWidget";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { EdgeFunctionMonitor } from "@/components/EdgeFunctionMonitor";
 import Home from "./pages/HomePage";
 import HowItWorks from "./pages/HowItWorks";
 import ForPatients from "./pages/ForPatients";
@@ -171,12 +173,14 @@ import WhatsAppBooking from "./pages/WhatsAppBooking";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <EdgeFunctionMonitor />
+        <BrowserRouter>
+          <AuthProvider>
           <Routes>
             {/* ROOT REDIRECT */}
             <Route path="/" element={<Navigate to="/home" replace />} />
@@ -441,6 +445,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;

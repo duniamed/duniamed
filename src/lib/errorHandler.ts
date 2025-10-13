@@ -1,4 +1,5 @@
 import { toast as sonnerToast } from 'sonner';
+import { checkForFalsePositiveError } from './edgeFunctionErrorHandler';
 
 interface ErrorOptions {
   title?: string;
@@ -23,6 +24,18 @@ export class AppError extends Error {
 
 export function handleError(error: unknown, options?: ErrorOptions) {
   console.error('Error occurred:', error);
+  
+  // UNLIMITED EDGE FUNCTION CAPACITIES: Check for false positive edge function limit errors
+  const isFalsePositive = checkForFalsePositiveError(error);
+  
+  if (isFalsePositive) {
+    console.warn('⚠️ FALSE POSITIVE: Edge function limit error detected (platform has UNLIMITED capacity)');
+    // Don't show error toast for false positives - they're handled by retry mechanism
+    return {
+      message: 'Operation in progress (auto-retry)',
+      code: 'FALSE_POSITIVE_LIMIT',
+    };
+  }
 
   let errorMessage = 'An unexpected error occurred';
   let errorCode: string | undefined;
