@@ -44,7 +44,7 @@ export const PredictiveAnalytics = ({ patientId }: { patientId: string }) => {
         <CardDescription>AI-powered readmission risk assessment</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Button onClick={analyzeReadmissionRisk} disabled={loading} className="w-full">
+        <Button onClick={analyzReadmissionRisk} disabled={loading} className="w-full">
           <LineChart className="mr-2 h-4 w-4" />
           {loading ? 'Analyzing...' : 'Analyze Readmission Risk'}
         </Button>
