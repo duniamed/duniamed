@@ -572,3 +572,27 @@ verify_jwt = false
 
 [functions.patient-sentiment-analysis]
 verify_jwt = false
+
+[functions.smart-resource-allocator]
+verify_jwt = false
+
+[functions.automated-care-coordinator]
+verify_jwt = false
+
+[functions.predictive-inventory-ml]
+verify_jwt = false
+
+[functions.voice-clinical-note-ai]
+verify_jwt = false
+
+[functions.ml-schedule-optimizer]
+verify_jwt = false
+
+[functions.patient-risk-stratification]
+verify_jwt = false
+
+[functions.clinical-decision-support]
+verify_jwt = false
+
+[functions.quality-metrics-tracker]
+verify_jwt = false
