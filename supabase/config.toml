@@ -327,6 +327,39 @@ verify_jwt = true
 [functions.notify-price-change]
 verify_jwt = false
 
+[functions.epic-fhir-sync]
+verify_jwt = true
+
+[functions.enterprise-sso]
+verify_jwt = true
+
+[functions.multi-clinic-routing]
+verify_jwt = true
+
+[functions.rpm-compliance-tracking]
+verify_jwt = true
+
+[functions.predictive-readmission]
+verify_jwt = true
+
+[functions.ai-schedule-optimizer]
+verify_jwt = true
+
+[functions.patient-routing-engine]
+verify_jwt = true
+
+[functions.queue-prioritization-ai]
+verify_jwt = true
+
+[functions.earnings-analytics]
+verify_jwt = true
+
+[functions.clinic-performance-metrics]
+verify_jwt = true
+
+[functions.staff-utilization-tracker]
+verify_jwt = true
+
 [functions.check-video-health]
 verify_jwt = true
 

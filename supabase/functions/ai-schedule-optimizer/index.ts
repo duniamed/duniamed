@@ -1,4 +1,3 @@
-// UNLIMITED EDGE FUNCTION CAPACITIES: AI Schedule Optimizer
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -13,22 +12,13 @@ serve(async (req) => {
   }
 
   try {
-    const { specialist_id, date_range } = await req.json();
-
-    console.log(`Optimizing schedule for specialist: ${specialist_id}`);
-
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Fetch current schedule
-    const { data: appointments } = await supabase
-      .from('appointments')
-      .select('*')
-      .eq('specialist_id', specialist_id)
-      .gte('scheduled_at', date_range.start)
-      .lte('scheduled_at', date_range.end);
+    const { clinic_id } = await req.json();
+    console.log(`Schedule optimization for clinic ${clinic_id}`);
 
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -41,16 +31,11 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `Optimize specialist schedule. Return JSON with:
-- optimized_slots: Array of optimized time slots
-- efficiency_score: 0-100
-- recommendations: Actionable improvements
-- buffer_time_suggestions: Recommended buffer times
-- revenue_optimization: Revenue impact analysis`
+            content: `Optimize clinic scheduling. Return JSON with: recommended_slots, expected_utilization, predicted_wait_times, capacity_recommendations`
           },
           {
             role: 'user',
-            content: `Current appointments: ${JSON.stringify(appointments)}\nDate range: ${JSON.stringify(date_range)}`
+            content: JSON.stringify({ clinic_id })
           }
         ],
         response_format: { type: 'json_object' }
@@ -60,15 +45,15 @@ serve(async (req) => {
     const aiData = await aiResponse.json();
     const optimization = JSON.parse(aiData.choices[0].message.content);
 
-    return new Response(JSON.stringify({ success: true, optimization }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-
+    return new Response(
+      JSON.stringify({ success: true, optimization }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   } catch (error: any) {
-    console.error('AI schedule optimizer error:', error);
+    console.error('Schedule optimization error:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   }
 });
