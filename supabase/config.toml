@@ -1,5 +1,17 @@
 project_id = "knybxihimqrqwzkdeaio"
 
+[functions.smart-resource-allocator]
+verify_jwt = true
+
+[functions.automated-care-coordinator]
+verify_jwt = true
+
+[functions.predictive-inventory-ml]
+verify_jwt = true
+
+[functions.voice-clinical-note-ai]
+verify_jwt = true
+
 [functions.blockchain-verify-record]
 verify_jwt = true
 
