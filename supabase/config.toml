@@ -1,5 +1,44 @@
 project_id = "knybxihimqrqwzkdeaio"
 
+[functions.voice-to-prescription]
+verify_jwt = true
+
+[functions.voice-to-icd10]
+verify_jwt = true
+
+[functions.voice-quality-check]
+verify_jwt = true
+
+[functions.voice-session-summary]
+verify_jwt = true
+
+[functions.voice-command-routing]
+verify_jwt = true
+
+[functions.verify-insurance-realtime]
+verify_jwt = true
+
+[functions.process-hsa-fsa-payment]
+verify_jwt = true
+
+[functions.calculate-fee-split]
+verify_jwt = true
+
+[functions.create-affirm-installment]
+verify_jwt = true
+
+[functions.create-carecredit-plan]
+verify_jwt = true
+
+[functions.subscription-autopay]
+verify_jwt = false
+
+[functions.generate-superbill]
+verify_jwt = true
+
+[functions.payment-dispute-handler]
+verify_jwt = true
+
 [functions.voice-navigation-command]
 verify_jwt = true
 
