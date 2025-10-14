@@ -1,5 +1,23 @@
 project_id = "knybxihimqrqwzkdeaio"
 
+[functions.ai-schedule-optimizer]
+verify_jwt = true
+
+[functions.patient-routing-engine]
+verify_jwt = true
+
+[functions.queue-prioritization-ai]
+verify_jwt = true
+
+[functions.earnings-analytics]
+verify_jwt = true
+
+[functions.clinic-performance-metrics]
+verify_jwt = true
+
+[functions.staff-utilization-tracker]
+verify_jwt = true
+
 [functions.voice-to-prescription]
 verify_jwt = true
 
