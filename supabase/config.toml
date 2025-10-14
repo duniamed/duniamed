@@ -1,5 +1,26 @@
 project_id = "knybxihimqrqwzkdeaio"
 
+[functions.voice-navigation-command]
+verify_jwt = true
+
+[functions.voice-to-task]
+verify_jwt = true
+
+[functions.ai-care-plan-generator]
+verify_jwt = true
+
+[functions.ai-medication-interaction-checker]
+verify_jwt = true
+
+[functions.ai-clinical-decision-support]
+verify_jwt = true
+
+[functions.ai-lab-result-interpreter]
+verify_jwt = true
+
+[functions.ai-radiology-report-analyzer]
+verify_jwt = true
+
 [functions.scan-health-card-vision]
 verify_jwt = true
 
