@@ -1,5 +1,26 @@
 project_id = "knybxihimqrqwzkdeaio"
 
+[functions.blockchain-verify-record]
+verify_jwt = true
+
+[functions.voice-command-history]
+verify_jwt = true
+
+[functions.voice-multi-language-processor]
+verify_jwt = true
+
+[functions.pharmacy-inventory-optimization]
+verify_jwt = true
+
+[functions.multi-tenant-billing-reconciliation]
+verify_jwt = true
+
+[functions.revenue-prediction-ml]
+verify_jwt = true
+
+[functions.patient-churn-prediction]
+verify_jwt = true
+
 [functions.epic-fhir-sync]
 verify_jwt = true
 
