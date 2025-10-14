@@ -258,6 +258,27 @@ verify_jwt = false
 [functions.sync-calendar]
 verify_jwt = true
 
+[functions.smart-appointment-routing]
+verify_jwt = false
+
+[functions.dynamic-pricing-optimizer]
+verify_jwt = false
+
+[functions.automated-appointment-reminder]
+verify_jwt = false
+
+[functions.no-show-prediction]
+verify_jwt = false
+
+[functions.ai-documentation-assistant]
+verify_jwt = false
+
+[functions.insurance-verification-ai]
+verify_jwt = false
+
+[functions.treatment-outcome-predictor]
+verify_jwt = false
+
 [functions.send-prescription]
 verify_jwt = true
 
