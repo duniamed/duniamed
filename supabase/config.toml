@@ -1,5 +1,20 @@
 project_id = "knybxihimqrqwzkdeaio"
 
+[functions.epic-fhir-sync]
+verify_jwt = true
+
+[functions.enterprise-sso]
+verify_jwt = true
+
+[functions.multi-clinic-routing]
+verify_jwt = true
+
+[functions.rpm-compliance-tracking]
+verify_jwt = true
+
+[functions.predictive-readmission]
+verify_jwt = true
+
 [functions.ai-schedule-optimizer]
 verify_jwt = true
 
