@@ -458,3 +458,24 @@ verify_jwt = true
 
 [functions.prescription-external-receive]
 verify_jwt = false
+
+[functions.genomic-risk-calculator]
+verify_jwt = false
+
+[functions.mental-health-crisis-detector]
+verify_jwt = false
+
+[functions.medication-adherence-tracker]
+verify_jwt = false
+
+[functions.drug-interaction-checker]
+verify_jwt = false
+
+[functions.clinical-trial-enrollment]
+verify_jwt = false
+
+[functions.capacity-forecasting-ml]
+verify_jwt = false
+
+[functions.hipaa-compliance-validator]
+verify_jwt = false
