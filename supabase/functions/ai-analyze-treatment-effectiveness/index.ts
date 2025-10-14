@@ -1,8 +1,6 @@
-// UNLIMITED EDGE FUNCTION CAPACITIES: Treatment Effectiveness Analysis
-// Core Principle: Clinical insights from aggregated outcomes
-
+// UNLIMITED EDGE FUNCTION CAPACITIES: AI Treatment Effectiveness Analysis
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -15,127 +13,51 @@ serve(async (req) => {
   }
 
   try {
-    const { specialistId, conditionCode, treatmentProtocol } = await req.json();
-
+    const { specialistId, patientId, timeframe } = await req.json();
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
-    // Get all completed appointments for this condition and treatment
-    const { data: appointments, error: apptsError } = await supabase
-      .from('appointments')
-      .select(`
-        id,
-        scheduled_at,
-        completed_at,
-        duration_minutes,
-        patient_id,
-        fee,
-        soap_notes!inner (
-          assessment,
-          plan
-        )
-      `)
-      .eq('specialist_id', specialistId)
-      .eq('status', 'completed')
-      .not('completed_at', 'is', null);
+    let query = supabase.from('appointments').select('*, prescriptions(*), soap_notes(*)').eq('status', 'completed');
+    if (specialistId) query = query.eq('specialist_id', specialistId);
+    if (patientId) query = query.eq('patient_id', patientId);
+    const { data: appointments } = await query;
 
-    if (apptsError) throw apptsError;
+    console.log(`Analyzing ${appointments?.length || 0} completed appointments`);
 
-    // Filter appointments matching the condition
-    const relevantAppointments = appointments?.filter(apt => 
-      apt.soap_notes?.some((note: any) => 
-        note.assessment?.includes(conditionCode)
-      )
-    ) || [];
-
-    if (relevantAppointments.length === 0) {
-      return new Response(
-        JSON.stringify({ 
-          message: 'Insufficient data for analysis',
-          patientCount: 0
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Calculate metrics
-    const patientCount = new Set(relevantAppointments.map(a => a.patient_id)).size;
-    
-    // Calculate average recovery time (mock - would need follow-up data)
-    const avgRecoveryDays = 14;
-
-    // Calculate success rate (based on follow-up appointments)
-    const successRate = 85.5;
-
-    // Calculate complication rate
-    const complicationRate = 2.3;
-
-    // Get patient satisfaction from reviews
-    const { data: reviews } = await supabase
-      .from('reviews')
-      .select('rating')
-      .in('appointment_id', relevantAppointments.map(a => a.id));
-
-    const avgSatisfaction = reviews?.length > 0
-      ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-      : 0;
-
-    // Calculate average cost
-    const avgCost = relevantAppointments.reduce((sum, a) => sum + (a.fee || 0), 0) / relevantAppointments.length;
-
-    // Upsert effectiveness data
-    const { data: effectiveness, error: effectError } = await supabase
-      .from('treatment_effectiveness_data')
-      .upsert({
-        specialist_id: specialistId,
-        condition_code: conditionCode,
-        treatment_protocol: treatmentProtocol,
-        patient_count: patientCount,
-        success_rate: successRate,
-        avg_recovery_days: avgRecoveryDays,
-        complication_rate: complicationRate,
-        patient_satisfaction_avg: avgSatisfaction,
-        cost_avg: avgCost,
-        data_points: relevantAppointments.map(a => ({
-          appointment_id: a.id,
-          date: a.completed_at,
-          duration: a.duration_minutes
-        })),
-        last_updated: new Date().toISOString()
-      }, {
-        onConflict: 'specialist_id,condition_code'
+    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${lovableApiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          { role: 'system', content: 'Analyze treatment effectiveness. Return JSON: { "effectivenessScore": 0-100, "insights": [], "recommendations": [], "trends": {} }' },
+          { role: 'user', content: JSON.stringify({ appointments, timeframe }) }
+        ]
       })
-      .select()
-      .single();
+    });
 
-    if (effectError) throw effectError;
+    const aiData = await aiResponse.json();
+    const analysis = JSON.parse(aiData.choices[0].message.content);
 
-    console.log(`Treatment effectiveness analyzed for ${conditionCode}: ${patientCount} patients`);
+    await supabase.from('analytics_insights_ai').insert({
+      entity_type: specialistId ? 'specialist' : 'patient',
+      entity_id: specialistId || patientId,
+      insight_type: 'treatment_effectiveness',
+      insight_text: JSON.stringify(analysis.insights),
+      confidence_score: analysis.effectivenessScore / 100,
+      data_snapshot: analysis,
+      actionable_items: analysis.recommendations,
+      priority: analysis.effectivenessScore < 60 ? 'high' : 'medium'
+    });
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        effectiveness,
-        insights: {
-          performance: successRate > 80 ? 'excellent' : successRate > 60 ? 'good' : 'needs_improvement',
-          trend: 'stable',
-          recommendation: complicationRate > 5 
-            ? 'Review protocol for complication reduction' 
-            : 'Protocol performing well'
-        }
-      }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-  } catch (error) {
-    console.error('Error in ai-analyze-treatment-effectiveness:', error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    );
+    return new Response(JSON.stringify({ success: true, analysis }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  } catch (error: any) {
+    console.error('Treatment analysis error:', error);
+    return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   }
 });
