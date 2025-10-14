@@ -1,199 +1,125 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ShieldCheck, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { Shield, CheckCircle, XCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { useMutation } from '@tanstack/react-query';
 
 interface InsuranceVerificationProps {
   patientId: string;
-  appointmentId?: string;
+  appointmentId: string;
 }
 
-export const InsuranceVerification: React.FC<InsuranceVerificationProps> = ({
-  patientId,
-  appointmentId
-}) => {
-  const [insuranceData, setInsuranceData] = useState({
-    provider: '',
-    member_id: '',
-    group_number: ''
-  });
-  const [verificationResult, setVerificationResult] = useState<any>(null);
+const InsuranceVerification = ({ patientId, appointmentId }: InsuranceVerificationProps) => {
+  const [loading, setLoading] = useState(false);
+  const [verification, setVerification] = useState<any>(null);
+  const [insuranceNumber, setInsuranceNumber] = useState('');
+  const [provider, setProvider] = useState('');
   const { toast } = useToast();
 
-  const verifyMutation = useMutation({
-    mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('verify-insurance-realtime', {
-        body: {
+  const verifyInsurance = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('insurance-verification', {
+        body: { 
           patientId,
           appointmentId,
-          insuranceInfo: insuranceData
+          insuranceDetails: {
+            policy_number: insuranceNumber,
+            provider: provider,
+            patient_id: patientId
+          }
         }
       });
+
       if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
-      setVerificationResult(data);
+
+      setVerification(data.verification);
       toast({
-        title: data.verified ? "Insurance Verified" : "Verification Failed",
-        description: data.message,
-        variant: data.verified ? "default" : "destructive"
+        title: "Insurance verified",
+        description: data.verification.verified ? "Coverage confirmed" : "Verification failed",
       });
-    },
-    onError: (error: any) => {
+    } catch (error: any) {
       toast({
-        title: "Verification Error",
+        title: "Verification failed",
         description: error.message,
-        variant: "destructive"
+        variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
-  });
+  };
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <ShieldCheck className="h-5 w-5" />
-          Real-Time Insurance Verification
+          <Shield className="h-5 w-5" />
+          Insurance Verification
         </CardTitle>
+        <CardDescription>Verify insurance coverage for this appointment</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
-        {!verificationResult ? (
-          <>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="provider">Insurance Provider</Label>
-                <Input
-                  id="provider"
-                  placeholder="e.g., Blue Cross Blue Shield"
-                  value={insuranceData.provider}
-                  onChange={(e) =>
-                    setInsuranceData({ ...insuranceData, provider: e.target.value })
-                  }
-                />
-              </div>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label>Insurance Provider</Label>
+          <Input 
+            value={provider}
+            onChange={(e) => setProvider(e.target.value)}
+            placeholder="e.g., Blue Cross Blue Shield"
+          />
+        </div>
+        
+        <div className="space-y-2">
+          <Label>Policy Number</Label>
+          <Input 
+            value={insuranceNumber}
+            onChange={(e) => setInsuranceNumber(e.target.value)}
+            placeholder="Enter policy number"
+          />
+        </div>
 
-              <div>
-                <Label htmlFor="member_id">Member ID</Label>
-                <Input
-                  id="member_id"
-                  placeholder="Member/Policy Number"
-                  value={insuranceData.member_id}
-                  onChange={(e) =>
-                    setInsuranceData({ ...insuranceData, member_id: e.target.value })
-                  }
-                />
-              </div>
+        <Button 
+          onClick={verifyInsurance} 
+          disabled={loading || !insuranceNumber || !provider}
+          className="w-full"
+        >
+          {loading ? 'Verifying...' : 'Verify Coverage'}
+        </Button>
 
-              <div>
-                <Label htmlFor="group_number">Group Number (Optional)</Label>
-                <Input
-                  id="group_number"
-                  placeholder="Group Number"
-                  value={insuranceData.group_number}
-                  onChange={(e) =>
-                    setInsuranceData({ ...insuranceData, group_number: e.target.value })
-                  }
-                />
-              </div>
-            </div>
-
-            <Button
-              onClick={() => verifyMutation.mutate()}
-              disabled={
-                !insuranceData.provider ||
-                !insuranceData.member_id ||
-                verifyMutation.isPending
-              }
-              className="w-full"
-            >
-              {verifyMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Verifying...
-                </>
+        {verification && (
+          <div className="mt-4 p-4 border rounded-lg space-y-2">
+            <div className="flex items-center gap-2">
+              {verification.verified ? (
+                <CheckCircle className="h-5 w-5 text-green-600" />
               ) : (
-                'Verify Insurance'
+                <XCircle className="h-5 w-5 text-red-600" />
               )}
-            </Button>
-          </>
-        ) : (
-          <>
-            <div
-              className={`flex items-center gap-3 p-4 rounded-lg ${
-                verificationResult.verified
-                  ? 'bg-green-50 border border-green-200'
-                  : 'bg-red-50 border border-red-200'
-              }`}
-            >
-              {verificationResult.verified ? (
-                <CheckCircle className="h-6 w-6 text-green-600" />
-              ) : (
-                <XCircle className="h-6 w-6 text-red-600" />
-              )}
-              <div>
-                <p
-                  className={`font-semibold ${
-                    verificationResult.verified ? 'text-green-900' : 'text-red-900'
-                  }`}
-                >
-                  {verificationResult.verified ? 'Insurance Verified' : 'Verification Failed'}
-                </p>
-                <p
-                  className={`text-sm ${
-                    verificationResult.verified ? 'text-green-700' : 'text-red-700'
-                  }`}
-                >
-                  {verificationResult.message}
-                </p>
-              </div>
+              <span className="font-semibold">
+                {verification.verified ? 'Coverage Confirmed' : 'Not Covered'}
+              </span>
             </div>
-
-            {verificationResult.verified && verificationResult.coverage && (
-              <div className="space-y-3">
-                <h4 className="font-semibold">Coverage Details:</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Copay</p>
-                    <p className="font-semibold">
-                      ${verificationResult.coverage.copay || 0}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Deductible Met</p>
-                    <p className="font-semibold">
-                      ${verificationResult.coverage.deductible_met || 0}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Out-of-Pocket Max</p>
-                    <p className="font-semibold">
-                      ${verificationResult.coverage.out_of_pocket_max || 0}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Status</p>
-                    <p className="font-semibold text-green-600">Active</p>
-                  </div>
+            
+            {verification.verified && (
+              <>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>Coverage: {verification.coverage_percentage}%</div>
+                  <div>Copay: ${verification.copay_amount}</div>
+                  <div>Deductible: ${verification.deductible_remaining}</div>
+                  <div>OOP Max: ${verification.out_of_pocket_max}</div>
                 </div>
-              </div>
+                
+                {verification.pre_auth_required && (
+                  <p className="text-sm text-amber-600">⚠️ Pre-authorization required</p>
+                )}
+              </>
             )}
-
-            <Button
-              onClick={() => setVerificationResult(null)}
-              variant="outline"
-              className="w-full"
-            >
-              Verify Another Policy
-            </Button>
-          </>
+          </div>
         )}
       </CardContent>
     </Card>
   );
 };
+
+export default InsuranceVerification;
