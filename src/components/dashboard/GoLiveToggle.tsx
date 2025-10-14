@@ -33,9 +33,10 @@ export function GoLiveToggle({ specialistId, clinicId }: GoLiveToggleProps) {
         table: 'specialist_live_status',
         filter: `specialist_id=eq.${specialistId}`
       }, (payload) => {
-        setStatus(payload.new);
-        setIsLive(payload.new.is_live);
-        setQueueSize(payload.new.current_queue_size || 0);
+        const newData = payload.new as any;
+        setStatus(newData);
+        setIsLive(newData.is_live || false);
+        setQueueSize(newData.current_queue_size || 0);
       })
       .subscribe();
 
