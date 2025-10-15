@@ -608,3 +608,15 @@ verify_jwt = false
 
 [functions.quality-metrics-tracker]
 verify_jwt = false
+
+[functions.clinical-pathway-optimizer]
+verify_jwt = true
+
+[functions.smart-resource-allocator]
+verify_jwt = true
+
+[functions.automated-care-coordinator]
+verify_jwt = true
+
+[functions.voice-command-history]
+verify_jwt = true
