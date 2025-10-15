@@ -1,3 +1,4 @@
+// UNLIMITED EDGE FUNCTION CAPACITIES: Predictive Readmission Risk
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -12,13 +13,26 @@ serve(async (req) => {
   }
 
   try {
+    const { patientId, dischargeDate } = await req.json();
+    
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { patient_id } = await req.json();
-    console.log(`Readmission prediction for patient ${patient_id}`);
+    const { data: appointments } = await supabase
+      .from('appointments')
+      .select('*')
+      .eq('patient_id', patientId)
+      .order('scheduled_at', { ascending: false })
+      .limit(20);
+
+    const { data: prescriptions } = await supabase
+      .from('prescriptions')
+      .select('*')
+      .eq('patient_id', patientId);
+
+    console.log('Predicting readmission risk:', { patientId, appointmentCount: appointments?.length });
 
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -27,28 +41,42 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'google/gemini-2.5-pro',
         messages: [
           {
             role: 'system',
-            content: `Predict 30-day hospital readmission risk. Return JSON with: risk_score, risk_level, risk_factors, intervention_recommendations`
+            content: 'Predict hospital readmission risk within 30 days. Return JSON: { "riskScore": 0-1, "riskLevel": "low/medium/high", "keyFactors": [], "interventions": [], "followUpSchedule": [], "alertThreshold": 0.7 }'
           },
           {
             role: 'user',
-            content: JSON.stringify({ patient_id })
+            content: JSON.stringify({ patientId, dischargeDate, appointments, prescriptions })
           }
-        ],
-        response_format: { type: 'json_object' }
+        ]
       })
     });
+
+    if (!aiResponse.ok) {
+      if (aiResponse.status === 429) {
+        return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+      if (aiResponse.status === 402) {
+        return new Response(JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+      throw new Error(`AI Gateway error: ${aiResponse.status}`);
+    }
 
     const aiData = await aiResponse.json();
     const prediction = JSON.parse(aiData.choices[0].message.content);
 
-    return new Response(
-      JSON.stringify({ success: true, prediction }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ success: true, prediction }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
   } catch (error: any) {
     console.error('Readmission prediction error:', error);
     return new Response(JSON.stringify({ error: error.message }), {
