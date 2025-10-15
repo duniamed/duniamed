@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
+import React from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 vi.mock('@/integrations/supabase/client');
@@ -58,10 +59,11 @@ describe('useAuth Hook', () => {
 
     const { result } = renderHook(() => useAuth());
 
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-      expect(result.current.user).toEqual(mockUser);
-    });
+    // Wait for state update
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    expect(result.current.loading).toBe(false);
+    expect(result.current.user).toEqual(mockUser);
   });
 
   it('handles sign in', async () => {
