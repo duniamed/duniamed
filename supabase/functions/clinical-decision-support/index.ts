@@ -1,3 +1,4 @@
+// UNLIMITED EDGE FUNCTION CAPACITIES: Clinical Decision Support
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -12,33 +13,28 @@ serve(async (req) => {
   }
 
   try {
+    const { patientId, clinicalData, context } = await req.json();
+    
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { patientId, symptoms, vitals, context } = await req.json();
+    const { data: patient } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', patientId)
+      .single();
 
-    // Fetch patient history
-    const { data: history } = await supabase
+    const { data: medicalHistory } = await supabase
       .from('appointments')
-      .select('*, soap_notes(*)')
+      .select('*, prescriptions(*)')
       .eq('patient_id', patientId)
       .order('scheduled_at', { ascending: false })
       .limit(10);
 
-    const { data: allergies } = await supabase
-      .from('patient_allergies')
-      .select('*')
-      .eq('patient_id', patientId);
+    console.log('Clinical decision support:', { patientId, context });
 
-    const { data: medications } = await supabase
-      .from('prescriptions')
-      .select('*')
-      .eq('patient_id', patientId)
-      .eq('status', 'active');
-
-    // Real-time clinical decision support
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -50,85 +46,43 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `Provide real-time clinical decision support. Return JSON:
-{
-  "differential_diagnosis": [
-    {
-      "condition": "string",
-      "probability": 0-1,
-      "supporting_evidence": ["string"],
-      "icd10_codes": ["string"]
-    }
-  ],
-  "recommended_tests": [
-    {
-      "test": "string",
-      "urgency": "routine|urgent|stat",
-      "rationale": "string"
-    }
-  ],
-  "treatment_recommendations": [
-    {
-      "intervention": "string",
-      "evidence_level": "A|B|C",
-      "contraindications": ["string"]
-    }
-  ],
-  "drug_interactions": [
-    {
-      "drugs": ["string"],
-      "severity": "minor|moderate|severe",
-      "recommendation": "string"
-    }
-  ],
-  "alerts": [
-    {
-      "type": "allergy|interaction|guideline",
-      "severity": "low|medium|high",
-      "message": "string"
-    }
-  ],
-  "guidelines": ["string"]
-}`
+            content: 'Provide clinical decision support based on evidence-based guidelines. Analyze patient data, suggest diagnostic tests, treatment options, medication interactions, and risk factors. Return JSON: { "primary_recommendations": [], "diagnostic_suggestions": [], "treatment_options": [], "risk_alerts": [], "drug_interactions": [], "evidence_level": "", "confidence": 0-1, "references": [] }'
           },
           {
             role: 'user',
-            content: JSON.stringify({
-              symptoms,
-              vitals,
-              history,
-              allergies,
-              medications,
-              context
-            })
+            content: JSON.stringify({ patientId, patient, clinicalData, medicalHistory, context })
           }
         ]
       })
     });
 
+    if (!aiResponse.ok) {
+      if (aiResponse.status === 429) {
+        return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+      if (aiResponse.status === 402) {
+        return new Response(JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+      throw new Error(`AI Gateway error: ${aiResponse.status}`);
+    }
+
     const aiData = await aiResponse.json();
     const decision_support = JSON.parse(aiData.choices[0].message.content);
 
-    // Log decision support usage
-    await supabase.from('clinical_decision_logs').insert({
-      patient_id: patientId,
-      support_data: decision_support,
-      context,
-      created_at: new Date().toISOString()
+    return new Response(JSON.stringify({ success: true, decision_support }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
-
-    return new Response(JSON.stringify({
-      success: true,
-      decision_support
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-
   } catch (error: any) {
     console.error('Clinical decision support error:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   }
 });
