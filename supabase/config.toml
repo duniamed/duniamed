@@ -1,5 +1,17 @@
 project_id = "knybxihimqrqwzkdeaio"
 
+[functions.voice-to-prescription]
+verify_jwt = true
+
+[functions.verify-insurance-realtime]
+verify_jwt = true
+
+[functions.ai-care-plan-generator]
+verify_jwt = true
+
+[functions.pharmacy-inventory-optimization]
+verify_jwt = true
+
 [functions.smart-resource-allocator]
 verify_jwt = true
 
