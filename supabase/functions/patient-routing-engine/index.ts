@@ -1,3 +1,4 @@
+// UNLIMITED EDGE FUNCTION CAPACITIES: Patient Routing Engine
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -12,13 +13,19 @@ serve(async (req) => {
   }
 
   try {
+    const { patientData, symptoms, urgency, preferences } = await req.json();
+    
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { patient_id, symptoms, urgency } = await req.json();
-    console.log(`Routing patient ${patient_id}, urgency: ${urgency}`);
+    const { data: specialists } = await supabase
+      .from('specialists')
+      .select('*, availability_schedules(*)')
+      .eq('is_accepting_patients', true);
+
+    console.log('Routing patient:', { symptoms, urgency, specialistCount: specialists?.length });
 
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -31,24 +38,38 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `Triage patient and recommend care pathway. Return JSON with: triage_level, recommended_specialty, recommended_modality, reasoning`
+            content: 'Route patients to optimal specialists based on symptoms, urgency, availability, and match quality. Return JSON: { "topMatches": [{"specialistId": "", "matchScore": 0-1, "availability": "", "reasoning": "", "estimatedWaitTime": ""}], "alternativeOptions": [], "urgencyAssessment": "" }'
           },
           {
             role: 'user',
-            content: JSON.stringify({ symptoms, urgency })
+            content: JSON.stringify({ patientData, symptoms, urgency, preferences, specialists })
           }
-        ],
-        response_format: { type: 'json_object' }
+        ]
       })
     });
 
-    const aiData = await aiResponse.json();
-    const triage = JSON.parse(aiData.choices[0].message.content);
+    if (!aiResponse.ok) {
+      if (aiResponse.status === 429) {
+        return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+      if (aiResponse.status === 402) {
+        return new Response(JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+      throw new Error(`AI Gateway error: ${aiResponse.status}`);
+    }
 
-    return new Response(
-      JSON.stringify({ success: true, routing: triage }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    const aiData = await aiResponse.json();
+    const routing = JSON.parse(aiData.choices[0].message.content);
+
+    return new Response(JSON.stringify({ success: true, routing }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
   } catch (error: any) {
     console.error('Patient routing error:', error);
     return new Response(JSON.stringify({ error: error.message }), {
