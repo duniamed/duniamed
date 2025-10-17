@@ -8,6 +8,11 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
+    include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}'],
+    exclude: [
+      'node_modules/',
+      'e2e/',
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -17,7 +22,8 @@ export default defineConfig({
         '**/*.d.ts',
         '**/*.config.*',
         '**/mockData',
-        'src/integrations/supabase/types.ts'
+        'src/integrations/supabase/types.ts',
+        'e2e/'
       ]
     }
   },

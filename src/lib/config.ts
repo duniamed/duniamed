@@ -3,7 +3,7 @@
  * Centralized configuration to eliminate hardcoded values
  */
 
-export const APP_CONFIG = {
+const config = {
   // Application Info
   APP_NAME: 'HealthCare Platform',
   APP_VERSION: '1.0.0',
@@ -124,7 +124,9 @@ export const APP_CONFIG = {
     SUPPORT: '/support',
     DOCUMENTATION: '/docs',
   },
-} as const;
+};
+
+export const APP_CONFIG = Object.freeze(config);
 
 // Type-safe config access
 export type AppConfig = typeof APP_CONFIG;
